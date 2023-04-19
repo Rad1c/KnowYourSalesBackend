@@ -1,0 +1,14 @@
+C:\Users\radica\source\repos\KnowYourSalesBackend\MODEL\bin\Debug\net6.0\MODEL.deps.json
+C:\Users\radica\source\repos\KnowYourSalesBackend\MODEL\bin\Debug\net6.0\MODEL.runtimeconfig.json
+C:\Users\radica\source\repos\KnowYourSalesBackend\MODEL\bin\Debug\net6.0\MODEL.dll
+C:\Users\radica\source\repos\KnowYourSalesBackend\MODEL\bin\Debug\net6.0\MODEL.pdb
+C:\Users\radica\source\repos\KnowYourSalesBackend\MODEL\obj\Debug\net6.0\MODEL.csproj.AssemblyReference.cache
+C:\Users\radica\source\repos\KnowYourSalesBackend\MODEL\obj\Debug\net6.0\MODEL.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\radica\source\repos\KnowYourSalesBackend\MODEL\obj\Debug\net6.0\MODEL.AssemblyInfoInputs.cache
+C:\Users\radica\source\repos\KnowYourSalesBackend\MODEL\obj\Debug\net6.0\MODEL.AssemblyInfo.cs
+C:\Users\radica\source\repos\KnowYourSalesBackend\MODEL\obj\Debug\net6.0\MODEL.csproj.CoreCompileInputs.cache
+C:\Users\radica\source\repos\KnowYourSalesBackend\MODEL\obj\Debug\net6.0\MODEL.dll
+C:\Users\radica\source\repos\KnowYourSalesBackend\MODEL\obj\Debug\net6.0\refint\MODEL.dll
+C:\Users\radica\source\repos\KnowYourSalesBackend\MODEL\obj\Debug\net6.0\MODEL.pdb
+C:\Users\radica\source\repos\KnowYourSalesBackend\MODEL\obj\Debug\net6.0\MODEL.genruntimeconfig.cache
+C:\Users\radica\source\repos\KnowYourSalesBackend\MODEL\obj\Debug\net6.0\ref\MODEL.dll
