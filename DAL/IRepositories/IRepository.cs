@@ -1,4 +1,4 @@
-﻿using MODEL.Entites;
+﻿using MODEL.Entities;
 using System.Linq.Expressions;
 
 namespace DAL.IRepositories
