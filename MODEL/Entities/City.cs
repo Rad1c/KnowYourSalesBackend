@@ -8,7 +8,7 @@
             Shops = new HashSet<Shop>();
         }
 
-        public string CouId { get; set; } = null!;
+        public Guid CouId { get; set; }
         public string Name { get; set; } = null!;
 
         public virtual Country Cou { get; set; } = null!;

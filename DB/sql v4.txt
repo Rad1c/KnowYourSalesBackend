@@ -1,0 +1,698 @@
+/*==============================================================*/
+/* DBMS name:  PostgreSQL 9.x           */
+/* Created on:   21/04/2023 11:11:40 pm         */
+/*==============================================================*/
+
+
+DROP INDEX IF EXISTS ACC_HAS_R_FK;
+
+DROP INDEX IF EXISTS ACCOUNT_PK;
+
+DROP TABLE IF EXISTS ACCOUNT CASCADE;
+
+DROP INDEX IF EXISTS ARTICLE_NAME_ASC;
+
+DROP INDEX IF EXISTS OF_FK;
+
+DROP INDEX IF EXISTS ARTICLE_PK;
+
+DROP TABLE IF EXISTS ARTICLE CASCADE;
+
+DROP INDEX IF EXISTS ARTICLE_IN_CATEGORY_FK2;
+
+DROP INDEX IF EXISTS ARTICLE_IN_CATEGORY_FK;
+
+DROP INDEX IF EXISTS ARTICLE_IN_CATEGORY_PK;
+
+DROP TABLE IF EXISTS ARTICLE_IN_CATEGORY CASCADE;
+
+DROP INDEX IF EXISTS ARTICLE_IN_SHOP_FK2;
+
+DROP INDEX IF EXISTS ARTICLE_IN_SHOP_FK;
+
+DROP INDEX IF EXISTS ARTICLE_IN_SHOP_PK;
+
+DROP TABLE IF EXISTS ARTICLE_IN_SHOP CASCADE;
+
+DROP INDEX IF EXISTS CATEGORY_PK;
+
+DROP TABLE IF EXISTS CATEGORY CASCADE;
+
+DROP INDEX IF EXISTS CITY_FK;
+
+DROP INDEX IF EXISTS CITY_PK;
+
+DROP TABLE IF EXISTS CITY CASCADE;
+
+DROP INDEX IF EXISTS CO_HAS_ACC_FK;
+
+DROP INDEX IF EXISTS RESIDENCE_FK;
+
+DROP INDEX IF EXISTS COMMERCE_PK;
+
+DROP TABLE IF EXISTS COMMERCE CASCADE;
+
+DROP INDEX IF EXISTS COUNTRY_PK;
+
+DROP TABLE IF EXISTS COUNTRY CASCADE;
+
+DROP INDEX IF EXISTS CURRENCY_PK;
+
+DROP TABLE IF EXISTS CURRENCY CASCADE;
+
+DROP INDEX IF EXISTS FAVORITE_ARTICLE_FK2;
+
+DROP INDEX IF EXISTS FAVORITE_ARTICLE_FK;
+
+DROP INDEX IF EXISTS FAVORITE_ARTICLE_PK;
+
+DROP TABLE IF EXISTS FAVORITE_ARTICLE CASCADE;
+
+DROP INDEX IF EXISTS FAVORITE_COMMERCE_FK2;
+
+DROP INDEX IF EXISTS FAVORITE_COMMERCE_FK;
+
+DROP INDEX IF EXISTS FAVORITE_COMMERCE_PK;
+
+DROP TABLE IF EXISTS FAVORITE_COMMERCE CASCADE;
+
+DROP INDEX IF EXISTS GEOPINT_PK;
+
+DROP TABLE IF EXISTS GEOPINT CASCADE;
+
+DROP INDEX IF EXISTS LEAVES_FK;
+
+DROP INDEX IF EXISTS IMPRESSION_PK;
+
+DROP TABLE IF EXISTS IMPRESSION CASCADE;
+
+DROP INDEX IF EXISTS AR_HAS_PIC_FK;
+
+DROP INDEX IF EXISTS PICTURE_PK;
+
+DROP TABLE IF EXISTS PICTURE CASCADE;
+
+DROP INDEX IF EXISTS ROLE_PK;
+
+DROP TABLE IF EXISTS ROLE CASCADE;
+
+DROP INDEX IF EXISTS ADDRESS_FK;
+
+DROP INDEX IF EXISTS LOKACIJA_FK;
+
+DROP INDEX IF EXISTS CO_HAS_SH_FK;
+
+DROP INDEX IF EXISTS SHOP_PK;
+
+DROP TABLE IF EXISTS SHOP CASCADE; 
+
+DROP INDEX IF EXISTS U_HAS_ACC_FK;
+
+DROP INDEX IF EXISTS USER_PK;
+
+DROP TABLE "user" CASCADE;
+
+
+
+/*==============================================================*/
+/* Table: ACCOUNT                 */
+/*==============================================================*/
+CREATE TABLE ACCOUNT (
+ ID       UUID DEFAULT uuid_generate_v4(),
+ ROL_ID     UUID       NOT NULL,
+ CREATED      TIMESTAMP(0)     NOT NULL,
+ MODIFIED     TIMESTAMP(0)     NULL,
+ IS_DELETED     BOOLEAN       NOT NULL DEFAULT false,
+ EMAIL      VARCHAR(50)    NOT NULL,
+ PASSWORD     bytea     NOT NULL,
+ SALT       bytea    NULL,
+ CONSTRAINT PK_ACCOUNT PRIMARY KEY (ID)
+);
+
+/*==============================================================*/
+/* Index: ACCOUNT_PK                */
+/*==============================================================*/
+CREATE UNIQUE INDEX ACCOUNT_PK ON ACCOUNT (
+ID
+);
+
+/*==============================================================*/
+/* Index: ACC_HAS_R_FK              */
+/*==============================================================*/
+CREATE  INDEX ACC_HAS_R_FK ON ACCOUNT (
+ROL_ID
+);
+
+/*==============================================================*/
+/* Table: ARTICLE                 */
+/*==============================================================*/
+CREATE TABLE ARTICLE (
+ ID       UUID DEFAULT uuid_generate_v4(),
+ CUR_ID     UUID       NOT NULL,
+ CREATED      TIMESTAMP(0)     NOT NULL,
+ MODIFIED     TIMESTAMP(0)     NULL,
+ IS_DELETED     BOOLEAN       NOT NULL,
+ NAME       VARCHAR(50)    NOT NULL,
+ DESCRIPTION    VARCHAR(1024)    NOT NULL,
+ OLD_PRICE    DECIMAL(4,2)   NOT NULL,
+ NEW_PRICE    DECIMAL(4,2)   NOT NULL,
+ SALE       DECIMAL(3,2)   NOT NULL,
+ VALID_DATE     TIMESTAMP(0)       NOT NULL,
+ CONSTRAINT PK_ARTICLE PRIMARY KEY (ID)
+);
+
+/*==============================================================*/
+/* Index: ARTICLE_PK                */
+/*==============================================================*/
+CREATE UNIQUE INDEX ARTICLE_PK ON ARTICLE (
+ID
+);
+
+/*==============================================================*/
+/* Index: OF_FK                 */
+/*==============================================================*/
+CREATE  INDEX OF_FK ON ARTICLE (
+CUR_ID
+);
+
+/*==============================================================*/
+/* Index: ARTICLE_NAME_ASC              */
+/*==============================================================*/
+CREATE  INDEX ARTICLE_NAME_ASC ON ARTICLE (
+NAME
+);
+
+/*==============================================================*/
+/* Table: ARTICLE_IN_CATEGORY             */
+/*==============================================================*/
+CREATE TABLE ARTICLE_IN_CATEGORY (
+ ART_ID     UUID       NOT NULL,
+ ID       UUID       NOT NULL,
+ CONSTRAINT PK_ARTICLE_IN_CATEGORY PRIMARY KEY (ART_ID, ID)
+);
+
+/*==============================================================*/
+/* Index: ARTICLE_IN_CATEGORY_PK            */
+/*==============================================================*/
+CREATE UNIQUE INDEX ARTICLE_IN_CATEGORY_PK ON ARTICLE_IN_CATEGORY (
+ART_ID,
+ID
+);
+
+/*==============================================================*/
+/* Index: ARTICLE_IN_CATEGORY_FK            */
+/*==============================================================*/
+CREATE  INDEX ARTICLE_IN_CATEGORY_FK ON ARTICLE_IN_CATEGORY (
+ID
+);
+
+/*==============================================================*/
+/* Index: ARTICLE_IN_CATEGORY_FK2           */
+/*==============================================================*/
+CREATE  INDEX ARTICLE_IN_CATEGORY_FK2 ON ARTICLE_IN_CATEGORY (
+ART_ID
+);
+
+/*==============================================================*/
+/* Table: ARTICLE_IN_SHOP             */
+/*==============================================================*/
+CREATE TABLE ARTICLE_IN_SHOP (
+ ART_ID     UUID       NOT NULL,
+ ID       UUID       NOT NULL,
+ CONSTRAINT PK_ARTICLE_IN_SHOP PRIMARY KEY (ART_ID, ID)
+);
+
+/*==============================================================*/
+/* Index: ARTICLE_IN_SHOP_PK            */
+/*==============================================================*/
+CREATE UNIQUE INDEX ARTICLE_IN_SHOP_PK ON ARTICLE_IN_SHOP (
+ART_ID,
+ID
+);
+
+/*==============================================================*/
+/* Index: ARTICLE_IN_SHOP_FK            */
+/*==============================================================*/
+CREATE  INDEX ARTICLE_IN_SHOP_FK ON ARTICLE_IN_SHOP (
+ID
+);
+
+/*==============================================================*/
+/* Index: ARTICLE_IN_SHOP_FK2             */
+/*==============================================================*/
+CREATE  INDEX ARTICLE_IN_SHOP_FK2 ON ARTICLE_IN_SHOP (
+ART_ID
+);
+
+/*==============================================================*/
+/* Table: CATEGORY                */
+/*==============================================================*/
+CREATE TABLE CATEGORY (
+ ID       UUID DEFAULT uuid_generate_v4(),
+ CREATED      TIMESTAMP(0)     NOT NULL,
+ MODIFIED     TIMESTAMP(0)     NULL,
+ IS_DELETED     BOOLEAN       NOT NULL,
+ NAME       VARCHAR(40)    NOT NULL,
+ DISPLAY_SEQ    INT2       NOT NULL,
+ CONSTRAINT PK_CATEGORY PRIMARY KEY (ID)
+);
+
+/*==============================================================*/
+/* Index: CATEGORY_PK               */
+/*==============================================================*/
+CREATE UNIQUE INDEX CATEGORY_PK ON CATEGORY (
+ID
+);
+
+/*==============================================================*/
+/* Table: CITY                  */
+/*==============================================================*/
+CREATE TABLE CITY (
+ ID       UUID DEFAULT uuid_generate_v4(),
+ COU_ID     UUID     NOT NULL,
+ CREATED      TIMESTAMP(0)     NOT NULL,
+ MODIFIED     TIMESTAMP(0)     NULL,
+ IS_DELETED     BOOLEAN       NOT NULL,
+ NAME       VARCHAR(50)    NOT NULL,
+ CONSTRAINT PK_CITY PRIMARY KEY (ID)
+);
+
+/*==============================================================*/
+/* Index: CITY_PK                 */
+/*==============================================================*/
+CREATE UNIQUE INDEX CITY_PK ON CITY (
+ID
+);
+
+/*==============================================================*/
+/* Index: CITY_FK                 */
+/*==============================================================*/
+CREATE  INDEX CITY_FK ON CITY (
+COU_ID
+);
+
+/*==============================================================*/
+/* Table: COMMERCE                */
+/*==============================================================*/
+CREATE TABLE COMMERCE (
+ ID       UUID DEFAULT uuid_generate_v4(),
+ CIT_ID     UUID       NOT NULL,
+ ACC_ID     UUID       NOT NULL,
+ CREATED      TIMESTAMP(0)     NOT NULL,
+ MODIFIED     TIMESTAMP(0)     NULL,
+ IS_DELETED     BOOLEAN       NOT NULL,
+ NAME       VARCHAR(50)    NOT NULL,
+ LOGO       VARCHAR(100)   NOT NULL,
+ CONSTRAINT PK_COMMERCE PRIMARY KEY (ID)
+);
+
+/*==============================================================*/
+/* Index: COMMERCE_PK               */
+/*==============================================================*/
+CREATE UNIQUE INDEX COMMERCE_PK ON COMMERCE (
+ID
+);
+
+/*==============================================================*/
+/* Index: RESIDENCE_FK              */
+/*==============================================================*/
+CREATE  INDEX RESIDENCE_FK ON COMMERCE (
+CIT_ID
+);
+
+/*==============================================================*/
+/* Index: CO_HAS_ACC_FK               */
+/*==============================================================*/
+CREATE  INDEX CO_HAS_ACC_FK ON COMMERCE (
+ACC_ID
+);
+
+/*==============================================================*/
+/* Table: COUNTRY                 */
+/*==============================================================*/
+CREATE TABLE COUNTRY (
+ ID       UUID DEFAULT uuid_generate_v4(),
+ CREATED      TIMESTAMP(0)     NOT NULL,
+ MODIFIED     TIMESTAMP(0)     NULL,
+ IS_DELETED     BOOLEAN       NOT NULL,
+ NAME       VARCHAR(50)    NOT NULL,
+ CONSTRAINT PK_COUNTRY PRIMARY KEY (ID)
+);
+
+/*==============================================================*/
+/* Index: COUNTRY_PK                */
+/*==============================================================*/
+CREATE UNIQUE INDEX COUNTRY_PK ON COUNTRY (
+ID
+);
+
+/*==============================================================*/
+/* Table: CURRENCY                */
+/*==============================================================*/
+CREATE TABLE CURRENCY (
+ ID       UUID DEFAULT uuid_generate_v4(),
+ CREATED      TIMESTAMP(0)     NOT NULL,
+ MODIFIED     TIMESTAMP(0)     NULL,
+ IS_DELETED     BOOLEAN       NOT NULL,
+ NAME       VARCHAR(120)   NOT NULL,
+ CODE       VARCHAR(5)     NOT NULL,
+ LABEL      VARCHAR(5)     NOT NULL,
+ CONSTRAINT PK_CURRENCY PRIMARY KEY (ID)
+);
+
+/*==============================================================*/
+/* Index: CURRENCY_PK               */
+/*==============================================================*/
+CREATE UNIQUE INDEX CURRENCY_PK ON CURRENCY (
+ID
+);
+
+/*==============================================================*/
+/* Table: FAVORITE_ARTICLE              */
+/*==============================================================*/
+CREATE TABLE FAVORITE_ARTICLE (
+ ID       UUID DEFAULT uuid_generate_v4(),
+ ART_ID     UUID       NULL,
+ USE_ID     UUID       NULL,
+ CREATED      TIMESTAMP(0)     NOT NULL,
+ MODIFIED     TIMESTAMP(0)     NULL,
+ IS_DELETED     BOOLEAN       NOT NULL,
+ CONSTRAINT PK_FAVORITE_ARTICLE PRIMARY KEY (ID)
+);
+
+/*==============================================================*/
+/* Index: FAVORITE_ARTICLE_PK             */
+/*==============================================================*/
+CREATE UNIQUE INDEX FAVORITE_ARTICLE_PK ON FAVORITE_ARTICLE (
+ID
+);
+
+/*==============================================================*/
+/* Index: FAVORITE_ARTICLE_FK             */
+/*==============================================================*/
+CREATE  INDEX FAVORITE_ARTICLE_FK ON FAVORITE_ARTICLE (
+ART_ID
+);
+
+/*==============================================================*/
+/* Index: FAVORITE_ARTICLE_FK2            */
+/*==============================================================*/
+CREATE  INDEX FAVORITE_ARTICLE_FK2 ON FAVORITE_ARTICLE (
+USE_ID
+);
+
+/*==============================================================*/
+/* Table: FAVORITE_COMMERCE             */
+/*==============================================================*/
+CREATE TABLE FAVORITE_COMMERCE (
+ ID       UUID DEFAULT uuid_generate_v4(),
+ COM_ID     UUID       NULL,
+ USE_ID     UUID       NULL,
+ CREATED      TIMESTAMP(0)     NOT NULL,
+ MODIFIED     TIMESTAMP(0)     NULL,
+ IS_DELETED     BOOLEAN       NOT NULL,
+ CONSTRAINT PK_FAVORITE_COMMERCE PRIMARY KEY (ID)
+);
+
+/*==============================================================*/
+/* Index: FAVORITE_COMMERCE_PK            */
+/*==============================================================*/
+CREATE UNIQUE INDEX FAVORITE_COMMERCE_PK ON FAVORITE_COMMERCE (
+ID
+);
+
+/*==============================================================*/
+/* Index: FAVORITE_COMMERCE_FK            */
+/*==============================================================*/
+CREATE  INDEX FAVORITE_COMMERCE_FK ON FAVORITE_COMMERCE (
+COM_ID
+);
+
+/*==============================================================*/
+/* Index: FAVORITE_COMMERCE_FK2           */
+/*==============================================================*/
+CREATE  INDEX FAVORITE_COMMERCE_FK2 ON FAVORITE_COMMERCE (
+USE_ID
+);
+
+/*==============================================================*/
+/* Table: GEOPINT                 */
+/*==============================================================*/
+CREATE TABLE GEOPINT (
+ ID       UUID DEFAULT uuid_generate_v4(),
+ CREATED      TIMESTAMP(0)     NOT NULL,
+ MODIFIED     TIMESTAMP(0)     NULL,
+ IS_DELETED     BOOLEAN       NOT NULL,
+ LONGITUDE    VARCHAR(120)   NOT NULL,
+ LATITUDE     VARCHAR(120)   NOT NULL,
+ CONSTRAINT PK_GEOPINT PRIMARY KEY (ID)
+);
+
+/*==============================================================*/
+/* Index: GEOPINT_PK                */
+/*==============================================================*/
+CREATE UNIQUE INDEX GEOPINT_PK ON GEOPINT (
+ID
+);
+
+/*==============================================================*/
+/* Table: IMPRESSION                */
+/*==============================================================*/
+CREATE TABLE IMPRESSION (
+ ID       UUID DEFAULT uuid_generate_v4(),
+ USE_ID     UUID       NOT NULL,
+ CREATED      TIMESTAMP(0)     NOT NULL,
+ MODIFIED     TIMESTAMP(0)     NULL,
+ IS_DELETED     BOOLEAN       NOT NULL,
+ CONTENT      VARCHAR(1024)    NOT NULL,
+ CONSTRAINT PK_IMPRESSION PRIMARY KEY (ID)
+);
+
+/*==============================================================*/
+/* Index: IMPRESSION_PK               */
+/*==============================================================*/
+CREATE UNIQUE INDEX IMPRESSION_PK ON IMPRESSION (
+ID
+);
+
+/*==============================================================*/
+/* Index: LEAVES_FK               */
+/*==============================================================*/
+CREATE  INDEX LEAVES_FK ON IMPRESSION (
+USE_ID
+);
+
+/*==============================================================*/
+/* Table: PICTURE                 */
+/*==============================================================*/
+CREATE TABLE PICTURE (
+ ID       UUID DEFAULT uuid_generate_v4(),
+ ART_ID     UUID       NOT NULL,
+ CREATED      TIMESTAMP(0)     NOT NULL,
+ MODIFIED     TIMESTAMP(0)     NULL,
+ IS_DELETED     BOOLEAN       NOT NULL,
+ PIC      CHAR(512)    NOT NULL,
+ CONSTRAINT PK_PICTURE PRIMARY KEY (ID)
+);
+
+/*==============================================================*/
+/* Index: PICTURE_PK                */
+/*==============================================================*/
+CREATE UNIQUE INDEX PICTURE_PK ON PICTURE (
+ID
+);
+
+/*==============================================================*/
+/* Index: AR_HAS_PIC_FK               */
+/*==============================================================*/
+CREATE  INDEX AR_HAS_PIC_FK ON PICTURE (
+ART_ID
+);
+
+/*==============================================================*/
+/* Table: ROLE                  */
+/*==============================================================*/
+CREATE TABLE ROLE (
+ ID       UUID DEFAULT uuid_generate_v4(),
+ CREATED      TIMESTAMP(0)     NOT NULL,
+ MODIFIED     TIMESTAMP(0)     NULL,
+ IS_DELETED     BOOLEAN       NOT NULL,
+ CODE       VARCHAR(20)    NOT NULL,
+ CONSTRAINT PK_ROLE PRIMARY KEY (ID)
+);
+
+/*==============================================================*/
+/* Index: ROLE_PK                 */
+/*==============================================================*/
+CREATE UNIQUE INDEX ROLE_PK ON ROLE (
+ID
+);
+
+/*==============================================================*/
+/* Table: SHOP                  */
+/*==============================================================*/
+CREATE TABLE SHOP (
+ ID       UUID DEFAULT uuid_generate_v4(),
+ COM_ID     UUID       NOT NULL,
+ CIT_ID     UUID       NOT NULL,
+ GEO_ID     UUID       NOT NULL,
+ KREIRANO     TIMESTAMP(0)     NOT NULL,
+ MODIFIED     TIMESTAMP(0)     NULL,
+ IS_DELETED     BOOLEAN       NOT NULL,
+ NAME       VARCHAR(50)    NOT NULL,
+ CONSTRAINT PK_SHOP PRIMARY KEY (ID)
+);
+
+/*==============================================================*/
+/* Index: SHOP_PK                 */
+/*==============================================================*/
+CREATE UNIQUE INDEX SHOP_PK ON SHOP (
+ID
+);
+
+/*==============================================================*/
+/* Index: CO_HAS_SH_FK              */
+/*==============================================================*/
+CREATE  INDEX CO_HAS_SH_FK ON SHOP (
+COM_ID
+);
+
+/*==============================================================*/
+/* Index: LOKACIJA_FK               */
+/*==============================================================*/
+CREATE  INDEX LOKACIJA_FK ON SHOP (
+CIT_ID
+);
+
+/*==============================================================*/
+/* Index: ADDRESS_FK                */
+/*==============================================================*/
+CREATE  INDEX ADDRESS_FK ON SHOP (
+GEO_ID
+);
+
+/*==============================================================*/
+/* Table: "user"                */
+/*==============================================================*/
+CREATE TABLE "user" (
+ ID       UUID DEFAULT uuid_generate_v4(),
+ ACC_ID     UUID       NOT NULL,
+ CREATED      TIMESTAMP(0)     NOT NULL,
+ MODIFIED     TIMESTAMP(0)     NULL,
+ IS_DELETED     BOOLEAN       NOT NULL,
+ NAME       VARCHAR(25)    NOT NULL,
+ SURNAME      VARCHAR(25)    NOT NULL,
+ SEX      CHAR(1)      NOT NULL,
+ BIRTHDATE    TIMESTAMP(0)       NOT NULL,
+ CONSTRAINT PK_USER PRIMARY KEY (ID)
+);
+
+/*==============================================================*/
+/* Index: USER_PK                 */
+/*==============================================================*/
+CREATE UNIQUE INDEX USER_PK ON "user" (
+ID
+);
+
+/*==============================================================*/
+/* Index: U_HAS_ACC_FK              */
+/*==============================================================*/
+CREATE  INDEX U_HAS_ACC_FK ON "user" (
+ACC_ID
+);
+
+ALTER TABLE ACCOUNT
+ ADD CONSTRAINT FK_ACCOUNT_ACC_HAS_R_ROLE FOREIGN KEY (ROL_ID)
+  REFERENCES ROLE (ID)
+  ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE ARTICLE
+ ADD CONSTRAINT FK_ARTICLE_OF_CURRENCY FOREIGN KEY (CUR_ID)
+  REFERENCES CURRENCY (ID)
+  ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE ARTICLE_IN_CATEGORY
+ ADD CONSTRAINT FK_ARTICLE__ARTICLE_I_ARTICLE FOREIGN KEY (ART_ID)
+  REFERENCES ARTICLE (ID)
+  ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE ARTICLE_IN_CATEGORY
+ ADD CONSTRAINT FK_ARTICLE__ARTICLE_I_CATEGORY FOREIGN KEY (ID)
+  REFERENCES CATEGORY (ID)
+  ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE ARTICLE_IN_SHOP
+ ADD CONSTRAINT FK_ARTICLE__ARTICLE_I_ARTICLE FOREIGN KEY (ART_ID)
+  REFERENCES ARTICLE (ID)
+  ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE ARTICLE_IN_SHOP
+ ADD CONSTRAINT FK_ARTICLE__ARTICLE_I_SHOP FOREIGN KEY (ID)
+  REFERENCES SHOP (ID)
+  ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE CITY
+ ADD CONSTRAINT FK_CITY_CITY_COUNTRY FOREIGN KEY (COU_ID)
+  REFERENCES COUNTRY (ID)
+  ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE COMMERCE
+ ADD CONSTRAINT FK_COMMERCE_CO_HAS_AC_ACCOUNT FOREIGN KEY (ACC_ID)
+  REFERENCES ACCOUNT (ID)
+  ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE COMMERCE
+ ADD CONSTRAINT FK_COMMERCE_RESIDENCE_CITY FOREIGN KEY (CIT_ID)
+  REFERENCES CITY (ID)
+  ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE FAVORITE_ARTICLE
+ ADD CONSTRAINT FK_FAVORITE_FAVORITE__ARTICLE FOREIGN KEY (ART_ID)
+  REFERENCES ARTICLE (ID)
+  ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE FAVORITE_ARTICLE
+ ADD CONSTRAINT FK_FAVORITE_FAVORITE__USER FOREIGN KEY (USE_ID)
+  REFERENCES "user" (ID)
+  ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE FAVORITE_COMMERCE
+ ADD CONSTRAINT FK_FAVORITE_FAVORITE__COMMERCE FOREIGN KEY (COM_ID)
+  REFERENCES COMMERCE (ID)
+  ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE FAVORITE_COMMERCE
+ ADD CONSTRAINT FK_FAVORITE_FAVORITE__USER FOREIGN KEY (USE_ID)
+  REFERENCES "user" (ID)
+  ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE IMPRESSION
+ ADD CONSTRAINT FK_IMPRESSI_LEAVES_USER FOREIGN KEY (USE_ID)
+  REFERENCES "user" (ID)
+  ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE PICTURE
+ ADD CONSTRAINT FK_PICTURE_AR_HAS_PI_ARTICLE FOREIGN KEY (ART_ID)
+  REFERENCES ARTICLE (ID)
+  ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE SHOP
+ ADD CONSTRAINT FK_SHOP_ADDRESS_GEOPINT FOREIGN KEY (GEO_ID)
+  REFERENCES GEOPINT (ID)
+  ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE SHOP
+ ADD CONSTRAINT FK_SHOP_CO_HAS_SH_COMMERCE FOREIGN KEY (COM_ID)
+  REFERENCES COMMERCE (ID)
+  ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE SHOP
+ ADD CONSTRAINT FK_SHOP_LOKACIJA_CITY FOREIGN KEY (CIT_ID)
+  REFERENCES CITY (ID)
+  ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE "user"
+ ADD CONSTRAINT FK_USER_U_HAS_ACC_ACCOUNT FOREIGN KEY (ACC_ID)
+  REFERENCES ACCOUNT (ID)
+  ON DELETE RESTRICT ON UPDATE RESTRICT;
+

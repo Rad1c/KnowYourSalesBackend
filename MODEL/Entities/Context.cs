@@ -1,18 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MODEL.Interceptors;
 
 namespace MODEL.Entities
 {
     public partial class Context : DbContext
     {
-        public Context()
+        #region constructors
+        public Context() { }
+        public Context(DbContextOptions<Context> options) : base(options)
         {
+            ChangeTracker.LazyLoadingEnabled = false;
         }
+        #endregion
 
-        public Context(DbContextOptions<Context> options)
-            : base(options)
-        {
-        }
-
+        #region DbSets
         public virtual DbSet<Account> Accounts { get; set; } = null!;
         public virtual DbSet<Article> Articles { get; set; } = null!;
         public virtual DbSet<Category> Categories { get; set; } = null!;
@@ -28,16 +29,9 @@ namespace MODEL.Entities
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<Shop> Shops { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
+        #endregion
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseNpgsql("Host=localhost;Database=knowyoursales;Port=5432;Username=postgres;Password=Zeljicbrtok52;");
-            }
-        }
-
+        #region methods
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasPostgresExtension("uuid-ossp");
@@ -55,18 +49,22 @@ namespace MODEL.Entities
                     .HasColumnName("id")
                     .HasDefaultValueSql("uuid_generate_v4()");
 
+                entity.Property(e => e.Created).HasColumnName("created");
+
+                entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
+
+                entity.Property(e => e.Modified).HasColumnName("modified");
+
                 entity.Property(e => e.Email)
                     .HasMaxLength(50)
                     .HasColumnName("email");
 
                 entity.Property(e => e.Password)
-                    .HasMaxLength(50)
                     .HasColumnName("password");
 
                 entity.Property(e => e.RolId).HasColumnName("rol_id");
 
                 entity.Property(e => e.Salt)
-                    .HasMaxLength(512)
                     .HasColumnName("salt");
 
                 entity.HasOne(d => d.Rol)
@@ -93,15 +91,16 @@ namespace MODEL.Entities
 
                 entity.Property(e => e.Created).HasColumnName("created");
 
+                entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
+
+                entity.Property(e => e.Modified).HasColumnName("modified");
+
                 entity.Property(e => e.CurId).HasColumnName("cur_id");
 
                 entity.Property(e => e.Description)
                     .HasMaxLength(1024)
                     .HasColumnName("description");
 
-                entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
-
-                entity.Property(e => e.Modified).HasColumnName("modified");
 
                 entity.Property(e => e.Name)
                     .HasMaxLength(50)
@@ -575,7 +574,7 @@ namespace MODEL.Entities
 
             modelBuilder.Entity<User>(entity =>
             {
-                entity.ToTable("USER");
+                entity.ToTable("user");
 
                 entity.HasIndex(e => e.AccId, "u_has_acc_fk");
 
@@ -619,5 +618,11 @@ namespace MODEL.Entities
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.AddInterceptors(new DbSaveChangesInterceptor());
+        }
+        #endregion
     }
 }
