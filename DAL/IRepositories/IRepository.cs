@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace DAL.IRepositories
 {
-    public interface IRepository
+    public interface IRepository<S> where S : BaseEntity
     {
         /// <summary> Method of geting entity objects. </summary>
         /// <typeparam name="T"> Class that implements BaseEntity. </typeparam>
