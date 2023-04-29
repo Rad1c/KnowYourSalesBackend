@@ -15,6 +15,9 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
+bin
+obj
+packages
 
 # User-specific files
 *.suo
