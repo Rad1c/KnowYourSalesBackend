@@ -67,7 +67,7 @@ namespace MODEL.Entities
                 entity.Property(e => e.Salt)
                     .HasColumnName("salt");
 
-                entity.HasOne(d => d.Rol)
+                entity.HasOne(d => d.Role)
                     .WithMany(p => p.Accounts)
                     .HasForeignKey(d => d.RolId)
                     .OnDelete(DeleteBehavior.Restrict)

@@ -36,7 +36,7 @@ namespace BLL.Services
 
             Account acc = new()
             {
-                Rol = role!,
+                Role = role!,
                 Password = passwordHash,
                 Salt = salt,
                 Email = email

@@ -63,7 +63,7 @@ namespace API.Controllers
                 return Problem(Errors.Auth.InvalidCredentials);
             }
 
-            RoleEnum userRole = Enumeration.GetByCode<RoleEnum>(userResult.Value.Acc.Rol.Code)!;
+            RoleEnum userRole = Enumeration.GetByCode<RoleEnum>(userResult.Value.Acc.Role.Code)!;
             string accessToken = _authService.CreateToken(userResult.Value.Id!, TokenTypeEnum.AccessToken, userRole);
             string refreshToken = _authService.CreateToken(userResult.Value.Id!, TokenTypeEnum.RefreshToken, userRole);
 
@@ -74,6 +74,28 @@ namespace API.Controllers
             };
 
             return Ok(token);
+        }
+
+        [HttpPost("refresh-token")]
+        public IActionResult RefreshToken(string refreshToken)
+        {
+            if (String.IsNullOrEmpty(refreshToken))
+            {
+                return Problem(Errors.Auth.BadToken);
+            }
+            var claims = _authService.ValidateToken(refreshToken);
+
+            if (claims.Count == 0)
+                return Problem(Errors.Auth.BadToken);
+
+            if (!claims["type"].Equals(TokenTypeEnum.RefreshToken.Code))
+                return Problem(Errors.Auth.BadToken);
+
+            string newAccessToken = _authService.CreateToken(Guid.Parse(claims["nameid"]),
+                TokenTypeEnum.AccessToken,
+                Enumeration.GetByCode<RoleEnum>(claims["role"])!);
+
+            return Ok(newAccessToken);
         }
     }
 }

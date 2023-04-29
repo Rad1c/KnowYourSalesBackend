@@ -18,7 +18,7 @@ namespace DAL.Repositories
             return await _context.Users
                 .Where(u => u.IsDeleted == false)
                 .Include(u => u.Acc)
-                    .ThenInclude(a => a.Rol)
+                    .ThenInclude(a => a.Role)
                 .FirstOrDefaultAsync(u => u.Acc.Email == email && !u.Acc.IsDeleted);
         }
 
