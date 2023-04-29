@@ -16,6 +16,16 @@ namespace BLL.Services
             _userRepository = userRepository;
         }
 
+        public async Task<ErrorOr<User?>> GetUserByEmail(string email)
+        {
+            User? user = await _userRepository.GetUserByEmail(email);
+
+            if (user is null)
+                return Errors.Errors.Auth.InvalidCredentials;
+
+            return user;
+        }
+
         public async Task<ErrorOr<User?>> RegisterUser(string firstName, string lastName, string dateOfBirth, byte[] passwordHash, byte[] salt, string sex, string email)
         {
             User? user = await _userRepository.GetUserByEmail(email);

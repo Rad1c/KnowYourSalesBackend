@@ -21,5 +21,20 @@ namespace API.Controllers
 
             return Problem(statusCode: statusCode, title: firstError.Description);
         }
+
+        protected IActionResult Problem(Error error)
+        {
+            HttpContext.Items["errors"] = new List<Error>() { error };
+
+            var statusCode = error.Type switch
+            {
+                ErrorType.NotFound => StatusCodes.Status404NotFound,
+                ErrorType.Validation => StatusCodes.Status400BadRequest,
+                ErrorType.Conflict => StatusCodes.Status409Conflict,
+                _ => StatusCodes.Status500InternalServerError,
+            };
+
+            return Problem(statusCode: statusCode, title: error.Description);
+        }
     }
 }

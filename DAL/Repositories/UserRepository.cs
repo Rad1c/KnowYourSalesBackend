@@ -17,13 +17,15 @@ namespace DAL.Repositories
         {
             return await _context.Users
                 .Where(u => u.IsDeleted == false)
-                .FirstOrDefaultAsync(u => u.Acc.Email == email);
+                .Include(u => u.Acc)
+                    .ThenInclude(a => a.Rol)
+                .FirstOrDefaultAsync(u => u.Acc.Email == email && !u.Acc.IsDeleted);
         }
 
         public async Task<User?> GetUserById(Guid id)
         {
             return await _context.Users
-                .Where(u => u.Id == id)
+                .Where(u => u.Id == id && !u.IsDeleted)
                 .Include(u => u.Acc)
                 .FirstOrDefaultAsync();
         }
