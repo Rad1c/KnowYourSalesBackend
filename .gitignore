@@ -26,3 +26,14 @@ bld/
 *.lock
 *.v2
 /CorePlatformServices/.vs/CorePlatformServices
+/BLL/obj/Debug/net6.0/BLL.assets.cache
+/BLL/obj/Debug/net6.0/BLL.GeneratedMSBuildEditorConfig.editorconfig
+/DAL/obj/Debug/net6.0/DAL.assets.cache
+/DAL/obj/Debug/net6.0/DAL.csproj.AssemblyReference.cache
+/KnowYourSalesBackend/obj/Debug/net6.0/API.csproj.AssemblyReference.cache
+/KnowYourSalesBackend/obj/Debug/net6.0/API.GeneratedMSBuildEditorConfig.editorconfig
+/KnowYourSalesBackend/obj/Debug/net6.0/API.assets.cache
+/BLL/obj/Debug/net6.0/BLL.csproj.AssemblyReference.cache
+/MODEL/obj/Debug/net6.0/MODEL.assets.cache
+/MODEL/obj/Debug/net6.0/MODEL.GeneratedMSBuildEditorConfig.editorconfig
+/DAL/obj/Debug/net6.0/DAL.GeneratedMSBuildEditorConfig.editorconfig
