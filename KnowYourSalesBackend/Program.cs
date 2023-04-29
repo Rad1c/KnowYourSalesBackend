@@ -1,6 +1,14 @@
+using BLL.Errors;
+using BLL.IServices;
+using BLL.Services;
+using DAL.IRepositories;
+using DAL.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MODEL.Entities;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 
@@ -20,6 +28,14 @@ builder.Services.AddSwaggerGen(options =>
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddSingleton<ProblemDetailsFactory, CustomDetailsFactory>();
+builder.Services.AddDbContext<Context>(options =>
+                options.UseNpgsql(
+                    builder.Configuration.GetConnectionString("DefaultConnection")!
+            ), ServiceLifetime.Scoped);
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

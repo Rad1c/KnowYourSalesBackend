@@ -7,13 +7,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\DAL\DAL.csproj" />
-		<ProjectReference Include="..\MODEL\MODEL.csproj" />
+	  <PackageReference Include="ErrorOr" Version="1.2.1" />
+	  <PackageReference Include="Hellang.Middleware.ProblemDetails" Version="6.5.1" />
+	  <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+	  <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.10.0" />
+	  <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.10.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="IServices\" />
-	  <Folder Include="Services\" />
+		<ProjectReference Include="..\DAL\DAL.csproj" />
+		<ProjectReference Include="..\MODEL\MODEL.csproj" />
 	</ItemGroup>
 
 </Project>

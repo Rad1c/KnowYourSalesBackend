@@ -4,7 +4,6 @@
     {
         public Guid? ComId { get; set; }
         public Guid? UseId { get; set; }
-
         public virtual Commerce? Com { get; set; }
         public virtual User? Use { get; set; }
     }
