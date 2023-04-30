@@ -8,4 +8,5 @@ public interface IUserRepository : IRepository<User>
     public Task<User?> GetUserById(Guid id);
     public Task<User?> GetUserByEmail(string email);
     public Task<UserQueryModel> GetUserQuery(Guid id);
+    public Task<User?> GetUserWithImpressions(Guid id);
 }

@@ -45,4 +45,12 @@ public class UserRepository : Repository, IUserRepository
 
         return user;
     }
+
+    public async Task<User?> GetUserWithImpressions(Guid id)
+    {
+        return await _context.Users
+            .Where(u => u.Id == id && !u.IsDeleted)
+            .Include(u => u.Impressions)
+            .FirstOrDefaultAsync();
+    }
 }
