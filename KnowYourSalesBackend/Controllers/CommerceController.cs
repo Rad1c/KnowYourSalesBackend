@@ -6,56 +6,55 @@ using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using MODEL.QueryModels.Commerce;
 
-namespace API.Controllers
+namespace API.Controllers;
+
+public class CommerceController : BaseController
 {
-    public class CommerceController : BaseController
+    private readonly ICommerceService _commerceService;
+
+    public CommerceController(ICommerceService commerceService)
     {
-        private readonly ICommerceService _commerceService;
+        _commerceService = commerceService;
+    }
 
-        public CommerceController(ICommerceService commerceService)
-        {
-            _commerceService = commerceService;
-        }
+    [HttpPut("commerce")]
+    public async Task<IActionResult> UpdateCommerce(UpdateCommerceModel req)
+    {
+        ValidationResult results = new UpdateCommerceModelValidator().Validate(req);
 
-        [HttpPut("commerce")]
-        public async Task<IActionResult> UpdateCommerce(UpdateCommerceModel req)
-        {
-            ValidationResult results = new UpdateCommerceModelValidator().Validate(req);
+        //TODO: Create response model
+        if (!results.IsValid) return BadRequest(results.Errors.Select(x => x.ErrorMessage));
 
-            //TODO: Create response model
-            if (!results.IsValid) return BadRequest(results.Errors.Select(x => x.ErrorMessage));
+        ErrorOr<bool> updateResult = await _commerceService.UpdateCommerce(
+            req.CommerceId,
+            req.Name,
+            req.Logo,
+            req.CityId
+            );
 
-            ErrorOr<bool> updateResult = await _commerceService.UpdateCommerce(
-                req.CommerceId,
-                req.Name,
-                req.Logo,
-                req.CityId
-                );
+        //TODO: make this more generic
+        return updateResult.Match(
+            authResult => Ok(new MessageDto("commerce updated.")),
+            errors => Problem(errors));
+    }
 
-            //TODO: make this more generic
-            return updateResult.Match(
-                authResult => Ok(new MessageDto("commerce updated.")),
-                errors => Problem(errors));
-        }
+    [HttpGet("commerce/{id}")]
+    public async Task<IActionResult> GetCommerce(Guid id)
+    {
+        CommerceQueryModel? commerce = await _commerceService.GetCommerceQuery(id);
 
-        [HttpGet("commerce/{id}")]
-        public async Task<IActionResult> GetCommerce(Guid id)
-        {
-            CommerceQueryModel? commerce = await _commerceService.GetCommerceQuery(id);
+        if (commerce is null) return Problem(BLL.Errors.Errors.Commerce.CommerceNotFound);
 
-            if (commerce is null) return Problem(BLL.Errors.Errors.Commerce.CommerceNotFound);
+        return Ok(commerce);
+    }
 
-            return Ok(commerce);
-        }
+    [HttpDelete("commerce/{id}")]
+    public async Task<IActionResult> DeleteCommerce(Guid id)
+    {
+        ErrorOr<bool> result = await _commerceService.DeleteCommerce(id);
 
-        [HttpDelete("commerce/{id}")]
-        public async Task<IActionResult> DeleteCommerce(Guid id)
-        {
-            ErrorOr<bool> result = await _commerceService.DeleteCommerce(id);
+        if (result.IsError) return Problem(result.Errors);
 
-            if (result.IsError) return Problem(result.Errors);
-
-            return Ok(new MessageDto("commerce deleted."));
-        }
+        return Ok(new MessageDto("commerce deleted."));
     }
 }

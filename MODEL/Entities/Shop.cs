@@ -13,7 +13,7 @@
         public string Name { get; set; } = null!;
         public virtual City Cit { get; set; } = null!;
         public virtual Commerce Com { get; set; } = null!;
-        public virtual Geopint Geo { get; set; } = null!;
+        public virtual GeoPoint Geo { get; set; } = null!;
 
         public virtual ICollection<Article> Arts { get; set; }
     }

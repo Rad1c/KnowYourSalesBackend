@@ -1,9 +1,8 @@
 ﻿using MODEL.QueryModels.Geo;
 
-namespace DAL.IRepositories
+namespace DAL.IRepositories;
+
+public interface IGeoRepository
 {
-    public interface IGeoRepository
-    {
-        public Task<CountriesQueryModel> GetCountries();
-    }
+    public Task<CountriesQueryModel> GetCountries();
 }

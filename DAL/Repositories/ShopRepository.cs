@@ -20,5 +20,20 @@ public class ShopRepository : Repository, IShopRepository
             .Include(c => c.Acc)
             .FirstOrDefaultAsync();
     }
+
+    public async Task<Commerce?> GetCommerceWithShops(Guid id)
+    {
+        return await _context.Commerces.Where(c => !c.IsDeleted && c.Id == id)
+            .Include(x => x.Shops).FirstOrDefaultAsync();
+    }
+
+    public async Task<Shop?> GetShop(Guid id)
+    {
+        return await _context.Shops
+            .Where(s => s.Id == id && !s.IsDeleted)
+            .Include(s => s.Geo)
+            .Include(s => s.Cit)
+            .FirstOrDefaultAsync();
+    }
 }
 

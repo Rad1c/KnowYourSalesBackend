@@ -23,7 +23,7 @@ namespace MODEL.Entities
         public virtual DbSet<Currency> Currencies { get; set; } = null!;
         public virtual DbSet<FavoriteArticle> FavoriteArticles { get; set; } = null!;
         public virtual DbSet<FavoriteCommerce> FavoriteCommerces { get; set; } = null!;
-        public virtual DbSet<Geopint> Geopints { get; set; } = null!;
+        public virtual DbSet<GeoPoint> Geopints { get; set; } = null!;
         public virtual DbSet<Impression> Impressions { get; set; } = null!;
         public virtual DbSet<Picture> Pictures { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
@@ -407,9 +407,9 @@ namespace MODEL.Entities
                     .HasConstraintName("fk_favorite_favorite__user");
             });
 
-            modelBuilder.Entity<Geopint>(entity =>
+            modelBuilder.Entity<GeoPoint>(entity =>
             {
-                entity.ToTable("geopint");
+                entity.ToTable("geopoint");
 
                 entity.HasIndex(e => e.Id, "geopint_pk")
                     .IsUnique();
@@ -423,12 +423,16 @@ namespace MODEL.Entities
                 entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
 
                 entity.Property(e => e.Latitude)
-                    .HasMaxLength(120)
                     .HasColumnName("latitude");
 
                 entity.Property(e => e.Longitude)
-                    .HasMaxLength(120)
                     .HasColumnName("longitude");
+
+                entity.Property(e => e.Name)
+                    .HasColumnName("name");
+
+                entity.Property(e => e.Address)
+                    .HasColumnName("address");
 
                 entity.Property(e => e.Modified).HasColumnName("modified");
             });
