@@ -423,11 +423,9 @@ namespace MODEL.Entities
                 entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
 
                 entity.Property(e => e.Latitude)
-                    .HasMaxLength(120)
                     .HasColumnName("latitude");
 
                 entity.Property(e => e.Longitude)
-                    .HasMaxLength(120)
                     .HasColumnName("longitude");
 
                 entity.Property(e => e.Name)

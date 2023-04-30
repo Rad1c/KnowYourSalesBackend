@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using API.Models.Common;
+using FluentValidation;
 
 namespace API.Models.CreateShop;
 
@@ -17,7 +18,7 @@ public class CreateShopModelValidator : AbstractValidator<CreateShopModel>
     }
 }
 
-public class GeoPointValidator : AbstractValidator<GeoPoint>
+public class GeoPointValidator : AbstractValidator<GeoPointModel>
 {
     public GeoPointValidator()
     {
