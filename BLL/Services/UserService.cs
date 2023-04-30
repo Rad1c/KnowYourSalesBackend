@@ -17,6 +17,24 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
+    public async Task<ErrorOr<bool>> AddUserImpression(Guid id, string impression)
+    {
+        User? user = await _userRepository.GetUserWithImpressions(id);
+
+        if (user is null) return Errors.Errors.User.UserNotFound;
+
+        Impression newImpression = new()
+        {
+            Content = impression,
+            Use = user
+        };
+
+        user.Impressions.Add(newImpression);
+
+        _userRepository.UpdateEntity<User>(user);
+        return true;
+    }
+
     public async Task<ErrorOr<bool>> DeleteUser(Guid userId)
     {
         User? user = await _userRepository.GetUserById(userId);

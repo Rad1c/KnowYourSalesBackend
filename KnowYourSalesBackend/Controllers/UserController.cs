@@ -1,5 +1,6 @@
 ﻿using API.Dtos;
 using API.Models.UpdateUser;
+using API.Models.UserImpression;
 using BLL.Enums;
 using BLL.Errors;
 using BLL.IServices;
@@ -60,6 +61,21 @@ public class UserController : BaseController
         if (user is null) return Problem(Errors.User.UserNotFound);
 
         return Ok(user);
+    }
+
+    [HttpPost("user/impressions")]
+    public async Task<IActionResult> AddUserImpression(UserImpressionModel req)
+    {
+        ValidationResult results = new UserImpressionModelValidator().Validate(req);
+
+        //TODO: Create response model
+        if (!results.IsValid) return BadRequest(results.Errors.Select(x => x.ErrorMessage));
+
+        ErrorOr<bool> result = await _userService.AddUserImpression(req.UserId, req.Impression);
+
+        return result.Match(
+            authResult => Ok(new MessageDto("impression added.")),
+            errors => Problem(errors));
     }
 }
 

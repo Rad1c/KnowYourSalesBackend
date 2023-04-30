@@ -13,4 +13,5 @@ public interface IUserService
     public Task<ErrorOr<bool>> DeleteUser(Guid userId);
     public Task<ErrorOr<bool>> UpdateUser(Guid userId, string? firstName, string? lastName, string? dateOfBirth, SexEnum? sex);
     public Task<UserQueryModel> GetUserQuery(Guid userId);
+    public Task<ErrorOr<bool>> AddUserImpression(Guid id, string impression);
 }
