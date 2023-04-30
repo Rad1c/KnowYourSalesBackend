@@ -1,9 +1,9 @@
-﻿namespace API.Models.Login
+﻿namespace API.Models.Login;
+
+public record LoginModel
 {
-    public record LoginModel
-    {
-        public string Email { get; init; } = null!;
-        public string Password { get; init; } = null!;
-        public bool IsUser { get; init; }
-    }
+    public string Email { get; init; } = null!;
+    public string Password { get; init; } = null!;
+    public bool IsUser { get; init; }
 }
+

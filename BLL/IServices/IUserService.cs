@@ -1,12 +1,16 @@
-﻿using ErrorOr;
+﻿using BLL.Enums;
+using ErrorOr;
 using MODEL.Entities;
+using MODEL.QueryModels.User;
 
-namespace BLL.IServices
+namespace BLL.IServices;
+
+public interface IUserService
 {
-    public interface IUserService
-    {
-        public Task<ErrorOr<User?>> RegisterUser(string firstName, string lastName, string dateOfBirth, byte[] passwordHash, byte[] salt, string sex, string email);
-
-        public Task<ErrorOr<User?>> GetUserByEmail(string email);
-    }
+    public Task<ErrorOr<User?>> RegisterUser(string firstName, string lastName, string dateOfBirth, byte[] passwordHash, byte[] salt, string sex, string email);
+    public Task<ErrorOr<User?>> GetUserByEmail(string email);
+    public Task<User?> GetUserById(Guid id);
+    public Task<ErrorOr<bool>> DeleteUser(Guid userId);
+    public Task<ErrorOr<bool>> UpdateUser(Guid userId, string? firstName, string? lastName, string? dateOfBirth, SexEnum? sex);
+    public Task<UserQueryModel> GetUserQuery(Guid userId);
 }

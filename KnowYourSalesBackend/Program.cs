@@ -1,3 +1,4 @@
+using API.Middlewares;
 using BLL.Errors;
 using BLL.IServices;
 using BLL.Services;
@@ -28,9 +29,14 @@ builder.Services.AddSwaggerGen(options =>
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<MODEL.QueryContext>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ISessionService, SessionService>();
+builder.Services.AddScoped<IShopService, ShopService>();
+
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IShopRepository, ShopRepository>();
 builder.Services.AddSingleton<ProblemDetailsFactory, CustomDetailsFactory>();
 builder.Services.AddDbContext<Context>(options =>
                 options.UseNpgsql(
@@ -50,17 +56,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-var app = builder.Build();
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
+var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
+app.UseMiddleware<JwtMiddleware>();
 
 app.MapControllers();
 
