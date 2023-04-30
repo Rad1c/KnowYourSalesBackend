@@ -16,11 +16,13 @@ public class AuthController : BaseController
 {
     private readonly IUserService _userService;
     private readonly IAuthService _authService;
+    private readonly ICommerceService _commerceService;
 
-    public AuthController(IUserService userService, IAuthService authService)
+    public AuthController(IUserService userService, IAuthService authService, ICommerceService commerceService)
     {
         _userService = userService;
         _authService = authService;
+        _commerceService = commerceService;
     }
 
     [HttpPost("user/register")]
@@ -48,14 +50,25 @@ public class AuthController : BaseController
     }
 
     [HttpPost("commerce/register")]
-    public IActionResult RegisterCommerce(RegisterCommerceModel req)
+    public async Task<IActionResult> RegisterCommerce(RegisterCommerceModel req)
     {
         ValidationResult results = new RegisterCommerceModelValidator().Validate(req);
 
         //TODO: Create response model
         if (!results.IsValid) return BadRequest(results.Errors.Select(x => x.ErrorMessage));
 
+        _authService.CreatePasswordHash(req.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
+        ErrorOr<Commerce?> authResult = await _commerceService.RegisterCommerce(
+            req.Name,
+            passwordHash,
+            passwordSalt,
+            req.CityId,
+            req.Email);
+
+        return authResult.Match(
+            authResult => Ok(new MessageDto("commerce registered.")),
+            errors => Problem(errors));
     }
 
     [HttpPost("login")]

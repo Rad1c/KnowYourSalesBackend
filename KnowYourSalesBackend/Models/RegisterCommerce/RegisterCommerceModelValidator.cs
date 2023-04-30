@@ -8,8 +8,6 @@ namespace API.Models.RegisterCommerce
         {
             RuleFor(x => x.Name).NotNull().NotEmpty().WithMessage("name is required.");
 
-            RuleFor(x => x.CountryId).NotNull().NotEmpty();
-
             RuleFor(x => x.CityId).NotNull().NotEmpty();
 
             RuleFor(x => x.Email)
