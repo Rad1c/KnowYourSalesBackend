@@ -1,7 +1,6 @@
 ﻿using DAL.IRepositories;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using MODEL;
 using MODEL.Entities;
 using MODEL.QueryModels.User;
@@ -11,13 +10,11 @@ namespace DAL.Repositories;
 public class UserRepository : Repository, IUserRepository
 {
     private readonly Context _context;
-    private readonly IConfiguration _configuration;
     private readonly QueryContext _queryContext;
 
-    public UserRepository(Context context, IConfiguration configuration, QueryContext queryContext) : base(context)
+    public UserRepository(Context context, QueryContext queryContext) : base(context)
     {
         _context = context;
-        _configuration = configuration;
         _queryContext = queryContext;
     }
 

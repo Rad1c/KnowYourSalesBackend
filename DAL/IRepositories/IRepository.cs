@@ -23,4 +23,6 @@ public interface IRepository<S> where S : BaseEntity
     /// <typeparam name="T"> Entity</typeparam>
     /// <param name="entity"> Entites based on BaseEntity.</param>
     public void UpdateEntity<T>(T entity) where T : BaseEntity;
+
+    public Task<Role?> GetRoleByCode(string code, bool? isDeleted = false);
 }
