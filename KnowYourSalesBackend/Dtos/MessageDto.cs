@@ -1,9 +1,8 @@
-﻿namespace API.Dtos
-{
-    public record MessageDto
-    {
-        public string Message { get; init; } = null!;
+﻿namespace API.Dtos;
 
-        public MessageDto(string message) => Message = message;
-    }
+public record MessageDto
+{
+    public string Message { get; init; } = null!;
+
+    public MessageDto(string message) => Message = message;
 }

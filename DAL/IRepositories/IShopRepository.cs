@@ -4,5 +4,6 @@ namespace DAL.IRepositories;
 public interface IShopRepository : IRepository<Commerce>
 {
     public Task<Commerce?> GetCommerceById(Guid id);
+    public Task<Commerce?> GetCommerceWithShops(Guid id);
 }
 
