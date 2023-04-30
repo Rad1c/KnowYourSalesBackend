@@ -73,7 +73,7 @@ namespace MODEL.Interceptors
         /// </summary>
         private T UpdateDeletedEntity<T>(T entity, DbContext context) where T : BaseEntity
         {
-            context.Entry(entity).Property("is_deleted").CurrentValue = true;
+            context.Entry(entity).Property(x => x.IsDeleted).CurrentValue = true;
             context.Entry(entity).Property("modified").CurrentValue = DateTime.UtcNow;
 
             return entity;

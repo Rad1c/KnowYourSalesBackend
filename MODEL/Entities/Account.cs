@@ -13,7 +13,7 @@
         public byte[] Password { get; set; } = null!;
         public byte[]? Salt { get; set; }
 
-        public virtual Role Rol { get; set; } = null!;
+        public virtual Role Role { get; set; } = null!;
         public virtual ICollection<Commerce> Commerces { get; set; }
         public virtual ICollection<User> Users { get; set; }
     }
