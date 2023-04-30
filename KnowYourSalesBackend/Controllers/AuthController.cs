@@ -1,5 +1,6 @@
 ﻿using API.Dtos;
 using API.Models.Login;
+using API.Models.RegisterCommerce;
 using API.Models.RegisterUser;
 using BLL.Enums;
 using BLL.Errors;
@@ -44,6 +45,17 @@ public class AuthController : BaseController
         return authResult.Match(
             authResult => Ok("user registerd."),
             errors => Problem(errors));
+    }
+
+    [HttpPost("commerce/register")]
+    public IActionResult RegisterCommerce(RegisterCommerceModel req)
+    {
+        ValidationResult results = new RegisterCommerceModelValidator().Validate(req);
+
+        //TODO: Create response model
+        if (!results.IsValid) return BadRequest(results.Errors.Select(x => x.ErrorMessage));
+
+
     }
 
     [HttpPost("login")]
