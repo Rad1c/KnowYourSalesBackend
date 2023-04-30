@@ -37,6 +37,7 @@ builder.Services.AddScoped<IShopService, ShopService>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IShopRepository, ShopRepository>();
+builder.Services.AddScoped<IGeoRepository, GeoRepository>();
 builder.Services.AddSingleton<ProblemDetailsFactory, CustomDetailsFactory>();
 builder.Services.AddDbContext<Context>(options =>
                 options.UseNpgsql(

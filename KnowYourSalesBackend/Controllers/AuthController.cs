@@ -42,7 +42,7 @@ public class AuthController : BaseController
             req.Email);
 
         return authResult.Match(
-            authResult => Ok("user registerd."),
+            authResult => Ok(new MessageDto("user registerd.")),
             errors => Problem(errors));
     }
 

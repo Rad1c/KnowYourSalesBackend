@@ -1,4 +1,5 @@
-﻿using API.Models.UpdateUser;
+﻿using API.Dtos;
+using API.Models.UpdateUser;
 using BLL.Enums;
 using BLL.Errors;
 using BLL.IServices;
@@ -37,7 +38,7 @@ public class UserController : BaseController
 
         //TODO: make this more generic
         return updateResult.Match(
-            authResult => Ok("user updated."),
+            authResult => Ok(new MessageDto("user updated.")),
             errors => Problem(errors));
     }
 
@@ -48,7 +49,7 @@ public class UserController : BaseController
 
         if (result.IsError) return Problem(result.Errors);
 
-        return Ok("user deleted.");
+        return Ok(new MessageDto("user deleted."));
     }
 
     [HttpGet("user/{userId}")]
