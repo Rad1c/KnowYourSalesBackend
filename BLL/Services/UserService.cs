@@ -17,6 +17,31 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
+    public async Task<ErrorOr<bool>> AddFavoriteCommerce(Guid userId, Guid commerceId)
+    {
+        User? user = await _userRepository.GetUserWithFavoriteCommerces(userId);
+
+        if (user is null) return Errors.Errors.User.UserNotFound;
+
+        if (user.FavoriteCommerces != null && user.FavoriteCommerces.Any(x => x.Com.Id == commerceId))
+            return Errors.Errors.User.FavCommerceAddedAlready;
+
+        Commerce? commerce = await _userRepository.GetById<Commerce>(commerceId);
+
+        if (commerce is null) return Errors.Errors.User.CommerceNotFound;
+
+        FavoriteCommerce favCommerce = new()
+        {
+            Com = commerce,
+            Use = user
+        };
+
+        user.FavoriteCommerces.Add(favCommerce);
+
+        _userRepository.UpdateEntity<User>(user);
+        return true;
+    }
+
     public async Task<ErrorOr<bool>> AddUserImpression(Guid id, string impression)
     {
         User? user = await _userRepository.GetUserWithImpressions(id);
@@ -91,6 +116,22 @@ public class UserService : IUserService
         _userRepository.Save(newUser);
 
         return newUser;
+    }
+
+    public async Task<ErrorOr<bool>> RemoveCommerceFromFavorites(Guid userId, Guid commerceId)
+    {
+        User? user = await _userRepository.GetUserWithFavoriteCommerces(userId);
+
+        if (user is null) return Errors.Errors.User.UserNotFound;
+
+        if (!user.FavoriteCommerces.Any(x => x.ComId == commerceId)) return Errors.Errors.User.CommerceNotFound;
+
+        FavoriteCommerce removeCommerce = user.FavoriteCommerces.Where(x => x.ComId == commerceId).FirstOrDefault()!;
+
+        removeCommerce.IsDeleted = true;
+
+        _userRepository.UpdateEntity<FavoriteCommerce>(removeCommerce);
+        return true;
     }
 
     public async Task<ErrorOr<bool>> UpdateUser(Guid userId, string? firstName, string? lastName, string? dateOfBirth, SexEnum? sex)

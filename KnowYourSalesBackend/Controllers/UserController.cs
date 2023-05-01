@@ -1,9 +1,12 @@
 ﻿using API.Dtos;
+using API.Models.AddFavoriteCommerce;
+using API.Models.RemoveFavoriteCommerce;
 using API.Models.UpdateUser;
 using API.Models.UserImpression;
 using BLL.Enums;
 using BLL.Errors;
 using BLL.IServices;
+using DAL.IRepositories;
 using ErrorOr;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +18,13 @@ public class UserController : BaseController
 {
     private readonly IUserService _userService;
     private readonly ISessionService _session;
+    private readonly IUserRepository _userRepository;
 
-    public UserController(IUserService userService, ISessionService session)
+    public UserController(IUserService userService, ISessionService session, IUserRepository userRepository)
     {
         _userService = userService;
         _session = session;
+        _userRepository = userRepository;
     }
 
     [HttpPut("user")]
@@ -76,6 +81,42 @@ public class UserController : BaseController
         return result.Match(
             authResult => Ok(new MessageDto("impression added.")),
             errors => Problem(errors));
+    }
+
+    [HttpPut("user/favoriteCommerce/add")]
+    public async Task<IActionResult> AddFavoriteCommerce(AddFavoriteCommerceModel req)
+    {
+        ValidationResult results = new AddFavoriteCommerceModelValidator().Validate(req);
+
+        //TODO: Create response model
+        if (!results.IsValid) return BadRequest(results.Errors.Select(x => x.ErrorMessage));
+
+        ErrorOr<bool> result = await _userService.AddFavoriteCommerce(req.UserId, req.CommerceId);
+
+        return result.Match(
+            authResult => Ok(new MessageDto("commerce added in favorites.")),
+            errors => Problem(errors));
+    }
+
+    [HttpPut("user/favoriteCommerce/remove")]
+    public async Task<IActionResult> RemoveFromFavoriteCommerces(RemoveFromFavoriteCommercesModel req)
+    {
+        ValidationResult results = new RemoveFromFavoriteCommercesModelValidator().Validate(req);
+
+        //TODO: Create response model
+        if (!results.IsValid) return BadRequest(results.Errors.Select(x => x.ErrorMessage));
+
+        ErrorOr<bool> result = await _userService.RemoveCommerceFromFavorites(req.Id, req.CommerceId);
+
+        return result.Match(
+            authResult => Ok(new MessageDto("commerce removed from favorites.")),
+            errors => Problem(errors));
+    }
+
+    [HttpGet("user/favoriteCommerce")]
+    public async Task<IActionResult> GetFavoritesCommerces(Guid userId) //from token
+    {
+        return Ok(await _userRepository.GetFavoriteCommercesQuery(userId));
     }
 }
 
