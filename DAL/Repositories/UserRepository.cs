@@ -46,6 +46,26 @@ public class UserRepository : Repository, IUserRepository
         return user;
     }
 
+    public async Task<List<FavoriteCommerceQueryModel>> GetFavoriteCommercesQuery(Guid userId)
+    {
+        string query = @"SELECT c.id, c.name, c.logo FROM favorite_commerce f 
+                JOIN commerce c ON c.id = f.com_id JOIN ""user"" u on u.id = f.use_id 
+                WHERE f.is_deleted = false AND c.is_deleted = false AND u.id = @userId";
+        using var connection = _queryContext.CreateConnection();
+
+        var favCommerces = await connection.QueryAsync<FavoriteCommerceQueryModel>(query, new { userId });
+
+        return (List<FavoriteCommerceQueryModel>)favCommerces;
+    }
+
+    public async Task<User?> GetUserWithFavoriteCommerces(Guid id)
+    {
+        return await _context.Users
+            .Where(u => u.Id == id && !u.IsDeleted)
+            .Include(u => u.FavoriteCommerces.Where(fc => !fc.IsDeleted))
+            .FirstOrDefaultAsync();
+    }
+
     public async Task<User?> GetUserWithImpressions(Guid id)
     {
         return await _context.Users
