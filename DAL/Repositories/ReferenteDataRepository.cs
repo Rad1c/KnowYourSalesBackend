@@ -2,6 +2,7 @@
 using Dapper;
 using MODEL;
 using MODEL.QueryModels.Geo;
+using MODEL.QueryModels.ReferenteData;
 
 namespace DAL.Repositories
 {
@@ -16,7 +17,7 @@ namespace DAL.Repositories
 
         public async Task<CountriesQueryModel> GetCountries()
         {
-            string query = "select * from mv_countries";
+            string query = "SELECT * from mv_countries";
 
             var countries = new Dictionary<string, List<string>>();
             using var connection = _queryContext.CreateConnection();
@@ -34,6 +35,16 @@ namespace DAL.Repositories
             }
 
             return new CountriesQueryModel { Countries = countries };
+        }
+
+        public async Task<List<CategoryQueryModel>> GetCategories()
+        {
+            string query = "SELECT * from mv_categories";
+            using var connection = _queryContext.CreateConnection();
+
+            var result = await connection.QueryAsync<CategoryQueryModel>(query);
+
+            return (List<CategoryQueryModel>)result;
         }
     }
 }
