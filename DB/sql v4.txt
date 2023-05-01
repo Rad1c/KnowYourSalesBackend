@@ -356,7 +356,6 @@ CREATE TABLE CURRENCY (
  IS_DELETED     BOOLEAN       NOT NULL,
  NAME       VARCHAR(120)   NOT NULL,
  CODE       VARCHAR(5)     NOT NULL,
- LABEL      VARCHAR(5)     NOT NULL,
  CONSTRAINT PK_CURRENCY PRIMARY KEY (ID)
 );
 
@@ -728,11 +727,25 @@ VALUES
   ((SELECT ID FROM COUNTRY WHERE NAME = 'bosna i hercegovina'), CURRENT_TIMESTAMP, FALSE, 'Tuzla'),
   ((SELECT ID FROM COUNTRY WHERE NAME = 'bosna i hercegovina'), CURRENT_TIMESTAMP, FALSE, 'Zenica');
 
+INSERT INTO category (is_deleted, created, name, display_seq)
+VALUES
+(false, CURRENT_TIMESTAMP, 'Audio i video', 1),
+(false, CURRENT_TIMESTAMP, 'Kućna oprema', 2),
+(false, CURRENT_TIMESTAMP, 'Auto-Moto', 3),
+(false, CURRENT_TIMESTAMP, 'Hrana i piće', 4),
+(false, CURRENT_TIMESTAMP, 'Ljepota i zdravlje', 5),
+(false, CURRENT_TIMESTAMP, 'Obuća i odjeća', 6),
+(false, CURRENT_TIMESTAMP, 'Sportska oprema', 7),
+(false, CURRENT_TIMESTAMP, 'Telefoni', 8),
+(false, CURRENT_TIMESTAMP, 'Računarska oprema', 9),
+(false, CURRENT_TIMESTAMP, 'Kancelarija i škola', 10),
+(false, CURRENT_TIMESTAMP, 'Stvari za djecu', 11);
+
   -- MATERIALIZED VIEWS
   --COUNTRY
 DROP MATERIALIZED VIEW mv_countries;
 CREATE MATERIALIZED VIEW mv_countries AS
-SELECT cou.name as "CountryName", c.name as "CityName" FROM city c RIGHT JOIN country cou ON cou.id = c.cou_id
+SELECT cou.id as "CountryId", cou.name as "CountryName", c.id as "CityId", c.name as "CityName" FROM city c RIGHT JOIN country cou ON cou.id = c.cou_id
 WITH DATA;
 
 CREATE UNIQUE INDEX idx_mv_countries_id ON mv_countries ("CityName");
@@ -752,3 +765,23 @@ CREATE OR REPLACE TRIGGER mv_countries_refresh_trigger
 AFTER INSERT OR UPDATE ON COUNTRY
 FOR EACH ROW
 EXECUTE FUNCTION refresh_mv_countries();
+
+-- categories
+CREATE MATERIALIZED VIEW IF NOT EXISTS mv_categories AS
+SELECT id, name, display_seq as "displaySeq" FROM category WHERE is_deleted = false
+WITH DATA;
+
+CREATE OR REPLACE FUNCTION refresh_mv_categories()
+RETURNS TRIGGER AS
+$$
+BEGIN
+  REFRESH MATERIALIZED VIEW mv_categories;
+  RETURN NULL;
+END;
+$$
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER mv_categories_refresh_trigger
+AFTER INSERT OR UPDATE ON category
+FOR EACH ROW
+EXECUTE FUNCTION refresh_mv_categories();

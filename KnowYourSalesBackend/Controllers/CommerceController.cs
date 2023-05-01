@@ -43,7 +43,7 @@ public class CommerceController : BaseController
     {
         CommerceQueryModel? commerce = await _commerceService.GetCommerceQuery(id);
 
-        if (commerce is null) return Problem(BLL.Errors.Errors.Commerce.CommerceNotFound);
+        if (commerce is null) return Problem(BLL.Errors.Errors.CommerceEr.CommerceNotFound);
 
         return Ok(commerce);
     }

@@ -16,4 +16,5 @@ public interface IUserService
     public Task<UserQueryModel> GetUserQuery(Guid userId);
     public Task<ErrorOr<bool>> AddUserImpression(Guid id, string impression);
     public Task<ErrorOr<bool>> AddFavoriteCommerce(Guid userId, Guid commerceId);
+    public Task<ErrorOr<bool>> AddFavoriteArticle(Guid userId, Guid articleId);
 }

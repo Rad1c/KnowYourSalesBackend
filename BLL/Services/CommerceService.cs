@@ -21,7 +21,7 @@ public class CommerceService : ICommerceService
         MODEL.Entities.Commerce? commerce = await _commerceRepository.GetCommerceById(id);
 
         if (commerce is null)
-            return Errors.Errors.Commerce.CommerceNotFound;
+            return Errors.Errors.CommerceEr.CommerceNotFound;
 
         commerce.Acc.IsDeleted = true;
         commerce.IsDeleted = true;
@@ -36,11 +36,11 @@ public class CommerceService : ICommerceService
     {
         MODEL.Entities.Commerce? comm = await _commerceRepository.GetCommerceByEmail(email);
 
-        if (comm is not null) return Errors.Errors.Auth.InvalidCredentials;
+        if (comm is not null) return Errors.Errors.AuthEr.InvalidCredentials;
 
         City? city = await _commerceRepository.GetById<City>(cityId);
 
-        if (city is null) return Errors.Errors.Commerce.CityNotFound;
+        if (city is null) return Errors.Errors.CommerceEr.CityNotFound;
 
         Role? role = await _commerceRepository.GetRoleByCode(RoleEnum.Shop.Code);
 
@@ -68,12 +68,12 @@ public class CommerceService : ICommerceService
     {
         MODEL.Entities.Commerce? commerce = await _commerceRepository.GetCommerceById(commerceId);
 
-        if (commerce is null) return Errors.Errors.Commerce.CommerceNotFound;
+        if (commerce is null) return Errors.Errors.CommerceEr.CommerceNotFound;
 
         if (cityId is not null)
         {
             City? city = await _commerceRepository.GetById<City>(cityId.Value);
-            if (city is null) return Errors.Errors.Commerce.CityNotFound;
+            if (city is null) return Errors.Errors.CommerceEr.CityNotFound;
 
             commerce.Cit = city;
         }

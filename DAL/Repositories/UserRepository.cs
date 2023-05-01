@@ -73,4 +73,12 @@ public class UserRepository : Repository, IUserRepository
             .Include(u => u.Impressions)
             .FirstOrDefaultAsync();
     }
+
+    public async Task<User?> GetUserWithFavoriteArticles(Guid id)
+    {
+        return await _context.Users
+            .Where(u => !u.IsDeleted && u.Id == id)
+            .Include(u => u.FavoriteArticles.Where(fa => !fa.IsDeleted))
+            .FirstOrDefaultAsync();
+    }
 }
