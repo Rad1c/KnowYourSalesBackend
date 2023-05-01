@@ -1,4 +1,5 @@
 ﻿using API.Dtos;
+using API.Models.AddFavoriteArticle;
 using API.Models.AddFavoriteCommerce;
 using API.Models.RemoveFavoriteCommerce;
 using API.Models.UpdateUser;
@@ -117,6 +118,21 @@ public class UserController : BaseController
     public async Task<IActionResult> GetFavoritesCommerces(Guid userId) //from token
     {
         return Ok(await _userRepository.GetFavoriteCommercesQuery(userId));
+    }
+
+    [HttpPut("user/favoriteArticle/add")]
+    public async Task<IActionResult> AddFavoriteArticle(AddFavoriteArticleModel req)
+    {
+        ValidationResult results = new AddFavoriteArticleModelValidator().Validate(req);
+
+        //TODO: Create response model
+        if (!results.IsValid) return BadRequest(results.Errors.Select(x => x.ErrorMessage));
+
+        ErrorOr<bool> result = await _userService.AddFavoriteArticle(req.Id, req.ArticleId);
+
+        return result.Match(
+            authResult => Ok(new MessageDto("article added in favorites.")),
+            errors => Problem(errors));
     }
 }
 

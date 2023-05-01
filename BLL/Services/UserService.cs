@@ -25,7 +25,21 @@ public class UserService : IUserService
 
         if (user.FavoriteArticles != null && user.FavoriteArticles.Any(x => x.ArtId == articleId))
             return Errors.Errors.UserEr.FavArticleAddedAlready;
-        throw new NotImplementedException();
+
+        Article? article = await _userRepository.GetById<Article>(articleId);
+
+        if (article is null) return Errors.Errors.UserEr.ArticleNotFound;
+
+        FavoriteArticle favArticle = new()
+        {
+            Art = article,
+            Use = user
+        };
+
+        user.FavoriteArticles.Add(favArticle);
+
+        _userRepository.UpdateEntity<User>(user);
+        return true;
     }
 
     public async Task<ErrorOr<bool>> AddFavoriteCommerce(Guid userId, Guid commerceId)
