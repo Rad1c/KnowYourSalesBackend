@@ -1,6 +1,5 @@
 ﻿using DAL.IRepositories;
 using Microsoft.AspNetCore.Mvc;
-using MODEL.QueryModels.Geo;
 using MODEL.QueryModels.ReferenteData;
 
 namespace API.Controllers;
@@ -17,7 +16,7 @@ public class ReferenteDataController : BaseController
     [HttpGet("countries")]
     public async Task<IActionResult> GetContries()
     {
-        CountriesQueryModel result = await _referenteDataRepository.GetCountries();
+        List<CountryQueryModel> result = await _referenteDataRepository.GetCountries();
 
         return Ok(result);
     }
@@ -26,6 +25,14 @@ public class ReferenteDataController : BaseController
     public async Task<IActionResult> GetCategories()
     {
         List<CategoryQueryModel> result = await _referenteDataRepository.GetCategories();
+
+        return Ok(result);
+    }
+
+    [HttpGet("currencies")]
+    public async Task<IActionResult> GetCurrencies()
+    {
+        List<CurrencyQueryModel> result = await _referenteDataRepository.GetCurrencies();
 
         return Ok(result);
     }
