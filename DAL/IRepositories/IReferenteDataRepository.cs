@@ -2,7 +2,7 @@
 
 namespace DAL.IRepositories;
 
-public interface IGeoRepository
+public interface IReferenteDataRepository
 {
     public Task<CountriesQueryModel> GetCountries();
 }

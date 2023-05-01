@@ -5,11 +5,11 @@ using MODEL.QueryModels.Geo;
 
 namespace DAL.Repositories
 {
-    public class GeoRepository : IGeoRepository
+    public class ReferenteDataRepository : IReferenteDataRepository
     {
         private readonly QueryContext _queryContext;
 
-        public GeoRepository(QueryContext queryContext)
+        public ReferenteDataRepository(QueryContext queryContext)
         {
             _queryContext = queryContext;
         }
