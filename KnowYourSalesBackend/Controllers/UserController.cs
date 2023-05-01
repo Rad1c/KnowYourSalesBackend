@@ -63,7 +63,7 @@ public class UserController : BaseController
     {
         UserQueryModel? user = await _userService.GetUserQuery(userId);
 
-        if (user is null) return Problem(Errors.User.UserNotFound);
+        if (user is null) return Problem(Errors.UserEr.UserNotFound);
 
         return Ok(user);
     }

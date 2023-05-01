@@ -17,18 +17,29 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
+    public async Task<ErrorOr<bool>> AddFavoriteArticle(Guid userId, Guid articleId)
+    {
+        MODEL.Entities.User? user = await _userRepository.GetUserWithFavoriteArticles(userId);
+
+        if (user is null) return Errors.Errors.UserEr.UserNotFound;
+
+        if (user.FavoriteArticles != null && user.FavoriteArticles.Any(x => x.ArtId == articleId))
+            return Errors.Errors.UserEr.FavArticleAddedAlready;
+        throw new NotImplementedException();
+    }
+
     public async Task<ErrorOr<bool>> AddFavoriteCommerce(Guid userId, Guid commerceId)
     {
         User? user = await _userRepository.GetUserWithFavoriteCommerces(userId);
 
-        if (user is null) return Errors.Errors.User.UserNotFound;
+        if (user is null) return Errors.Errors.UserEr.UserNotFound;
 
         if (user.FavoriteCommerces != null && user.FavoriteCommerces.Any(x => x.Com.Id == commerceId))
-            return Errors.Errors.User.FavCommerceAddedAlready;
+            return Errors.Errors.UserEr.FavCommerceAddedAlready;
 
         Commerce? commerce = await _userRepository.GetById<Commerce>(commerceId);
 
-        if (commerce is null) return Errors.Errors.User.CommerceNotFound;
+        if (commerce is null) return Errors.Errors.UserEr.CommerceNotFound;
 
         FavoriteCommerce favCommerce = new()
         {
@@ -46,7 +57,7 @@ public class UserService : IUserService
     {
         User? user = await _userRepository.GetUserWithImpressions(id);
 
-        if (user is null) return Errors.Errors.User.UserNotFound;
+        if (user is null) return Errors.Errors.UserEr.UserNotFound;
 
         Impression newImpression = new()
         {
@@ -65,7 +76,7 @@ public class UserService : IUserService
         User? user = await _userRepository.GetUserById(userId);
 
         if (user is null)
-            return Errors.Errors.User.UserNotFound;
+            return Errors.Errors.UserEr.UserNotFound;
 
         user.Acc.IsDeleted = true;
         user.IsDeleted = true;
@@ -79,7 +90,7 @@ public class UserService : IUserService
         User? user = await _userRepository.GetUserByEmail(email);
 
         if (user is null)
-            return Errors.Errors.Auth.InvalidCredentials;
+            return Errors.Errors.AuthEr.InvalidCredentials;
 
         return user;
     }
@@ -92,7 +103,7 @@ public class UserService : IUserService
     {
         User? user = await _userRepository.GetUserByEmail(email);
 
-        if (user is not null) return Errors.Errors.Auth.InvalidCredentials;
+        if (user is not null) return Errors.Errors.AuthEr.InvalidCredentials;
 
         Role? role = await _userRepository.GetRoleByCode(RoleEnum.User.Code);
 
@@ -122,9 +133,9 @@ public class UserService : IUserService
     {
         User? user = await _userRepository.GetUserWithFavoriteCommerces(userId);
 
-        if (user is null) return Errors.Errors.User.UserNotFound;
+        if (user is null) return Errors.Errors.UserEr.UserNotFound;
 
-        if (!user.FavoriteCommerces.Any(x => x.ComId == commerceId)) return Errors.Errors.User.CommerceNotFound;
+        if (!user.FavoriteCommerces.Any(x => x.ComId == commerceId)) return Errors.Errors.UserEr.CommerceNotFound;
 
         FavoriteCommerce removeCommerce = user.FavoriteCommerces.Where(x => x.ComId == commerceId).FirstOrDefault()!;
 
@@ -138,7 +149,7 @@ public class UserService : IUserService
     {
         User? user = await _userRepository.GetUserById(userId);
 
-        if (user is null) return Errors.Errors.User.UserNotFound;
+        if (user is null) return Errors.Errors.UserEr.UserNotFound;
 
         if (firstName is not null) user.Name = firstName;
 
