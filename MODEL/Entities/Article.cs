@@ -18,7 +18,7 @@
         public decimal Sale { get; set; }
         public DateTime ValidDate { get; set; }
 
-        public virtual Currency Cur { get; set; } = null!;
+        public virtual Currency? Cur { get; set; } = null!;
         public virtual ICollection<FavoriteArticle> FavoriteArticles { get; set; }
         public virtual ICollection<Picture> Pictures { get; set; }
 

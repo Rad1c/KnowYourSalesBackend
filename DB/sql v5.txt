@@ -148,15 +148,15 @@ ROL_ID
 /*==============================================================*/
 CREATE TABLE ARTICLE (
  ID       UUID DEFAULT uuid_generate_v4(),
- CUR_ID     UUID       NOT NULL,
+ CUR_ID UUID NULL,
  CREATED      TIMESTAMP(0)     NOT NULL,
  MODIFIED     TIMESTAMP(0)     NULL,
  IS_DELETED     BOOLEAN       NOT NULL,
- NAME       VARCHAR(50)    NOT NULL,
+ NAME       VARCHAR(512)    NOT NULL,
  DESCRIPTION    VARCHAR(1024)    NOT NULL,
- OLD_PRICE    DECIMAL(4,2)   NOT NULL,
- NEW_PRICE    DECIMAL(4,2)   NOT NULL,
- SALE       DECIMAL(3,2)   NOT NULL,
+ OLD_PRICE    DECIMAL(10,2)   NOT NULL,
+ NEW_PRICE    DECIMAL(10,2)   NOT NULL,
+ SALE       DECIMAL(4,2)   NOT NULL,
  VALID_DATE     TIMESTAMP(0)       NOT NULL,
  CONSTRAINT PK_ARTICLE PRIMARY KEY (ID)
 );
@@ -741,6 +741,12 @@ VALUES
 (false, CURRENT_TIMESTAMP, 'Kancelarija i škola', 10),
 (false, CURRENT_TIMESTAMP, 'Stvari za djecu', 11);
 
+INSERT INTO currency (is_deleted, created, name, code)
+VALUES 
+(false, CURRENT_TIMESTAMP, 'USD', '$'),
+(false, CURRENT_TIMESTAMP, 'EUR', '€'),
+(false, CURRENT_TIMESTAMP, 'BAM', 'KM');
+
   -- MATERIALIZED VIEWS
   --COUNTRY
 DROP MATERIALIZED VIEW mv_countries;
@@ -785,3 +791,32 @@ CREATE OR REPLACE TRIGGER mv_categories_refresh_trigger
 AFTER INSERT OR UPDATE ON category
 FOR EACH ROW
 EXECUTE FUNCTION refresh_mv_categories();
+
+--ARTICLE
+
+--Create the materialized view
+DROP MATERIALIZED VIEW IF EXISTS mv_articles;
+CREATE MATERIALIZED VIEW IF NOT EXISTS mv_articles 
+AS
+SELECT a.id AS "ArticleId", a.created, a.modified, a.name AS "ArticleName", 
+a.description, a.old_price, a.new_price, a.sale, a.valid_date, 
+s.name AS "ShopName" FROM article a 
+JOIN article_in_shop ais ON ais.art_id = a.id
+JOIN shop s ON s.id = ais.id
+WITH DATA;
+
+CREATE OR REPLACE FUNCTION refresh_mv_articles()
+RETURNS TRIGGER AS
+$$
+BEGIN
+  REFRESH MATERIALIZED VIEW CONCURRENTLY mv_articles;
+  RETURN NULL;
+END;
+$$
+LANGUAGE plpgsql;
+
+--Create the trigger
+CREATE OR REPLACE TRIGGER mv_articles_refresh_trigger
+AFTER INSERT OR UPDATE ON article
+FOR EACH ROW
+EXECUTE FUNCTION refresh_mv_articles();

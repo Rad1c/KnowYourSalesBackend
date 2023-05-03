@@ -34,10 +34,14 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ISessionService, SessionService>();
 builder.Services.AddScoped<IShopService, ShopService>();
+builder.Services.AddScoped<IArticleService, ArticleService>();
+builder.Services.AddScoped<ICommerceService, CommerceService>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IShopRepository, ShopRepository>();
-builder.Services.AddScoped<IReferenteDataRepository, ReferenteDataRepository>();
+builder.Services.AddScoped<ICommerceRepository, CommerceRepository>();
+builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
+builder.Services.AddScoped<IReferenceDataRepository, ReferenceDataRepository>();
 builder.Services.AddSingleton<ProblemDetailsFactory, CustomDetailsFactory>();
 builder.Services.AddDbContext<Context>(options =>
                 options.UseNpgsql(

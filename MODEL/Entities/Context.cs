@@ -122,9 +122,7 @@ namespace MODEL.Entities
 
                 entity.HasOne(d => d.Cur)
                     .WithMany(p => p.Articles)
-                    .HasForeignKey(d => d.CurId)
-                    .OnDelete(DeleteBehavior.Restrict)
-                    .HasConstraintName("fk_article_of_currency");
+                    .HasForeignKey(d => d.CurId);
 
                 entity.HasMany(d => d.Ids)
                     .WithMany(p => p.Arts)
