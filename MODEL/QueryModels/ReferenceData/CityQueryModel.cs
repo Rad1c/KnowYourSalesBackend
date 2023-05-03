@@ -1,4 +1,4 @@
-﻿namespace MODEL.QueryModels.ReferenteData;
+﻿namespace MODEL.QueryModels.ReferenceData;
 
 public record CityQueryModel
 {

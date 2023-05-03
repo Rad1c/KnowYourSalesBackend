@@ -35,5 +35,10 @@ public class ShopRepository : Repository, IShopRepository
             .Include(s => s.Cit)
             .FirstOrDefaultAsync();
     }
+    public async Task<List<Category>> GetCategories()
+    {
+        return await _context.Categories
+            .ToListAsync();
+    }
 }
 

@@ -18,14 +18,14 @@ public class ShopService : IShopService
     {
         Commerce? commerce = await _shopRepository.GetCommerceWithShops(commerceId);
 
-        if (commerce is null) return Errors.Errors.ShopEr.CommerceNotFound;
+        if (commerce is null) return Errors.Errors.Shop.CommerceNotFound;
 
         if (commerce.Shops != null && commerce.Shops.Any(x => x.Name.ToLower().Equals(name)))
-            return Errors.Errors.ShopEr.ShopAlreadyExist;
+            return Errors.Errors.Shop.ShopAlreadyExist;
 
         City? city = await _shopRepository.GetById<City>(cityId);
 
-        if (city is null) return Errors.Errors.ShopEr.CityNotFound;
+        if (city is null) return Errors.Errors.Shop.CityNotFound;
 
         GeoPoint newGeo = new()
         {
@@ -54,9 +54,9 @@ public class ShopService : IShopService
     {
         Commerce? commerce = await _shopRepository.GetCommerceWithShops(commerceId);
 
-        if (commerce is null) return Errors.Errors.ShopEr.CommerceNotFound;
+        if (commerce is null) return Errors.Errors.Shop.CommerceNotFound;
 
-        if (commerce.Shops == null || !commerce.Shops.Any(x => x.Id == id)) return Errors.Errors.ShopEr.ShopNotFound;
+        if (commerce.Shops == null || !commerce.Shops.Any(x => x.Id == id)) return Errors.Errors.Shop.ShopNotFound;
 
         Shop? shop = await _shopRepository
             .GetShop(commerce.Shops.Where(x => x.Id == id).FirstOrDefault().Id);
@@ -66,7 +66,7 @@ public class ShopService : IShopService
         if (cityId is not null)
         {
             City? city = await _shopRepository.GetById<City>(cityId.Value);
-            if (city is null) return Errors.Errors.ShopEr.CityNotFound;
+            if (city is null) return Errors.Errors.Shop.CityNotFound;
 
             shop!.Cit = city;
         }

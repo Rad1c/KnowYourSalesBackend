@@ -29,6 +29,7 @@ packages
 *.lock
 *.v2
 *.cache
+*.TMP
 *.dll
 *.pdb
 *.editorconfig
