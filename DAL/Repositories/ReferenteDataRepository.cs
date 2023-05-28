@@ -5,10 +5,10 @@ using MODEL.QueryModels.ReferenteData;
 
 namespace DAL.Repositories
 {
-    public class ReferenceDataRepository : IReferenceDataRepository
+    public class ReferenteDataRepository : IReferenteDataRepository
     {
         private readonly QueryContext _queryContext;
-        public ReferenceDataRepository(QueryContext queryContext)
+        public ReferenteDataRepository(QueryContext queryContext)
         {
             _queryContext = queryContext;
         }

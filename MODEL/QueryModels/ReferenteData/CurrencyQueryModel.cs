@@ -1,4 +1,4 @@
-﻿namespace MODEL.QueryModels.ReferenceData;
+﻿namespace MODEL.QueryModels.ReferenteData;
 
 public record CurrencyQueryModel
 {

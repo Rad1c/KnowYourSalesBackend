@@ -2,7 +2,7 @@
 
 namespace DAL.IRepositories;
 
-public interface IReferenceDataRepository
+public interface IReferenteDataRepository
 {
     public Task<List<CategoryQueryModel>> GetCategories();
     public Task<List<CountryQueryModel>> GetCountries();

@@ -1,14 +1,14 @@
 ﻿using DAL.IRepositories;
 using Microsoft.AspNetCore.Mvc;
-using MODEL.QueryModels.ReferenceData;
+using MODEL.QueryModels.ReferenteData;
 
 namespace API.Controllers;
 
-public class ReferenceDataController : BaseController
+public class ReferenteDataController : BaseController
 {
-    private readonly IReferenceDataRepository _referenteDataRepository;
+    private readonly IReferenteDataRepository _referenteDataRepository;
 
-    public ReferenceDataController(IReferenceDataRepository referenteDataRepository)
+    public ReferenteDataController(IReferenteDataRepository referenteDataRepository)
     {
         _referenteDataRepository = referenteDataRepository;
     }
