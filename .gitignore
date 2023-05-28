@@ -34,6 +34,7 @@ packages
 *.pdb
 *.editorconfig
 /MODEL/obj/
+.vs/KnowYourSalesBackend
 /KnowYourSalesBackend/obj/API.csproj.nuget.dgspec.json
 /MODEL/obj/project.nuget.cache
 /MODEL/obj/Debug/net6.0/MODEL.csproj.AssemblyReference.cache
