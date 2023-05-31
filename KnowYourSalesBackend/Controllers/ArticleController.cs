@@ -54,7 +54,7 @@ public class ArticleController : BaseController
         var lastIndexOf = req.Image.FileName.LastIndexOf(".");
         string exstension = req.Image.FileName[(lastIndexOf + 1)..];
         Guid imgId = Guid.NewGuid();
-        string path = $"product-{req.ArticleId}-img-{imgId}.{exstension}";
+        string path = $"article-{req.ArticleId}-img-{imgId}.{exstension}";
 
         ErrorOr<bool> result = await _articleService.AddArticleImage(req.ArticleId, path);
 
