@@ -14,7 +14,24 @@ public class ArticleService : IArticleService
     public ArticleService(IArticleRepository articleRepository, IShopRepository shopRepository)
     {
         _articleRepository = articleRepository;
-        _shopRepository = shopRepository;   
+        _shopRepository = shopRepository;
+    }
+
+    public async Task<ErrorOr<bool>> AddArticleImage(Guid articleId, string path)
+    {
+        Article? article = await _articleRepository.GetArticleById(articleId);
+
+        if (article is null)
+            return Errors.Errors.ArticleEr.ArticleNotFound;
+
+        Picture newPicture = new()
+        {
+            ArtId = articleId,
+            Pic = path
+        };
+
+        _articleRepository.Save<Picture>(newPicture);
+        return true;
     }
 
     public async Task<ErrorOr<Article?>> CreateArticle(Guid commerceId, List<Guid> shopIds, List<Guid> categoryIds, string name, string description, decimal oldPrice, decimal newPrice, string validDate)
@@ -23,7 +40,7 @@ public class ArticleService : IArticleService
 
         foreach (var item in shopIds)
         {
-            if(!commerce.Shops.Any(x => x.Id == item))
+            if (!commerce.Shops.Any(x => x.Id == item))
             {
                 return Errors.Errors.Shop.ShopNotFound;
             }
@@ -64,7 +81,7 @@ public class ArticleService : IArticleService
     {
         Article? article = await _articleRepository.GetArticleById(id);
 
-        if (article is null) 
+        if (article is null)
             return Errors.Errors.ArticleEr.ArticleNotFound;
 
         article.IsDeleted = true;
@@ -84,8 +101,8 @@ public class ArticleService : IArticleService
 
         if (description is not null) article.Description = description;
 
-        if (newPrice is not null) 
-        { 
+        if (newPrice is not null)
+        {
             article.NewPrice = (decimal)newPrice;
             article.Sale = BaseHelper.CalculateSale(article.OldPrice, newPrice.Value);
         }
