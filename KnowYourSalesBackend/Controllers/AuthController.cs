@@ -79,18 +79,29 @@ public class AuthController : BaseController
         //TODO: Create response model
         if (!results.IsValid) return BadRequest(results.Errors.Select(x => x.ErrorMessage));
 
-        ErrorOr<User?> userResult = await _userService.GetUserByEmail(req.Email);
+        ErrorOr<Account?> userResult = await _authService.GetAccountByEmail(req.Email);
 
         if (userResult.IsError) return Problem(userResult.Errors);
 
-        if (!_authService.VerifyPasswordHash(req.Password, userResult.Value!.Acc.Password, userResult.Value.Acc.Salt!))
+        if (!_authService.VerifyPasswordHash(req.Password, userResult.Value!.Password, userResult.Value.Salt!))
         {
             return Problem(Errors.AuthEr.InvalidCredentials);
         }
 
-        RoleEnum userRole = Enumeration.GetByCode<RoleEnum>(userResult.Value.Acc.Role.Code)!;
-        string accessToken = _authService.CreateToken(userResult.Value.Id!, TokenTypeEnum.AccessToken, userRole);
-        string refreshToken = _authService.CreateToken(userResult.Value.Id!, TokenTypeEnum.RefreshToken, userRole);
+        RoleEnum userRole = Enumeration.GetByCode<RoleEnum>(userResult.Value.Role.Code)!;
+        Guid id;
+        if (userResult.Value.Role.Code == RoleEnum.User.Code)
+        {
+            User? user = await _userService.GetUserByAccountId(userResult.Value.Id);
+            id = user!.Id;
+        }
+        else
+        {
+            Commerce? commerce = await _commerceService.GetCommerceByAccountId(userResult.Value.Id);
+            id = commerce!.Id;
+        }
+        string accessToken = _authService.CreateToken(id, TokenTypeEnum.AccessToken, userRole);
+        string refreshToken = _authService.CreateToken(id, TokenTypeEnum.RefreshToken, userRole);
 
         TokenDto token = new()
         {

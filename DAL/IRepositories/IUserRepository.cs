@@ -12,4 +12,6 @@ public interface IUserRepository : IRepository<User>
     public Task<User?> GetUserWithFavoriteCommerces(Guid id);
     public Task<User?> GetUserWithFavoriteArticles(Guid id);
     public Task<List<FavoriteCommerceQueryModel>> GetFavoriteCommercesQuery(Guid userId);
+    public Task<List<UserImpressionQueryModel>> GetImpressions(int? limit = 4);
+    public Task<User?> GetUserByAccountId(Guid accId);
 }

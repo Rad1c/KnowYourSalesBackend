@@ -10,5 +10,6 @@ namespace BLL.IServices
         public Task<ErrorOr<bool>> UpdateCommerce(Guid commerceId, string? name, string? logo, Guid? cityId);
         public Task<CommerceQueryModel?> GetCommerceQuery(Guid id);
         public Task<ErrorOr<bool>> DeleteCommerce(Guid id);
+        public Task<Commerce?> GetCommerceByAccountId(Guid accId);
     }
 }

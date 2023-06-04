@@ -35,6 +35,14 @@ public class UserRepository : Repository, IUserRepository
             .FirstOrDefaultAsync();
     }
 
+    public async Task<User?> GetUserByAccountId(Guid accId)
+    {
+        return await _context.Users.Where(c => !c.IsDeleted)
+            .Include(c => c.Acc)
+            .Where(c => !c.Acc.IsDeleted && c.AccId == accId)
+            .FirstOrDefaultAsync();
+    }
+
     public async Task<UserQueryModel> GetUserQuery(Guid id)
     {
         string query = "SELECT u.id, u.name as \"FirstName\", u.surname as \"LastName\", a.Email, u.Sex, u.birthdate FROM \"user\" u JOIN account a ON a.id = u.acc_id WHERE u.id = @id and u.is_deleted = false";
@@ -56,6 +64,17 @@ public class UserRepository : Repository, IUserRepository
         var favCommerces = await connection.QueryAsync<FavoriteCommerceQueryModel>(query, new { userId });
 
         return (List<FavoriteCommerceQueryModel>)favCommerces;
+    }
+
+    public async Task<List<UserImpressionQueryModel>> GetImpressions(int? limit = 4)
+    {
+        string query = $"SELECT u.name, i.content as impression from impression i JOIN \"user\" u ON u.id = i.use_id LIMIT {limit}";
+
+        using var connection = _queryContext.CreateConnection();
+
+        var impressions = await connection.QueryAsync<UserImpressionQueryModel>(query);
+
+        return (List<UserImpressionQueryModel>)impressions;
     }
 
     public async Task<User?> GetUserWithFavoriteCommerces(Guid id)

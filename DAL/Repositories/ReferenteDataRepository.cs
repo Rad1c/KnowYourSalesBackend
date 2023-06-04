@@ -13,9 +13,19 @@ namespace DAL.Repositories
             _queryContext = queryContext;
         }
 
+        public async Task<List<CityQueryModel>> GetCitiesByCountryCode(string code)
+        {
+            string query = @"SELECT ""CityId"",  ""CityName"" FROM mv_countries where ""Code"" = '" + code + "'";
+
+            using var connection = _queryContext.CreateConnection();
+            var result = await connection.QueryAsync<CityQueryModel>(query);
+
+            return result.ToList();
+        }
+
         public async Task<List<CountryQueryModel>> GetCountries()
         {
-            string query = "SELECT * FROM mv_countries";
+            string query = "\r\nSELECT \"CountryId\", \"CountryName\", \"CityId\",  \"CityName\" FROM mv_countries";
 
             var lookup = new Dictionary<Guid, CountryQueryModel>();
 

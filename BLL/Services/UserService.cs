@@ -99,6 +99,8 @@ public class UserService : IUserService
         return true;
     }
 
+    public Task<User?> GetUserByAccountId(Guid accId) => _userRepository.GetUserByAccountId(accId);
+
     public async Task<ErrorOr<User?>> GetUserByEmail(string email)
     {
         User? user = await _userRepository.GetUserByEmail(email);
@@ -109,7 +111,7 @@ public class UserService : IUserService
         return user;
     }
 
-    public async Task<User?> GetUserById(Guid id) => await _userRepository.GetUserById(id);
+    public Task<User?> GetUserById(Guid id) => _userRepository.GetUserById(id);
 
     public Task<UserQueryModel> GetUserQuery(Guid userId) => _userRepository.GetUserQuery(userId);
 
@@ -131,8 +133,8 @@ public class UserService : IUserService
 
         User newUser = new()
         {
-            Surname = lastName,
-            Name = firstName,
+            Surname = char.ToUpper(lastName[0]) + lastName[1..],
+            Name = char.ToUpper(firstName[0]) + firstName[1..],
             Birthdate = BaseHelper.ConvertStringToDateOnly(dateOfBirth),
             Sex = sex[0],
             Acc = acc

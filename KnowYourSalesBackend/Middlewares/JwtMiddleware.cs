@@ -14,16 +14,24 @@ public class JwtMiddleware
 
     public async System.Threading.Tasks.Task Invoke(HttpContext context, ISessionService session, IAuthService authService)
     {
-        var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-        var claims = authService.ValidateToken(token!);
-
-        if (claims.Count > 0)
+        try
         {
-            Guid id = Guid.Parse(claims["nameid"]);
-            RoleEnum role = Enumeration.GetByCode<RoleEnum>(claims["role"])!;
-            session.SetSession(role, id);
+            var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            var claims = authService.ValidateToken(token!);
 
+            if (claims.Count > 0)
+            {
+                Guid id = Guid.Parse(claims["nameid"]);
+                RoleEnum role = Enumeration.GetByCode<RoleEnum>(claims["role"])!;
+                session.SetSession(role, id);
+
+            }
         }
+        catch (Exception)
+        {
+            await _next(context);
+        }
+
 
         await _next(context);
     }

@@ -1,4 +1,6 @@
-﻿using DAL.IRepositories;
+﻿using API.Models.GetCitiesByCountryCode;
+using DAL.IRepositories;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using MODEL.QueryModels.ReferenteData;
 
@@ -33,6 +35,18 @@ public class ReferenteDataController : BaseController
     public async Task<IActionResult> GetCurrencies()
     {
         List<CurrencyQueryModel> result = await _referenteDataRepository.GetCurrencies();
+
+        return Ok(result);
+    }
+
+    [HttpGet("/country/cities")]
+    public async Task<IActionResult> GetCitiesByCountryCode([FromQuery] GetCitiesByCountryCodeQueryModel req)
+    {
+        ValidationResult results = new GetCitiesByCountryCodeQueryModelValidator().Validate(req);
+
+        if (!results.IsValid) return BadRequest(results.Errors.Select(x => x.ErrorMessage));
+
+        List<CityQueryModel> result = await _referenteDataRepository.GetCitiesByCountryCode(req.Code);
 
         return Ok(result);
     }

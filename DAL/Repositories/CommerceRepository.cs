@@ -17,6 +17,14 @@ public class CommerceRepository : Repository, ICommerceRepository
         _queryContext = queryContext;
     }
 
+    public async Task<Commerce?> GetCommerceByAccountId(Guid accId)
+    {
+        return await _context.Commerces.Where(c => !c.IsDeleted)
+            .Include(c => c.Acc)
+            .Where(c => !c.Acc.IsDeleted && c.AccId == accId)
+            .FirstOrDefaultAsync();
+    }
+
     public Task<Commerce?> GetCommerceByEmail(string email)
     {
         return _context.Commerces
@@ -33,6 +41,11 @@ public class CommerceRepository : Repository, ICommerceRepository
             .Include(u => u.Acc)
             .FirstOrDefaultAsync();
     }
+
+    public async Task<Commerce?> GetCommerceByName(string name)
+        => await _context.Commerces
+        .Where(c => c.Name.ToLower().Equals(name.ToLower()) && !c.IsDeleted)
+        .FirstOrDefaultAsync();
 
     public async Task<CommerceQueryModel?> GetCommerceQuery(Guid id)
     {

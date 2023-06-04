@@ -1,71 +1,24 @@
+using API;
 using API.Middlewares;
-using BLL.Errors;
-using BLL.IServices;
-using BLL.Services;
-using DAL.IRepositories;
-using DAL.Repositories;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using MODEL.Entities;
-using Swashbuckle.AspNetCore.Filters;
-using System.Text;
+using BLL;
+using DAL;
+using MODEL;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-    {
-        Description = "Standard Authorization header using the Bearer Scheme (\"bearer {token} \")",
-        In = ParameterLocation.Header,
-        Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey
-    });
-    options.OperationFilter<SecurityRequirementsOperationFilter>();
-});
-builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<MODEL.QueryContext>();
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<ISessionService, SessionService>();
-builder.Services.AddScoped<IShopService, ShopService>();
-builder.Services.AddScoped<IArticleService, ArticleService>();
-builder.Services.AddScoped<ICommerceService, CommerceService>();
-
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IShopRepository, ShopRepository>();
-builder.Services.AddScoped<ICommerceRepository, CommerceRepository>();
-builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
-builder.Services.AddScoped<IReferenteDataRepository, ReferenteDataRepository>();
-builder.Services.AddSingleton<ProblemDetailsFactory, CustomDetailsFactory>();
-builder.Services.AddDbContext<Context>(options =>
-                options.UseNpgsql(
-                    builder.Configuration.GetConnectionString("DefaultConnection")!
-            ), ServiceLifetime.Scoped);
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.
-            GetBytes(builder.Configuration.GetSection("Token:SECRET_KEY").Value!)),
-            ValidateIssuer = false,
-            ValidateAudience = false
-        };
-    });
+builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddBLLServices();
+builder.Services.AddRepositories();
+builder.Services.AddApiServices(builder.Configuration);
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
+app.UseCors(builder.Configuration["cors:development"]);
 
 app.UseHttpsRedirection();
 app.UseAuthorization();

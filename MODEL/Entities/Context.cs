@@ -297,6 +297,10 @@ namespace MODEL.Entities
                 entity.Property(e => e.Name)
                     .HasMaxLength(50)
                     .HasColumnName("name");
+
+                entity.Property(e => e.Code)
+                    .HasMaxLength(50)
+                    .HasColumnName("code");
             });
 
             modelBuilder.Entity<Currency>(entity =>

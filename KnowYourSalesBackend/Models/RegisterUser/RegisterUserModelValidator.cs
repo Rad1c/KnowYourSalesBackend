@@ -8,10 +8,15 @@ public class RegisterUserModelValidator : AbstractValidator<RegisterUserModel>
     public RegisterUserModelValidator()
     {
         RuleFor(x => x.FirstName)
-            .NotNull().NotEmpty().WithMessage("first name is required.");
+            .NotNull()
+            .NotEmpty().WithMessage("first name is required.")
+            .MinimumLength(3)
+            .MaximumLength(25);
 
         RuleFor(x => x.LastName)
-            .NotNull().NotEmpty().WithMessage("Last name is required.");
+            .NotNull().NotEmpty().WithMessage("Last name is required.")
+            .MinimumLength(3)
+            .MaximumLength(25);
 
         RuleFor(x => x.Email)
             .NotNull().NotEmpty().WithMessage("email is required.")
@@ -20,10 +25,6 @@ public class RegisterUserModelValidator : AbstractValidator<RegisterUserModel>
         RuleFor(x => x.Password)
             .MinimumLength(8)
             .NotNull().NotEmpty().WithMessage("password is required.")
-            .Matches("[A-Z]").WithMessage("'{PropertyName}' must contain one or more capital letters.")
-            .Matches("[a-z]").WithMessage("'{PropertyName}' must contain one or more lowercase letters.")
-            .Matches(@"\d").WithMessage("'{PropertyName}' must contain one or more digits.")
-            .Matches(@"[][""!@$%^&*(){}:;<>,.?/+_=|'~\\-]").WithMessage("'{ PropertyName}' must contain one or more special characters.")
             .Matches("^[^£# “”]*$").WithMessage("'{PropertyName}' must not contain the following characters £ # “” or spaces.");
 
         RuleFor(x => x.ConfirmPassword)

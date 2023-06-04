@@ -1,7 +1,10 @@
 ﻿using BLL.Enums;
 using BLL.IServices;
+using DAL.IRepositories;
+using ErrorOr;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using MODEL.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -12,9 +15,11 @@ namespace BLL.Services;
 public sealed class AuthService : IAuthService
 {
     private readonly IConfiguration _configuration;
-    public AuthService(IConfiguration configuration)
+    private readonly IAuthRepository _authRepository;
+    public AuthService(IConfiguration configuration, IAuthRepository authRepository)
     {
         _configuration = configuration;
+        _authRepository = authRepository;
     }
 
     public string CreateToken(Guid userId, TokenTypeEnum tokenType, RoleEnum role)
@@ -91,5 +96,13 @@ public sealed class AuthService : IAuthService
         {
             return claimsList;
         }
+    }
+    public async Task<ErrorOr<Account?>> GetAccountByEmail(string email)
+    {
+        Account? account = await _authRepository.GetAccountByEmail(email);
+
+        if (account == null) return Errors.Errors.AuthEr.InvalidCredentials;
+
+        return account;
     }
 }

@@ -30,6 +30,8 @@ public class CommerceService : ICommerceService
         return true;
     }
 
+    public Task<Commerce?> GetCommerceByAccountId(Guid accId) => _commerceRepository.GetCommerceByAccountId(accId);
+
     public Task<CommerceQueryModel?> GetCommerceQuery(Guid id) => _commerceRepository.GetCommerceQuery(id);
 
     public async Task<ErrorOr<MODEL.Entities.Commerce?>> RegisterCommerce(string name, byte[] passwordHash, byte[] salt, Guid cityId, string email)
@@ -37,6 +39,10 @@ public class CommerceService : ICommerceService
         MODEL.Entities.Commerce? comm = await _commerceRepository.GetCommerceByEmail(email);
 
         if (comm is not null) return Errors.Errors.AuthEr.InvalidCredentials;
+
+        MODEL.Entities.Commerce? commByName = await _commerceRepository.GetCommerceByName(name);
+
+        if (commByName is not null) return Errors.Errors.CommerceEr.CommerceAlreadyExist;
 
         City? city = await _commerceRepository.GetById<City>(cityId);
 

@@ -120,6 +120,12 @@ public class UserController : BaseController
         return Ok(await _userRepository.GetFavoriteCommercesQuery(userId));
     }
 
+    [HttpGet("/user/impressions")]
+    public async Task<IActionResult> GetUserImpressions()
+    {
+        return Ok(await _userRepository.GetImpressions());
+    }
+
     [HttpPut("user/favoriteArticle/add")]
     public async Task<IActionResult> AddFavoriteArticle(AddFavoriteArticleModel req)
     {
