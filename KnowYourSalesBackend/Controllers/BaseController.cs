@@ -1,4 +1,6 @@
-﻿using ErrorOr;
+﻿using API.Dtos;
+using ErrorOr;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -20,6 +22,17 @@ public abstract class BaseController : ControllerBase
         };
 
         return Problem(statusCode: statusCode, title: firstError.Description);
+    }
+
+    protected IActionResult ValidationBadRequestResponse(ValidationResult validationResult)
+    {
+        ErrorResponseDto errorResponse = new()
+        {
+            Message = validationResult.Errors[0].ErrorMessage,
+            Errors = validationResult.Errors.Select(x => x.ErrorMessage).ToList()
+        };
+
+        return BadRequest(errorResponse);
     }
 
     protected IActionResult Problem(Error error)

@@ -30,8 +30,7 @@ public class AuthController : BaseController
     {
         ValidationResult results = new RegisterUserModelValidator().Validate(req);
 
-        //TODO: Create response model
-        if (!results.IsValid) return BadRequest(results.Errors.Select(x => x.ErrorMessage));
+        if (!results.IsValid) return ValidationBadRequestResponse(results);
 
         _authService.CreatePasswordHash(req.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
@@ -54,8 +53,7 @@ public class AuthController : BaseController
     {
         ValidationResult results = new RegisterCommerceModelValidator().Validate(req);
 
-        //TODO: Create response model
-        if (!results.IsValid) return BadRequest(results.Errors.Select(x => x.ErrorMessage));
+        if (!results.IsValid) return ValidationBadRequestResponse(results);
 
         _authService.CreatePasswordHash(req.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
@@ -76,8 +74,7 @@ public class AuthController : BaseController
     {
         ValidationResult results = new LoginModelValidator().Validate(req);
 
-        //TODO: Create response model
-        if (!results.IsValid) return BadRequest(results.Errors.Select(x => x.ErrorMessage));
+        if (!results.IsValid) return ValidationBadRequestResponse(results);
 
         ErrorOr<Account?> userResult = await _authService.GetAccountByEmail(req.Email);
 

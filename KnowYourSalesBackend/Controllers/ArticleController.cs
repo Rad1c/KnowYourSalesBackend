@@ -27,7 +27,7 @@ public class ArticleController : BaseController
     {
         ValidationResult results = new CreateArticleModelValidator().Validate(req);
 
-        if (!results.IsValid) return BadRequest(results.Errors.Select(x => x.ErrorMessage));
+        if (!results.IsValid) return ValidationBadRequestResponse(results);
 
         ErrorOr<Article?> result = await _articleService.CreateArticle(
             req.CommerceId,
@@ -49,7 +49,7 @@ public class ArticleController : BaseController
     {
         ValidationResult results = new AddArticleImageModelValidator().Validate(req);
 
-        if (!results.IsValid) return BadRequest(results.Errors.Select(x => x.ErrorMessage));
+        if (!results.IsValid) return ValidationBadRequestResponse(results);
 
         var lastIndexOf = req.Image.FileName.LastIndexOf(".");
         string exstension = req.Image.FileName[(lastIndexOf + 1)..];

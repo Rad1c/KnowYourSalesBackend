@@ -33,8 +33,7 @@ public class UserController : BaseController
     {
         ValidationResult results = new UpdateUserModelValidator().Validate(req);
 
-        //TODO: Create response model
-        if (!results.IsValid) return BadRequest(results.Errors.Select(x => x.ErrorMessage));
+        if (!results.IsValid) return ValidationBadRequestResponse(results);
 
         ErrorOr<bool> updateResult = await _userService.UpdateUser(
             req.Id,                 //TODO: ID from token
@@ -74,8 +73,7 @@ public class UserController : BaseController
     {
         ValidationResult results = new UserImpressionModelValidator().Validate(req);
 
-        //TODO: Create response model
-        if (!results.IsValid) return BadRequest(results.Errors.Select(x => x.ErrorMessage));
+        if (!results.IsValid) return ValidationBadRequestResponse(results);
 
         ErrorOr<bool> result = await _userService.AddUserImpression(req.UserId, req.Impression);
 
@@ -89,8 +87,7 @@ public class UserController : BaseController
     {
         ValidationResult results = new AddFavoriteCommerceModelValidator().Validate(req);
 
-        //TODO: Create response model
-        if (!results.IsValid) return BadRequest(results.Errors.Select(x => x.ErrorMessage));
+        if (!results.IsValid) return ValidationBadRequestResponse(results);
 
         ErrorOr<bool> result = await _userService.AddFavoriteCommerce(req.UserId, req.CommerceId);
 
@@ -104,8 +101,7 @@ public class UserController : BaseController
     {
         ValidationResult results = new RemoveFromFavoriteCommercesModelValidator().Validate(req);
 
-        //TODO: Create response model
-        if (!results.IsValid) return BadRequest(results.Errors.Select(x => x.ErrorMessage));
+        if (!results.IsValid) return ValidationBadRequestResponse(results);
 
         ErrorOr<bool> result = await _userService.RemoveCommerceFromFavorites(req.Id, req.CommerceId);
 
@@ -131,8 +127,7 @@ public class UserController : BaseController
     {
         ValidationResult results = new AddFavoriteArticleModelValidator().Validate(req);
 
-        //TODO: Create response model
-        if (!results.IsValid) return BadRequest(results.Errors.Select(x => x.ErrorMessage));
+        if (!results.IsValid) return ValidationBadRequestResponse(results);
 
         ErrorOr<bool> result = await _userService.AddFavoriteArticle(req.Id, req.ArticleId);
 
