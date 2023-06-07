@@ -35,6 +35,13 @@ public abstract class BaseController : ControllerBase
         return BadRequest(errorResponse);
     }
 
+    protected IActionResult OkResponse<T>(ErrorOr<T> result, string success) where T : notnull
+    {
+        return result.Match(
+            authResult => Ok(new MessageDto(success)),
+            errors => Problem(errors));
+    }
+
     protected IActionResult Problem(Error error)
     {
         HttpContext.Items["errors"] = new List<Error>() { error };

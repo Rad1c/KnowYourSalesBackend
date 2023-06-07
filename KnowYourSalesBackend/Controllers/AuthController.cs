@@ -87,18 +87,19 @@ public class AuthController : BaseController
 
         RoleEnum userRole = Enumeration.GetByCode<RoleEnum>(userResult.Value.Role.Code)!;
         Guid id;
+        Guid accountId = userResult.Value.Id;
         if (userResult.Value.Role.Code == RoleEnum.User.Code)
         {
-            User? user = await _userService.GetUserByAccountId(userResult.Value.Id);
+            User? user = await _userService.GetUserByAccountId(accountId);
             id = user!.Id;
         }
         else
         {
-            Commerce? commerce = await _commerceService.GetCommerceByAccountId(userResult.Value.Id);
+            Commerce? commerce = await _commerceService.GetCommerceByAccountId(accountId);
             id = commerce!.Id;
         }
-        string accessToken = _authService.CreateToken(id, TokenTypeEnum.AccessToken, userRole);
-        string refreshToken = _authService.CreateToken(id, TokenTypeEnum.RefreshToken, userRole);
+        string accessToken = _authService.CreateToken(id, accountId, TokenTypeEnum.AccessToken, userRole);
+        string refreshToken = _authService.CreateToken(id, accountId, TokenTypeEnum.RefreshToken, userRole);
 
         TokenDto token = new()
         {
@@ -124,7 +125,9 @@ public class AuthController : BaseController
         if (!claims["type"].Equals(TokenTypeEnum.RefreshToken.Code))
             return Problem(Errors.AuthEr.BadToken);
 
-        string newAccessToken = _authService.CreateToken(Guid.Parse(claims["nameid"]),
+        string newAccessToken = _authService.CreateToken(
+            Guid.Parse(claims["nameid"]),
+            Guid.Parse(claims["accountId"]),
             TokenTypeEnum.AccessToken,
             Enumeration.GetByCode<RoleEnum>(claims["role"])!);
 

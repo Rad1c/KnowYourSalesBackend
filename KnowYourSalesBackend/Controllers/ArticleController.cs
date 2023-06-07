@@ -22,6 +22,7 @@ public class ArticleController : BaseController
         _configuration = configuration;
     }
 
+    //[HttpPost("article"), Authorize(Roles = "Commerce")]
     [HttpPost("article")]
     public async Task<IActionResult> AddArticle(CreateArticleModel req)
     {
@@ -63,9 +64,7 @@ public class ArticleController : BaseController
 
         await _supabaseClient.Storage.From(_configuration["supabase:productBucket"]).Upload(memoryStream.ToArray(), path);
 
-        return result.Match(
-            authResult => Ok(new MessageDto("article image added.")),
-            errors => Problem(errors));
+        return OkResponse<bool>(result, "article image added.");
     }
 
     [HttpDelete("article/{id}")]

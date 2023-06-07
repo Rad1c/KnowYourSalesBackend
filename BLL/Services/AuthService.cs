@@ -22,13 +22,14 @@ public sealed class AuthService : IAuthService
         _authRepository = authRepository;
     }
 
-    public string CreateToken(Guid userId, TokenTypeEnum tokenType, RoleEnum role)
+    public string CreateToken(Guid userId, Guid accountId, TokenTypeEnum tokenType, RoleEnum role)
     {
         List<Claim> claims = new()
             {
                 new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
                 new Claim("type", tokenType.ToString()),
-                new Claim("role", role.ToString())
+                new Claim(ClaimTypes.Role, role.ToString()),
+                new Claim("accountId", accountId.ToString()),
             };
 
         SymmetricSecurityKey key = new(

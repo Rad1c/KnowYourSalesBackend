@@ -42,10 +42,7 @@ public class UserController : BaseController
             req.DateOfBirth,
             Enumeration.GetByCode<SexEnum>(req.Sex));
 
-        //TODO: make this more generic
-        return updateResult.Match(
-            authResult => Ok(new MessageDto("user updated.")),
-            errors => Problem(errors));
+        return OkResponse<bool>(updateResult, "user updated.");
     }
 
     [HttpDelete("user/{id}")]
@@ -77,9 +74,7 @@ public class UserController : BaseController
 
         ErrorOr<bool> result = await _userService.AddUserImpression(req.UserId, req.Impression);
 
-        return result.Match(
-            authResult => Ok(new MessageDto("impression added.")),
-            errors => Problem(errors));
+        return OkResponse<bool>(result, "impression added.");
     }
 
     [HttpPut("user/favoriteCommerce/add")]
@@ -91,9 +86,7 @@ public class UserController : BaseController
 
         ErrorOr<bool> result = await _userService.AddFavoriteCommerce(req.UserId, req.CommerceId);
 
-        return result.Match(
-            authResult => Ok(new MessageDto("commerce added in favorites.")),
-            errors => Problem(errors));
+        return OkResponse<bool>(result, "commerce added in favorites.");
     }
 
     [HttpPut("user/favoriteCommerce/remove")]
@@ -105,9 +98,7 @@ public class UserController : BaseController
 
         ErrorOr<bool> result = await _userService.RemoveCommerceFromFavorites(req.Id, req.CommerceId);
 
-        return result.Match(
-            authResult => Ok(new MessageDto("commerce removed from favorites.")),
-            errors => Problem(errors));
+        return OkResponse<bool>(result, "commerce removed from favorites.");
     }
 
     [HttpGet("user/favoriteCommerce")]
@@ -131,9 +122,7 @@ public class UserController : BaseController
 
         ErrorOr<bool> result = await _userService.AddFavoriteArticle(req.Id, req.ArticleId);
 
-        return result.Match(
-            authResult => Ok(new MessageDto("article added in favorites.")),
-            errors => Problem(errors));
+        return OkResponse<bool>(result, "article added in favorites.");
     }
 }
 

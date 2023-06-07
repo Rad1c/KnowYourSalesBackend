@@ -31,10 +31,7 @@ public class CommerceController : BaseController
             req.CityId
             );
 
-        //TODO: make this more generic
-        return updateResult.Match(
-            authResult => Ok(new MessageDto("commerce updated.")),
-            errors => Problem(errors));
+        return OkResponse<bool>(updateResult, "commerce updated.");
     }
 
     [HttpGet("commerce/{id}")]
