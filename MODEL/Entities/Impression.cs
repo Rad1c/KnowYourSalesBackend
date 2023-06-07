@@ -2,9 +2,9 @@
 {
     public partial class Impression : BaseEntity
     {
-        public Guid UseId { get; set; }
+        public Guid UserId { get; set; }
         public string Content { get; set; } = null!;
 
-        public virtual User Use { get; set; } = null!;
+        public virtual User User { get; set; } = null!;
     }
 }

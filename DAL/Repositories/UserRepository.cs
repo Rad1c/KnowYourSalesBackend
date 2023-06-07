@@ -22,24 +22,24 @@ public class UserRepository : Repository, IUserRepository
     {
         return await _context.Users
             .Where(u => u.IsDeleted == false)
-            .Include(u => u.Acc)
+            .Include(u => u.Account)
                 .ThenInclude(a => a.Role)
-            .FirstOrDefaultAsync(u => u.Acc.Email == email && !u.Acc.IsDeleted);
+            .FirstOrDefaultAsync(u => u.Account.Email == email && !u.Account.IsDeleted);
     }
 
     public async Task<User?> GetUserById(Guid id)
     {
         return await _context.Users
             .Where(u => u.Id == id && !u.IsDeleted)
-            .Include(u => u.Acc)
+            .Include(u => u.Account)
             .FirstOrDefaultAsync();
     }
 
     public async Task<User?> GetUserByAccountId(Guid accId)
     {
         return await _context.Users.Where(c => !c.IsDeleted)
-            .Include(c => c.Acc)
-            .Where(c => !c.Acc.IsDeleted && c.AccId == accId)
+            .Include(c => c.Account)
+            .Where(c => !c.Account.IsDeleted && c.AccountId == accId)
             .FirstOrDefaultAsync();
     }
 

@@ -40,7 +40,7 @@ namespace MODEL.Entities
             {
                 entity.ToTable("account");
 
-                entity.HasIndex(e => e.RolId, "acc_has_r_fk");
+                entity.HasIndex(e => e.RoleId, "acc_has_r_fk");
 
                 entity.HasIndex(e => e.Id, "account_pk")
                     .IsUnique();
@@ -62,14 +62,14 @@ namespace MODEL.Entities
                 entity.Property(e => e.Password)
                     .HasColumnName("password");
 
-                entity.Property(e => e.RolId).HasColumnName("rol_id");
+                entity.Property(e => e.RoleId).HasColumnName("rol_id");
 
                 entity.Property(e => e.Salt)
                     .HasColumnName("salt");
 
                 entity.HasOne(d => d.Role)
                     .WithMany(p => p.Accounts)
-                    .HasForeignKey(d => d.RolId)
+                    .HasForeignKey(d => d.RoleId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("fk_account_acc_has_r_role");
             });
@@ -124,7 +124,7 @@ namespace MODEL.Entities
                     .WithMany(p => p.Articles)
                     .HasForeignKey(d => d.CurId);
 
-                entity.HasMany(d => d.Ids)
+                entity.HasMany(d => d.Categories)
                     .WithMany(p => p.Arts)
                     .UsingEntity<Dictionary<string, object>>(
                         "ArticleInCategory",
@@ -147,8 +147,8 @@ namespace MODEL.Entities
                             j.IndexerProperty<Guid>("Id").HasColumnName("id");
                         });
 
-                entity.HasMany(d => d.IdsNavigation)
-                    .WithMany(p => p.Arts)
+                entity.HasMany(d => d.Shops)
+                    .WithMany(p => p.Articles)
                     .UsingEntity<Dictionary<string, object>>(
                         "ArticleInShop",
                         l => l.HasOne<Shop>().WithMany().HasForeignKey("Id").OnDelete(DeleteBehavior.Restrict).HasConstraintName("fk_article__article_i_shop"),
@@ -199,7 +199,7 @@ namespace MODEL.Entities
             {
                 entity.ToTable("city");
 
-                entity.HasIndex(e => e.CouId, "city_fk");
+                entity.HasIndex(e => e.CountryId, "city_fk");
 
                 entity.HasIndex(e => e.Id, "city_pk")
                     .IsUnique();
@@ -208,7 +208,7 @@ namespace MODEL.Entities
                     .HasColumnName("id")
                     .HasDefaultValueSql("uuid_generate_v4()");
 
-                entity.Property(e => e.CouId)
+                entity.Property(e => e.CountryId)
                     .HasMaxLength(3)
                     .HasColumnName("cou_id")
                     .IsFixedLength();
@@ -223,9 +223,9 @@ namespace MODEL.Entities
                     .HasMaxLength(50)
                     .HasColumnName("name");
 
-                entity.HasOne(d => d.Cou)
+                entity.HasOne(d => d.Country)
                     .WithMany(p => p.Cities)
-                    .HasForeignKey(d => d.CouId)
+                    .HasForeignKey(d => d.CountryId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("fk_city_city_country");
             });
@@ -234,20 +234,20 @@ namespace MODEL.Entities
             {
                 entity.ToTable("commerce");
 
-                entity.HasIndex(e => e.AccId, "co_has_acc_fk");
+                entity.HasIndex(e => e.AccountId, "co_has_acc_fk");
 
                 entity.HasIndex(e => e.Id, "commerce_pk")
                     .IsUnique();
 
-                entity.HasIndex(e => e.CitId, "residence_fk");
+                entity.HasIndex(e => e.CityId, "residence_fk");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasDefaultValueSql("uuid_generate_v4()");
 
-                entity.Property(e => e.AccId).HasColumnName("acc_id");
+                entity.Property(e => e.AccountId).HasColumnName("acc_id");
 
-                entity.Property(e => e.CitId).HasColumnName("cit_id");
+                entity.Property(e => e.CityId).HasColumnName("cit_id");
 
                 entity.Property(e => e.Created).HasColumnName("created");
 
@@ -263,15 +263,15 @@ namespace MODEL.Entities
                     .HasMaxLength(50)
                     .HasColumnName("name");
 
-                entity.HasOne(d => d.Acc)
+                entity.HasOne(d => d.Account)
                     .WithMany(p => p.Commerces)
-                    .HasForeignKey(d => d.AccId)
+                    .HasForeignKey(d => d.AccountId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("fk_commerce_co_has_ac_account");
 
-                entity.HasOne(d => d.Cit)
+                entity.HasOne(d => d.City)
                     .WithMany(p => p.Commerces)
-                    .HasForeignKey(d => d.CitId)
+                    .HasForeignKey(d => d.CityId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("fk_commerce_residence_city");
             });
@@ -343,9 +343,9 @@ namespace MODEL.Entities
 
                 entity.Property(e => e.Modified).HasColumnName("modified");
 
-                entity.HasIndex(e => e.ArtId, "favorite_article_fk");
+                entity.HasIndex(e => e.ArticleId, "favorite_article_fk");
 
-                entity.HasIndex(e => e.UseId, "favorite_article_fk2");
+                entity.HasIndex(e => e.UserId, "favorite_article_fk2");
 
                 entity.HasIndex(e => e.Id, "favorite_article_pk")
                     .IsUnique();
@@ -354,19 +354,19 @@ namespace MODEL.Entities
                     .HasColumnName("id")
                     .HasDefaultValueSql("uuid_generate_v4()");
 
-                entity.Property(e => e.ArtId).HasColumnName("art_id");
+                entity.Property(e => e.ArticleId).HasColumnName("art_id");
 
-                entity.Property(e => e.UseId).HasColumnName("use_id");
+                entity.Property(e => e.UserId).HasColumnName("use_id");
 
-                entity.HasOne(d => d.Art)
+                entity.HasOne(d => d.Article)
                     .WithMany(p => p.FavoriteArticles)
-                    .HasForeignKey(d => d.ArtId)
+                    .HasForeignKey(d => d.ArticleId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("fk_favorite_favorite__article");
 
-                entity.HasOne(d => d.Use)
+                entity.HasOne(d => d.User)
                     .WithMany(p => p.FavoriteArticles)
-                    .HasForeignKey(d => d.UseId)
+                    .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("fk_favorite_favorite__user");
             });
@@ -375,9 +375,9 @@ namespace MODEL.Entities
             {
                 entity.ToTable("favorite_commerce");
 
-                entity.HasIndex(e => e.ComId, "favorite_commerce_fk");
+                entity.HasIndex(e => e.CommerceId, "favorite_commerce_fk");
 
-                entity.HasIndex(e => e.UseId, "favorite_commerce_fk2");
+                entity.HasIndex(e => e.UserId, "favorite_commerce_fk2");
 
                 entity.HasIndex(e => e.Id, "favorite_commerce_pk")
                     .IsUnique();
@@ -386,9 +386,9 @@ namespace MODEL.Entities
                     .HasColumnName("id")
                     .HasDefaultValueSql("uuid_generate_v4()");
 
-                entity.Property(e => e.ComId).HasColumnName("com_id");
+                entity.Property(e => e.CommerceId).HasColumnName("com_id");
 
-                entity.Property(e => e.UseId).HasColumnName("use_id");
+                entity.Property(e => e.UserId).HasColumnName("use_id");
 
                 entity.Property(e => e.Created).HasColumnName("created");
 
@@ -396,15 +396,15 @@ namespace MODEL.Entities
 
                 entity.Property(e => e.Modified).HasColumnName("modified");
 
-                entity.HasOne(d => d.Com)
+                entity.HasOne(d => d.Commerce)
                     .WithMany(p => p.FavoriteCommerces)
-                    .HasForeignKey(d => d.ComId)
+                    .HasForeignKey(d => d.CommerceId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("fk_favorite_favorite__commerce");
 
-                entity.HasOne(d => d.Use)
+                entity.HasOne(d => d.User)
                     .WithMany(p => p.FavoriteCommerces)
-                    .HasForeignKey(d => d.UseId)
+                    .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("fk_favorite_favorite__user");
             });
@@ -446,7 +446,7 @@ namespace MODEL.Entities
                 entity.HasIndex(e => e.Id, "impression_pk")
                     .IsUnique();
 
-                entity.HasIndex(e => e.UseId, "leaves_fk");
+                entity.HasIndex(e => e.UserId, "leaves_fk");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
@@ -462,11 +462,11 @@ namespace MODEL.Entities
 
                 entity.Property(e => e.Modified).HasColumnName("modified");
 
-                entity.Property(e => e.UseId).HasColumnName("use_id");
+                entity.Property(e => e.UserId).HasColumnName("use_id");
 
-                entity.HasOne(d => d.Use)
+                entity.HasOne(d => d.User)
                     .WithMany(p => p.Impressions)
-                    .HasForeignKey(d => d.UseId)
+                    .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("fk_impressi_leaves_user");
             });
@@ -475,7 +475,7 @@ namespace MODEL.Entities
             {
                 entity.ToTable("picture");
 
-                entity.HasIndex(e => e.ArtId, "ar_has_pic_fk");
+                entity.HasIndex(e => e.ArticleId, "ar_has_pic_fk");
 
                 entity.HasIndex(e => e.Id, "picture_pk")
                     .IsUnique();
@@ -484,7 +484,7 @@ namespace MODEL.Entities
                     .HasColumnName("id")
                     .HasDefaultValueSql("uuid_generate_v4()");
 
-                entity.Property(e => e.ArtId).HasColumnName("art_id");
+                entity.Property(e => e.ArticleId).HasColumnName("art_id");
 
                 entity.Property(e => e.Created).HasColumnName("created");
 
@@ -492,14 +492,14 @@ namespace MODEL.Entities
 
                 entity.Property(e => e.Modified).HasColumnName("modified");
 
-                entity.Property(e => e.Pic)
+                entity.Property(e => e.PicUrl)
                     .HasMaxLength(512)
                     .HasColumnName("pic")
                     .IsFixedLength();
 
-                entity.HasOne(d => d.Art)
+                entity.HasOne(d => d.Article)
                     .WithMany(p => p.Pictures)
-                    .HasForeignKey(d => d.ArtId)
+                    .HasForeignKey(d => d.ArticleId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("fk_picture_ar_has_pi_article");
             });
@@ -532,9 +532,9 @@ namespace MODEL.Entities
 
                 entity.HasIndex(e => e.GeoId, "address_fk");
 
-                entity.HasIndex(e => e.ComId, "co_has_sh_fk");
+                entity.HasIndex(e => e.CommerceId, "co_has_sh_fk");
 
-                entity.HasIndex(e => e.CitId, "lokacija_fk");
+                entity.HasIndex(e => e.CityId, "lokacija_fk");
 
                 entity.HasIndex(e => e.Id, "shop_pk")
                     .IsUnique();
@@ -543,9 +543,9 @@ namespace MODEL.Entities
                     .HasColumnName("id")
                     .HasDefaultValueSql("uuid_generate_v4()");
 
-                entity.Property(e => e.CitId).HasColumnName("cit_id");
+                entity.Property(e => e.CityId).HasColumnName("cit_id");
 
-                entity.Property(e => e.ComId).HasColumnName("com_id");
+                entity.Property(e => e.CommerceId).HasColumnName("com_id");
 
                 entity.Property(e => e.Created).HasColumnName("created");
 
@@ -559,19 +559,19 @@ namespace MODEL.Entities
                     .HasMaxLength(50)
                     .HasColumnName("name");
 
-                entity.HasOne(d => d.Cit)
+                entity.HasOne(d => d.City)
                     .WithMany(p => p.Shops)
-                    .HasForeignKey(d => d.CitId)
+                    .HasForeignKey(d => d.CityId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("fk_shop_lokacija_city");
 
-                entity.HasOne(d => d.Com)
+                entity.HasOne(d => d.Commerce)
                     .WithMany(p => p.Shops)
-                    .HasForeignKey(d => d.ComId)
+                    .HasForeignKey(d => d.CommerceId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("fk_shop_co_has_sh_commerce");
 
-                entity.HasOne(d => d.Geo)
+                entity.HasOne(d => d.GeoPoint)
                     .WithMany(p => p.Shops)
                     .HasForeignKey(d => d.GeoId)
                     .OnDelete(DeleteBehavior.Restrict)
@@ -582,7 +582,7 @@ namespace MODEL.Entities
             {
                 entity.ToTable("user");
 
-                entity.HasIndex(e => e.AccId, "u_has_acc_fk");
+                entity.HasIndex(e => e.AccountId, "u_has_acc_fk");
 
                 entity.HasIndex(e => e.Id, "user_pk")
                     .IsUnique();
@@ -591,7 +591,7 @@ namespace MODEL.Entities
                     .HasColumnName("id")
                     .HasDefaultValueSql("uuid_generate_v4()");
 
-                entity.Property(e => e.AccId).HasColumnName("acc_id");
+                entity.Property(e => e.AccountId).HasColumnName("acc_id");
 
                 entity.Property(e => e.Birthdate).HasColumnName("birthdate");
 
@@ -613,9 +613,9 @@ namespace MODEL.Entities
                     .HasMaxLength(25)
                     .HasColumnName("surname");
 
-                entity.HasOne(d => d.Acc)
+                entity.HasOne(d => d.Account)
                     .WithMany(p => p.Users)
-                    .HasForeignKey(d => d.AccId)
+                    .HasForeignKey(d => d.AccountId)
                     .OnDelete(DeleteBehavior.Restrict)
                     .HasConstraintName("fk_user_u_has_acc_account");
             });

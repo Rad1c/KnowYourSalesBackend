@@ -26,8 +26,8 @@ public class ArticleService : IArticleService
 
         Picture newPicture = new()
         {
-            ArtId = articleId,
-            Pic = path
+            ArticleId = articleId,
+            PicUrl = path
         };
 
         _articleRepository.Save<Picture>(newPicture);

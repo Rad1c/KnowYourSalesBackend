@@ -23,7 +23,7 @@ public class CommerceService : ICommerceService
         if (commerce is null)
             return Errors.Errors.CommerceEr.CommerceNotFound;
 
-        commerce.Acc.IsDeleted = true;
+        commerce.Account.IsDeleted = true;
         commerce.IsDeleted = true;
 
         _commerceRepository.UpdateEntity<MODEL.Entities.Commerce>(commerce!);
@@ -61,8 +61,8 @@ public class CommerceService : ICommerceService
         MODEL.Entities.Commerce newCommerce = new()
         {
             Name = name,
-            Cit = city,
-            Acc = acc
+            City = city,
+            Account = acc
         };
 
         _commerceRepository.Save(newCommerce);
@@ -81,7 +81,7 @@ public class CommerceService : ICommerceService
             City? city = await _commerceRepository.GetById<City>(cityId.Value);
             if (city is null) return Errors.Errors.CommerceEr.CityNotFound;
 
-            commerce.Cit = city;
+            commerce.City = city;
         }
 
         if (name is not null) commerce.Name = name;

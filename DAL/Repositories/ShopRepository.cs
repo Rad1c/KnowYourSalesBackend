@@ -17,7 +17,7 @@ public class ShopRepository : Repository, IShopRepository
     {
         return await _context.Commerces
             .Where(c => c.Id == id && !c.IsDeleted)
-            .Include(c => c.Acc)
+            .Include(c => c.Account)
             .FirstOrDefaultAsync();
     }
 
@@ -31,8 +31,8 @@ public class ShopRepository : Repository, IShopRepository
     {
         return await _context.Shops
             .Where(s => s.Id == id && !s.IsDeleted)
-            .Include(s => s.Geo)
-            .Include(s => s.Cit)
+            .Include(s => s.GeoPoint)
+            .Include(s => s.City)
             .FirstOrDefaultAsync();
     }
     public async Task<List<Category>> GetCategories()

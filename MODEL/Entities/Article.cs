@@ -6,8 +6,8 @@
         {
             FavoriteArticles = new HashSet<FavoriteArticle>();
             Pictures = new HashSet<Picture>();
-            Ids = new HashSet<Category>();
-            IdsNavigation = new HashSet<Shop>();
+            Categories = new HashSet<Category>();
+            Shops = new HashSet<Shop>();
         }
 
         public Guid CurId { get; set; }
@@ -22,7 +22,7 @@
         public virtual ICollection<FavoriteArticle> FavoriteArticles { get; set; }
         public virtual ICollection<Picture> Pictures { get; set; }
 
-        public virtual ICollection<Category> Ids { get; set; }
-        public virtual ICollection<Shop> IdsNavigation { get; set; }
+        public virtual ICollection<Category> Categories { get; set; }
+        public virtual ICollection<Shop> Shops { get; set; }
     }
 }

@@ -4,17 +4,17 @@
     {
         public Shop()
         {
-            Arts = new HashSet<Article>();
+            Articles = new HashSet<Article>();
         }
 
-        public Guid ComId { get; set; }
-        public Guid CitId { get; set; }
+        public Guid CommerceId { get; set; }
+        public Guid CityId { get; set; }
         public Guid GeoId { get; set; }
         public string Name { get; set; } = null!;
-        public virtual City Cit { get; set; } = null!;
-        public virtual Commerce Com { get; set; } = null!;
-        public virtual GeoPoint Geo { get; set; } = null!;
+        public virtual City City { get; set; } = null!;
+        public virtual Commerce Commerce { get; set; } = null!;
+        public virtual GeoPoint GeoPoint { get; set; } = null!;
 
-        public virtual ICollection<Article> Arts { get; set; }
+        public virtual ICollection<Article> Articles { get; set; }
     }
 }

@@ -39,7 +39,7 @@ public class ArticleRepository : Repository, IArticleRepository
     {
         return await _context.Articles
             .Where(x => x.Name == name && !x.IsDeleted)
-            .Include(x => x.IdsNavigation.Where(x => x.ComId == commerceId))
+            .Include(x => x.Shops.Where(x => x.CommerceId == commerceId))
             .FirstOrDefaultAsync();
     }
 }

@@ -20,8 +20,8 @@ public class CommerceRepository : Repository, ICommerceRepository
     public async Task<Commerce?> GetCommerceByAccountId(Guid accId)
     {
         return await _context.Commerces.Where(c => !c.IsDeleted)
-            .Include(c => c.Acc)
-            .Where(c => !c.Acc.IsDeleted && c.AccId == accId)
+            .Include(c => c.Account)
+            .Where(c => !c.Account.IsDeleted && c.AccountId == accId)
             .FirstOrDefaultAsync();
     }
 
@@ -29,16 +29,16 @@ public class CommerceRepository : Repository, ICommerceRepository
     {
         return _context.Commerces
             .Where(u => u.IsDeleted == false)
-            .Include(u => u.Acc)
+            .Include(u => u.Account)
                 .ThenInclude(a => a.Role)
-            .FirstOrDefaultAsync(u => u.Acc.Email == email && !u.Acc.IsDeleted);
+            .FirstOrDefaultAsync(u => u.Account.Email == email && !u.Account.IsDeleted);
     }
 
     public async Task<Commerce?> GetCommerceById(Guid id)
     {
         return await _context.Commerces
             .Where(u => u.Id == id && !u.IsDeleted)
-            .Include(u => u.Acc)
+            .Include(u => u.Account)
             .FirstOrDefaultAsync();
     }
 
