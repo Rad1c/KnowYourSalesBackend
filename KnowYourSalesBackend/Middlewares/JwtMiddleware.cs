@@ -12,7 +12,7 @@ public class JwtMiddleware
         _next = next;
     }
 
-    public async System.Threading.Tasks.Task Invoke(HttpContext context, ISessionService session, IAuthService authService)
+    public async Task Invoke(HttpContext context, ISessionService session, IAuthService authService)
     {
         try
         {

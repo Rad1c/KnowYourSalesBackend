@@ -4,10 +4,12 @@ using API.Models.CreateArticle;
 using BLL.IServices;
 using ErrorOr;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MODEL.Entities;
 
 namespace API.Controllers;
+
 public class ArticleController : BaseController
 {
     private readonly IArticleService _articleService;
@@ -22,8 +24,8 @@ public class ArticleController : BaseController
         _configuration = configuration;
     }
 
-    //[HttpPost("article"), Authorize(Roles = "Commerce")]
-    [HttpPost("article")]
+    [HttpPost("article"), AllowAnonymous]
+    //[HttpPost("article")]
     public async Task<IActionResult> AddArticle(CreateArticleModel req)
     {
         ValidationResult results = new CreateArticleModelValidator().Validate(req);
