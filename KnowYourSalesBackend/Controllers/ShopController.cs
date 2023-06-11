@@ -23,7 +23,7 @@ public class ShopController : BaseController
     {
         ValidationResult results = new CreateShopModelValidator().Validate(req);
 
-        if (!results.IsValid) BadRequest(results.Errors.Select(x => x.ErrorMessage));
+        if (!results.IsValid) return ValidationBadRequestResponse(results);
 
         ErrorOr<Shop?> result = await _shopService.CreateShop(
             req.Name.Trim(),

@@ -22,8 +22,7 @@ public class CommerceController : BaseController
     {
         ValidationResult results = new UpdateCommerceModelValidator().Validate(req);
 
-        //TODO: Create response model
-        if (!results.IsValid) return BadRequest(results.Errors.Select(x => x.ErrorMessage));
+        if (!results.IsValid) return ValidationBadRequestResponse(results);
 
         ErrorOr<bool> updateResult = await _commerceService.UpdateCommerce(
             req.CommerceId,
@@ -32,10 +31,7 @@ public class CommerceController : BaseController
             req.CityId
             );
 
-        //TODO: make this more generic
-        return updateResult.Match(
-            authResult => Ok(new MessageDto("commerce updated.")),
-            errors => Problem(errors));
+        return OkResponse<bool>(updateResult, "commerce updated.");
     }
 
     [HttpGet("commerce/{id}")]

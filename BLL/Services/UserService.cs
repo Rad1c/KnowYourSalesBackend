@@ -23,7 +23,7 @@ public class UserService : IUserService
 
         if (user is null) return Errors.Errors.UserEr.UserNotFound;
 
-        if (user.FavoriteArticles != null && user.FavoriteArticles.Any(x => x.ArtId == articleId))
+        if (user.FavoriteArticles != null && user.FavoriteArticles.Any(x => x.ArticleId == articleId))
             return Errors.Errors.UserEr.FavArticleAddedAlready;
 
         Article? article = await _userRepository.GetById<Article>(articleId);
@@ -32,8 +32,8 @@ public class UserService : IUserService
 
         FavoriteArticle favArticle = new()
         {
-            Art = article,
-            Use = user
+            Article = article,
+            User = user
         };
 
         user.FavoriteArticles.Add(favArticle);
@@ -48,7 +48,7 @@ public class UserService : IUserService
 
         if (user is null) return Errors.Errors.UserEr.UserNotFound;
 
-        if (user.FavoriteCommerces != null && user.FavoriteCommerces.Any(x => x.Com.Id == commerceId))
+        if (user.FavoriteCommerces != null && user.FavoriteCommerces.Any(x => x.Commerce.Id == commerceId))
             return Errors.Errors.UserEr.FavCommerceAddedAlready;
 
         Commerce? commerce = await _userRepository.GetById<Commerce>(commerceId);
@@ -57,8 +57,8 @@ public class UserService : IUserService
 
         FavoriteCommerce favCommerce = new()
         {
-            Com = commerce,
-            Use = user
+            Commerce = commerce,
+            User = user
         };
 
         user.FavoriteCommerces.Add(favCommerce);
@@ -76,7 +76,7 @@ public class UserService : IUserService
         Impression newImpression = new()
         {
             Content = impression,
-            Use = user
+            User = user
         };
 
         user.Impressions.Add(newImpression);
@@ -92,7 +92,7 @@ public class UserService : IUserService
         if (user is null)
             return Errors.Errors.UserEr.UserNotFound;
 
-        user.Acc.IsDeleted = true;
+        user.Account.IsDeleted = true;
         user.IsDeleted = true;
 
         _userRepository.UpdateEntity<User>(user!);
@@ -137,7 +137,7 @@ public class UserService : IUserService
             Name = char.ToUpper(firstName[0]) + firstName[1..],
             Birthdate = BaseHelper.ConvertStringToDateOnly(dateOfBirth),
             Sex = sex[0],
-            Acc = acc
+            Account = acc
         };
 
         _userRepository.Save(newUser);
@@ -151,9 +151,9 @@ public class UserService : IUserService
 
         if (user is null) return Errors.Errors.UserEr.UserNotFound;
 
-        if (!user.FavoriteCommerces.Any(x => x.ComId == commerceId)) return Errors.Errors.UserEr.CommerceNotFound;
+        if (!user.FavoriteCommerces.Any(x => x.CommerceId == commerceId)) return Errors.Errors.UserEr.CommerceNotFound;
 
-        FavoriteCommerce removeCommerce = user.FavoriteCommerces.Where(x => x.ComId == commerceId).FirstOrDefault()!;
+        FavoriteCommerce removeCommerce = user.FavoriteCommerces.Where(x => x.CommerceId == commerceId).FirstOrDefault()!;
 
         removeCommerce.IsDeleted = true;
 

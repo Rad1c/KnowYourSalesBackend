@@ -38,9 +38,9 @@ public class ShopService : IShopService
         Shop newShop = new()
         {
             Name = name,
-            Cit = city,
-            Com = commerce,
-            Geo = newGeo
+            City = city,
+            Commerce = commerce,
+            GeoPoint = newGeo
         };
 
         _shopRepository.Save(newShop);
@@ -68,16 +68,16 @@ public class ShopService : IShopService
             City? city = await _shopRepository.GetById<City>(cityId.Value);
             if (city is null) return Errors.Errors.Shop.CityNotFound;
 
-            shop!.Cit = city;
+            shop!.City = city;
         }
 
-        if (latitude is not null) shop!.Geo.Latitude = latitude.Value;
+        if (latitude is not null) shop!.GeoPoint.Latitude = latitude.Value;
 
-        if (Longitude is not null) shop!.Geo.Longitude = Longitude.Value;
+        if (Longitude is not null) shop!.GeoPoint.Longitude = Longitude.Value;
 
-        if (name is not null) shop!.Geo.Name = geoName;
+        if (name is not null) shop!.GeoPoint.Name = geoName;
 
-        if (address is not null) shop!.Geo.Address = address;
+        if (address is not null) shop!.GeoPoint.Address = address;
 
         _shopRepository.UpdateEntity<Shop>(shop);
 

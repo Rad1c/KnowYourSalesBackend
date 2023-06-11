@@ -8,7 +8,7 @@
             Users = new HashSet<User>();
         }
 
-        public Guid RolId { get; set; }
+        public Guid RoleId { get; set; }
         public string Email { get; set; } = null!;
         public byte[] Password { get; set; } = null!;
         public byte[]? Salt { get; set; }

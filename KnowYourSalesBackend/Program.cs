@@ -21,8 +21,9 @@ app.UseSwaggerUI();
 app.UseCors(builder.Configuration["cors:development"]);
 
 app.UseHttpsRedirection();
-app.UseAuthorization();
+app.UseAuthentication();
 app.UseMiddleware<JwtMiddleware>();
+app.UseAuthorization();
 
 app.MapControllers();
 

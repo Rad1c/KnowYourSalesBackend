@@ -2,9 +2,9 @@
 {
     public partial class FavoriteArticle : BaseEntity
     {
-        public Guid? ArtId { get; set; }
-        public Guid? UseId { get; set; }
-        public virtual Article? Art { get; set; }
-        public virtual User? Use { get; set; }
+        public Guid? ArticleId { get; set; }
+        public Guid? UserId { get; set; }
+        public virtual Article? Article { get; set; }
+        public virtual User? User { get; set; }
     }
 }

@@ -8,10 +8,10 @@
             Shops = new HashSet<Shop>();
         }
 
-        public Guid CouId { get; set; }
+        public Guid CountryId { get; set; }
         public string Name { get; set; } = null!;
 
-        public virtual Country Cou { get; set; } = null!;
+        public virtual Country Country { get; set; } = null!;
         public virtual ICollection<Commerce> Commerces { get; set; }
         public virtual ICollection<Shop> Shops { get; set; }
     }

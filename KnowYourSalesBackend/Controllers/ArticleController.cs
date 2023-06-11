@@ -5,10 +5,12 @@ using BLL.IServices;
 using DAL.IRepositories;
 using ErrorOr;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MODEL.Entities;
 
 namespace API.Controllers;
+
 public class ArticleController : BaseController
 {
     private readonly IArticleService _articleService;
@@ -25,12 +27,13 @@ public class ArticleController : BaseController
         _articleRepository = articleRepository;
     }
 
-    [HttpPost("/article")]
+    [HttpPost("article"), AllowAnonymous]
+    //[HttpPost("article")]
     public async Task<IActionResult> AddArticle(CreateArticleModel req)
     {
         ValidationResult results = new CreateArticleModelValidator().Validate(req);
 
-        if (!results.IsValid) return BadRequest(results.Errors.Select(x => x.ErrorMessage));
+        if (!results.IsValid) return ValidationBadRequestResponse(results);
 
         ErrorOr<Article?> result = await _articleService.CreateArticle(
             req.CommerceId,
@@ -52,7 +55,7 @@ public class ArticleController : BaseController
     {
         ValidationResult results = new AddArticleImageModelValidator().Validate(req);
 
-        if (!results.IsValid) return BadRequest(results.Errors.Select(x => x.ErrorMessage));
+        if (!results.IsValid) return ValidationBadRequestResponse(results);
 
         var lastIndexOf = req.Image.FileName.LastIndexOf(".");
         string exstension = req.Image.FileName[(lastIndexOf + 1)..];
@@ -66,9 +69,7 @@ public class ArticleController : BaseController
 
         await _supabaseClient.Storage.From(_configuration["supabase:productBucket"]).Upload(memoryStream.ToArray(), path);
 
-        return result.Match(
-            authResult => Ok(new MessageDto("article image added.")),
-            errors => Problem(errors));
+        return OkResponse<bool>(result, "article image added.");
     }
 
     [HttpDelete("/article/{id}")]
