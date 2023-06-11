@@ -2,6 +2,7 @@
 using API.Models.AddArticleImage;
 using API.Models.CreateArticle;
 using BLL.IServices;
+using DAL.IRepositories;
 using ErrorOr;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
@@ -13,16 +14,18 @@ public class ArticleController : BaseController
     private readonly IArticleService _articleService;
     private readonly Supabase.Client _supabaseClient;
     private readonly IConfiguration _configuration;
+    private readonly IArticleRepository _articleRepository;
 
 
-    public ArticleController(IArticleService article, Supabase.Client supabaseClient, IConfiguration configuration)
+    public ArticleController(IArticleService article, Supabase.Client supabaseClient, IConfiguration configuration, IArticleRepository articleRepository)
     {
         _articleService = article;
         _supabaseClient = supabaseClient;
         _configuration = configuration;
+        _articleRepository = articleRepository;
     }
 
-    [HttpPost("article")]
+    [HttpPost("/article")]
     public async Task<IActionResult> AddArticle(CreateArticleModel req)
     {
         ValidationResult results = new CreateArticleModelValidator().Validate(req);
@@ -44,7 +47,7 @@ public class ArticleController : BaseController
             errors => Problem(errors));
     }
 
-    [HttpPost("article/add-image")]
+    [HttpPost("/article/add-image")]
     public async Task<IActionResult> AddArticleImage([FromForm] AddArticleImageModel req)
     {
         ValidationResult results = new AddArticleImageModelValidator().Validate(req);
@@ -68,7 +71,7 @@ public class ArticleController : BaseController
             errors => Problem(errors));
     }
 
-    [HttpDelete("article/{id}")]
+    [HttpDelete("/article/{id}")]
     public async Task<IActionResult> DeleteArticle(Guid id)
     {
         ErrorOr<bool> result = await _articleService.DeleteArticle(id);
@@ -76,6 +79,12 @@ public class ArticleController : BaseController
         if (result.IsError) return Problem(result.Errors);
 
         return Ok(new MessageDto("article deleted."));
+    }
+
+    [HttpGet("/articles")]
+    public async Task<IActionResult> GetArticles(int pageSize, int page)
+    {
+        return Ok(await _articleRepository.GetArticlesPaginatedQuery(pageSize, page));
     }
 }
 
