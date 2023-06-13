@@ -58,6 +58,13 @@ public class ArticleService : IArticleService
             }
         }
 
+        List<Shop> shops = new List<Shop>();
+        
+        foreach (var shopId in shopIds)
+        {
+            shops.Add(await _shopRepository.GetShop(shopId));
+        }
+
         Article? article = await _articleRepository.GetArticleByName(commerceId, name);
 
         if (article is not null) return Errors.Errors.ArticleEr.ArticleAddedAlready;
@@ -69,7 +76,9 @@ public class ArticleService : IArticleService
             OldPrice = oldPrice,
             NewPrice = newPrice,
             ValidDate = (DateTime)BaseHelper.ConvertStringToDateTime(validDate),
-            Sale = BaseHelper.CalculateSale(oldPrice, newPrice)
+            Sale = BaseHelper.CalculateSale(oldPrice, newPrice),
+            Shops = shops,
+            Categories = categories
         };
 
         _articleRepository.Save<Article>(newArticle);
@@ -90,7 +99,7 @@ public class ArticleService : IArticleService
         return true;
     }
 
-    public async Task<ErrorOr<bool>> UpdateArticle(Guid articleId, string? name, string? description, decimal? newPrice, string? validDate)
+    public async Task<ErrorOr<Article?>> UpdateArticle(Guid articleId, string? name, string? description, decimal? newPrice, string? validDate)
     {
         Article? article = await _articleRepository.GetArticleById(articleId);
 
@@ -115,6 +124,6 @@ public class ArticleService : IArticleService
 
         _articleRepository.UpdateEntity<Article>(article!);
 
-        return true;
+        return article;
     }
 }

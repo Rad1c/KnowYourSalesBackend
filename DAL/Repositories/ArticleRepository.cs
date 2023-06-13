@@ -46,9 +46,9 @@ public class ArticleRepository : Repository, IArticleRepository
             .FirstOrDefaultAsync();
     }
 
-    public async Task<ArticleQueryModel?> GetArticlesPaginatedQuery(int pageSize, int page, string? name = null, string? cityName = null, string? categoryName = null, Guid? commerceId = null)
+    public async Task<List<ArticleQueryModel>> GetArticlesPaginatedQuery(int pageSize, int page, string? name, string? cityName = null, string? categoryName = null, Guid? commerceId = null)
     {
-        var queryBuilder = new StringBuilder("SELECT a.name, a.old_price, a.new_price, a.sale, a.created, a.valid_date, p.pic, c.logo FROM article a ")
+        var queryBuilder = new StringBuilder("SELECT a.name, a.old_price AS \"oldPrice\", a.new_price AS \"newPrice\", a.sale, a.created, a.valid_date AS \"validDate\", p.pic AS \"picture\", c.logo FROM article a ")
             .Append("JOIN article_in_shop ais ON a.id = ais.art_id JOIN shop s ON ais.id = s.id JOIN commerce c ON c.id = s.com_id ")
             .Append("JOIN city ON city.id = s.cit_id JOIN picture p ON a.id = p.art_id JOIN article_in_category aic ON aic.art_id = a.id ")
             .Append("JOIN category cat ON cat.id = aic.id ")
@@ -62,7 +62,7 @@ public class ArticleRepository : Repository, IArticleRepository
         {
             queryBuilder.Append(" AND cat.name = @categoryName");
         }
-        if (name != null)
+        if (name is not null)
         {
             queryBuilder.Append(" AND a.name = @name");
         }
@@ -78,9 +78,9 @@ public class ArticleRepository : Repository, IArticleRepository
 
         var offset = (page - 1) * pageSize;
 
-        var article = await connection.QuerySingleOrDefaultAsync<ArticleQueryModel>(queryBuilder.ToString(), new { cityName, categoryName, name, offset, pageSize, commerceId });
+        var article = await connection.QueryAsync<ArticleQueryModel>(queryBuilder.ToString(), new { cityName, categoryName, name, offset, pageSize, commerceId });
 
-        return article;
+        return article.ToList();
     }
 
 }

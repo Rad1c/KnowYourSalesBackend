@@ -1,7 +1,11 @@
 ﻿using API.Dtos;
 using API.Models.AddArticleImage;
 using API.Models.CreateArticle;
+using API.Models.UpdateArticle;
+using API.Models.UpdateCommerce;
+using API.Models.UpdateShop;
 using BLL.IServices;
+using BLL.Services;
 using DAL.IRepositories;
 using ErrorOr;
 using FluentValidation.Results;
@@ -50,7 +54,7 @@ public class ArticleController : BaseController
             errors => Problem(errors));
     }
 
-    [HttpPost("/article/add-image")]
+    [HttpPost("article/add-image")]
     public async Task<IActionResult> AddArticleImage([FromForm] AddArticleImageModel req)
     {
         ValidationResult results = new AddArticleImageModelValidator().Validate(req);
@@ -72,7 +76,7 @@ public class ArticleController : BaseController
         return OkResponse<bool>(result, "article image added.");
     }
 
-    [HttpDelete("/article/{id}")]
+    [HttpDelete("article/{id}")]
     public async Task<IActionResult> DeleteArticle(Guid id)
     {
         ErrorOr<bool> result = await _articleService.DeleteArticle(id);
@@ -82,10 +86,29 @@ public class ArticleController : BaseController
         return Ok(new MessageDto("article deleted."));
     }
 
-    [HttpGet("/articles")]
+    [HttpGet("articles")]
     public async Task<IActionResult> GetArticles(int pageSize, int page)
     {
         return Ok(await _articleRepository.GetArticlesPaginatedQuery(pageSize, page));
+    }
+
+    [HttpPut("article/{id}")]
+    public async Task<IActionResult> UpdateArticle(UpdateArticleModel req)
+    {
+        ValidationResult results = new UpdateArticleModelValidator().Validate(req);
+
+        if (!results.IsValid) ValidationBadRequestResponse(results);
+
+        ErrorOr<Article?> result = await _articleService.UpdateArticle(
+            req.Id,
+            req.Name,
+            req.Description,
+            req.NewPrice,
+            req.ValidDate);
+
+        return result.Match(
+        authResult => Ok(new MessageDto("article updated.")),
+        errors => Problem(errors));
     }
 }
 
