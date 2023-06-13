@@ -1,7 +1,12 @@
 ﻿using API.Dtos;
 using API.Models.AddArticleImage;
 using API.Models.CreateArticle;
+using API.Models.UpdateArticle;
+using API.Models.UpdateCommerce;
+using API.Models.UpdateShop;
 using BLL.IServices;
+using BLL.Services;
+using DAL.IRepositories;
 using ErrorOr;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
@@ -15,13 +20,15 @@ public class ArticleController : BaseController
     private readonly IArticleService _articleService;
     private readonly Supabase.Client _supabaseClient;
     private readonly IConfiguration _configuration;
+    private readonly IArticleRepository _articleRepository;
 
 
-    public ArticleController(IArticleService article, Supabase.Client supabaseClient, IConfiguration configuration)
+    public ArticleController(IArticleService article, Supabase.Client supabaseClient, IConfiguration configuration, IArticleRepository articleRepository)
     {
         _articleService = article;
         _supabaseClient = supabaseClient;
         _configuration = configuration;
+        _articleRepository = articleRepository;
     }
 
     [HttpPost("article"), AllowAnonymous]
@@ -77,6 +84,31 @@ public class ArticleController : BaseController
         if (result.IsError) return Problem(result.Errors);
 
         return Ok(new MessageDto("article deleted."));
+    }
+
+    [HttpGet("articles")]
+    public async Task<IActionResult> GetArticles(int pageSize, int page)
+    {
+        return Ok(await _articleRepository.GetArticlesPaginatedQuery(pageSize, page));
+    }
+
+    [HttpPut("article/{id}")]
+    public async Task<IActionResult> UpdateArticle(UpdateArticleModel req)
+    {
+        ValidationResult results = new UpdateArticleModelValidator().Validate(req);
+
+        if (!results.IsValid) ValidationBadRequestResponse(results);
+
+        ErrorOr<Article?> result = await _articleService.UpdateArticle(
+            req.Id,
+            req.Name,
+            req.Description,
+            req.NewPrice,
+            req.ValidDate);
+
+        return result.Match(
+        authResult => Ok(new MessageDto("article updated.")),
+        errors => Problem(errors));
     }
 }
 

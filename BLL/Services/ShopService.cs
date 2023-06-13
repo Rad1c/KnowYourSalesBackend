@@ -14,7 +14,7 @@ public class ShopService : IShopService
         _shopRepository = shopRepository;
     }
 
-    public async Task<ErrorOr<Shop?>> CreateShop(string name, Guid commerceId, Guid cityId, decimal Longitude, decimal latitude, string? geoName, string? address)
+    public async Task<ErrorOr<Shop?>> CreateShop(string name, Guid commerceId, Guid cityId, string Longitude, string latitude, string? geoName, string? address)
     {
         Commerce? commerce = await _shopRepository.GetCommerceWithShops(commerceId);
 
@@ -50,7 +50,7 @@ public class ShopService : IShopService
 
     public Task<Commerce?> GetCommerceById(Guid id) => _shopRepository.GetCommerceById(id);
 
-    public async Task<ErrorOr<Shop?>> UpdateShop(Guid commerceId, Guid id, string? name, Guid? cityId, decimal? Longitude, decimal? latitude, string? geoName, string? address)
+    public async Task<ErrorOr<Shop?>> UpdateShop(Guid commerceId, Guid id, string? name, Guid? cityId, string? Longitude, string? latitude, string? geoName, string? address)
     {
         Commerce? commerce = await _shopRepository.GetCommerceWithShops(commerceId);
 
@@ -71,9 +71,9 @@ public class ShopService : IShopService
             shop!.City = city;
         }
 
-        if (latitude is not null) shop!.GeoPoint.Latitude = latitude.Value;
+        if (latitude is not null) shop!.GeoPoint.Latitude = latitude;
 
-        if (Longitude is not null) shop!.GeoPoint.Longitude = Longitude.Value;
+        if (Longitude is not null) shop!.GeoPoint.Longitude = Longitude;
 
         if (name is not null) shop!.GeoPoint.Name = geoName;
 
