@@ -34,9 +34,13 @@ public class ArticleService : IArticleService
         return true;
     }
 
-    public async Task<ErrorOr<Article?>> CreateArticle(Guid commerceId, List<Guid> shopIds, List<Guid> categoryIds, string name, string description, decimal oldPrice, decimal newPrice, string validDate)
+    public async Task<ErrorOr<Article?>> CreateArticle(Guid commerceId, string currencyName, List<Guid> shopIds, List<Guid> categoryIds, string name, string description, decimal oldPrice, decimal newPrice, string validDate)
     {
         Commerce? commerce = await _shopRepository.GetCommerceWithShops(commerceId);
+
+        Currency? currency = await _shopRepository.GetCurrencyByName(currencyName);
+
+        if (currency is null) return Errors.Errors.ArticleEr.CurrencyNotFound;
 
         foreach (var item in shopIds)
         {
@@ -58,8 +62,8 @@ public class ArticleService : IArticleService
             }
         }
 
-        List<Shop> shops = new List<Shop>();
-        
+        List<Shop> shops = new();
+
         foreach (var shopId in shopIds)
         {
             shops.Add(await _shopRepository.GetShop(shopId));
@@ -72,6 +76,7 @@ public class ArticleService : IArticleService
         Article newArticle = new()
         {
             Name = name,
+            Cur = currency,
             Description = description,
             OldPrice = oldPrice,
             NewPrice = newPrice,

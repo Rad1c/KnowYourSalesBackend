@@ -2,10 +2,7 @@
 using API.Models.AddArticleImage;
 using API.Models.CreateArticle;
 using API.Models.UpdateArticle;
-using API.Models.UpdateCommerce;
-using API.Models.UpdateShop;
 using BLL.IServices;
-using BLL.Services;
 using DAL.IRepositories;
 using ErrorOr;
 using FluentValidation.Results;
@@ -41,6 +38,7 @@ public class ArticleController : BaseController
 
         ErrorOr<Article?> result = await _articleService.CreateArticle(
             req.CommerceId,
+            req.CurrencyName,
             req.ShopIds,
             req.CategoryIds,
             req.Name,

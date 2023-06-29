@@ -40,5 +40,10 @@ public class ShopRepository : Repository, IShopRepository
         return await _context.Categories
             .ToListAsync();
     }
+
+    public async Task<Currency?> GetCurrencyByName(string name)
+        => await _context.Currencies.
+        Where(x => x.Name == name)
+        .FirstOrDefaultAsync();
 }
 
