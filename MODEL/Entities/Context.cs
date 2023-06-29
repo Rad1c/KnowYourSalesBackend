@@ -31,7 +31,7 @@ namespace MODEL.Entities
         public virtual DbSet<User> Users { get; set; } = null!;
         #endregion
 
-        #region methods
+        #region configurations
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasPostgresExtension("uuid-ossp");
@@ -321,10 +321,6 @@ namespace MODEL.Entities
                 entity.Property(e => e.Created).HasColumnName("created");
 
                 entity.Property(e => e.IsDeleted).HasColumnName("is_deleted");
-
-                entity.Property(e => e.Label)
-                    .HasMaxLength(5)
-                    .HasColumnName("label");
 
                 entity.Property(e => e.Modified).HasColumnName("modified");
 

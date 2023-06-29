@@ -9,7 +9,6 @@
 
         public string Name { get; set; } = null!;
         public string Code { get; set; } = null!;
-        public string Label { get; set; } = null!;
 
         public virtual ICollection<Article>? Articles { get; set; }
     }

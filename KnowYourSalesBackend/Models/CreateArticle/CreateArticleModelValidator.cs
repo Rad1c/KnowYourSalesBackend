@@ -9,6 +9,8 @@ public class CreateArticleModelValidator : AbstractValidator<CreateArticleModel>
     {
         RuleFor(x => x.CommerceId).NotNull().NotEmpty();
 
+        RuleFor(x => x.CurrencyName).NotNull().NotEmpty();
+
         RuleForEach(x => x.ShopIds).NotNull().NotEmpty();
 
         RuleForEach(x => x.CategoryIds).NotNull().NotEmpty();

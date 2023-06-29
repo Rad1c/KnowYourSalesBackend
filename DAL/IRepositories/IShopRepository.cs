@@ -7,5 +7,6 @@ public interface IShopRepository : IRepository<Commerce>
     public Task<Commerce?> GetCommerceWithShops(Guid id);
     public Task<Shop?> GetShop(Guid id);
     public Task<List<Category>> GetCategories();
+    public Task<Currency?> GetCurrencyByName(string name);
 }
 
