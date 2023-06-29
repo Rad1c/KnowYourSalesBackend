@@ -48,7 +48,7 @@ public class ArticleController : BaseController
             req.ValidDate);
 
         return result.Match(
-            authResult => Ok(new MessageDto("article added.")),
+            authResult => Ok(new MessageDto(result.Value!.Id.ToString()),
             errors => Problem(errors));
     }
 
