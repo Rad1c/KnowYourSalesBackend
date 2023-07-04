@@ -18,14 +18,15 @@ public class ArticleController : BaseController
     private readonly Supabase.Client _supabaseClient;
     private readonly IConfiguration _configuration;
     private readonly IArticleRepository _articleRepository;
+    private readonly IImageServices _imageService;
 
-
-    public ArticleController(IArticleService article, Supabase.Client supabaseClient, IConfiguration configuration, IArticleRepository articleRepository)
+    public ArticleController(IArticleService article, Supabase.Client supabaseClient, IConfiguration configuration, IArticleRepository articleRepository, IImageServices imageService)
     {
         _articleService = article;
         _supabaseClient = supabaseClient;
         _configuration = configuration;
         _articleRepository = articleRepository;
+        _imageService = imageService;
     }
 
     [HttpPost("article"), AllowAnonymous]
@@ -59,19 +60,15 @@ public class ArticleController : BaseController
 
         if (!results.IsValid) return ValidationBadRequestResponse(results);
 
-        var lastIndexOf = req.Image.FileName.LastIndexOf(".");
-        string exstension = req.Image.FileName[(lastIndexOf + 1)..];
-        Guid imgId = Guid.NewGuid();
-        string path = $"article-{req.ArticleId}-img-{imgId}.{exstension}";
+        ErrorOr<string> saveImageResult = await _imageService.AddArticleImage(req.ArticleId, req.Image);
 
-        ErrorOr<bool> result = await _articleService.AddArticleImage(req.ArticleId, path);
+        if (saveImageResult.IsError) return Problem(saveImageResult.Errors);
 
-        using var memoryStream = new MemoryStream();
-        await req.Image.CopyToAsync(memoryStream);
+        ErrorOr<bool> result = await _articleService.AddArticleImage(req.ArticleId, saveImageResult.Value, req.isThumbnail);
 
-        await _supabaseClient.Storage.From(_configuration["supabase:productBucket"]).Upload(memoryStream.ToArray(), path);
-
-        return OkResponse<bool>(result, "article image added.");
+        return result.Match(
+        authResult => Ok(new MessageDto(saveImageResult.Value)),
+        errors => Problem(errors));
     }
 
     [HttpDelete("article/{id}")]

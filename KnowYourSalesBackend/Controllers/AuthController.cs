@@ -82,7 +82,7 @@ public class AuthController : BaseController
 
         if (!_authService.VerifyPasswordHash(req.Password, userResult.Value!.Password, userResult.Value.Salt!))
         {
-            return Problem(Errors.AuthEr.InvalidCredentials);
+            return Problem(Errors.Auth.InvalidCredentials);
         }
 
         RoleEnum userRole = Enumeration.GetByCode<RoleEnum>(userResult.Value.Role.Code)!;
@@ -115,15 +115,15 @@ public class AuthController : BaseController
     {
         if (String.IsNullOrEmpty(refreshToken))
         {
-            return Problem(Errors.AuthEr.BadToken);
+            return Problem(Errors.Auth.BadToken);
         }
         var claims = _authService.ValidateToken(refreshToken);
 
         if (claims.Count == 0)
-            return Problem(Errors.AuthEr.BadToken);
+            return Problem(Errors.Auth.BadToken);
 
         if (!claims["type"].Equals(TokenTypeEnum.RefreshToken.Code))
-            return Problem(Errors.AuthEr.BadToken);
+            return Problem(Errors.Auth.BadToken);
 
         string newAccessToken = _authService.CreateToken(
             Guid.Parse(claims["nameid"]),

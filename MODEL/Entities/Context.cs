@@ -488,6 +488,8 @@ namespace MODEL.Entities
 
                 entity.Property(e => e.Modified).HasColumnName("modified");
 
+                entity.Property(e => e.IsThumbnail).HasColumnName("is_thumbnail");
+
                 entity.Property(e => e.PicUrl)
                     .HasMaxLength(512)
                     .HasColumnName("pic")

@@ -5,7 +5,6 @@ using MODEL;
 using MODEL.Entities;
 using MODEL.QueryModels.ReferenteData;
 using System.Text;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace DAL.Repositories;
 
@@ -17,13 +16,6 @@ public class ArticleRepository : Repository, IArticleRepository
     {
         _context = context;
         _queryContext = queryContext;
-    }
-
-    public async Task<Article?> GetArticleById(Guid id)
-    {
-        return await _context.Articles
-            .Where(x => x.Id == id && !x.IsDeleted)
-            .FirstOrDefaultAsync();
     }
 
     public async Task<Article?> GetArticleByNameQuery(Guid commerceId, string name)
@@ -83,4 +75,8 @@ public class ArticleRepository : Repository, IArticleRepository
         return article.ToList();
     }
 
+    public async Task<Article?> GetArticleWithImages(Guid id)
+    {
+        return await _context.Articles.Include(p => p.Pictures).FirstOrDefaultAsync(p => p.Id == id);
+    }
 }

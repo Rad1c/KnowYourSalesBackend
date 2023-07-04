@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
@@ -7,11 +7,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="ErrorOr" Version="1.2.1" />
-	  <PackageReference Include="Hellang.Middleware.ProblemDetails" Version="6.5.1" />
-	  <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-	  <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.10.0" />
-	  <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.10.0" />
+		<PackageReference Include="ErrorOr" Version="1.2.1" />
+		<PackageReference Include="Hellang.Middleware.ProblemDetails" Version="6.5.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+		<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.10.0" />
+		<PackageReference Include="supabase-csharp" Version="0.12.0" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.10.0" />
 	</ItemGroup>
 
 	<ItemGroup>

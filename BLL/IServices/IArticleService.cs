@@ -10,5 +10,5 @@ public interface IArticleService
     public Task<ErrorOr<Article?>> UpdateArticle(Guid articleId, string? name, string? description,
         decimal? newPrice, string? validDate);
     public Task<ErrorOr<bool>> DeleteArticle(Guid id);
-    public Task<ErrorOr<bool>> AddArticleImage(Guid articleId, string path);
+    public Task<ErrorOr<bool>> AddArticleImage(Guid articleId, string path, bool isThumbnail);
 }

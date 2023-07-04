@@ -2,6 +2,7 @@
 using BLL.IServices;
 using DAL.IRepositories;
 using ErrorOr;
+using Microsoft.Extensions.Configuration;
 using MODEL.Entities;
 
 namespace BLL.Services;
@@ -10,24 +11,28 @@ public class ArticleService : IArticleService
 {
     private readonly IArticleRepository _articleRepository;
     private readonly IShopRepository _shopRepository;
+    private readonly IConfiguration _configuration;
 
-    public ArticleService(IArticleRepository articleRepository, IShopRepository shopRepository)
+    public ArticleService(IArticleRepository articleRepository, IShopRepository shopRepository, IConfiguration configuration)
     {
         _articleRepository = articleRepository;
         _shopRepository = shopRepository;
+        _configuration = configuration;
     }
 
-    public async Task<ErrorOr<bool>> AddArticleImage(Guid articleId, string path)
+    public async Task<ErrorOr<bool>> AddArticleImage(Guid articleId, string path, bool isThumbnail)
     {
-        Article? article = await _articleRepository.GetArticleById(articleId);
+        Article? article = await _articleRepository.GetArticleWithImages(articleId);
 
-        if (article is null)
-            return Errors.Errors.ArticleEr.ArticleNotFound;
+        if (article is null) return Errors.Errors.Article.ArticleNotFound;
+
+        if (article.Pictures.Count > int.Parse(_configuration["maxImagesPerArticle"])) return Errors.Errors.Article.ToMuchImagesPerProduct;
 
         Picture newPicture = new()
         {
-            ArticleId = articleId,
-            PicUrl = path
+            ArticleId = article.Id,
+            PicUrl = path,
+            IsThumbnail = isThumbnail
         };
 
         _articleRepository.Save<Picture>(newPicture);
@@ -40,7 +45,7 @@ public class ArticleService : IArticleService
 
         Currency? currency = await _shopRepository.GetCurrencyByName(currencyName);
 
-        if (currency is null) return Errors.Errors.ArticleEr.CurrencyNotFound;
+        if (currency is null) return Errors.Errors.Article.CurrencyNotFound;
 
         foreach (var item in shopIds)
         {
@@ -71,7 +76,7 @@ public class ArticleService : IArticleService
 
         Article? article = await _articleRepository.GetArticleByName(commerceId, name);
 
-        if (article is not null) return Errors.Errors.ArticleEr.ArticleAddedAlready;
+        if (article is not null) return Errors.Errors.Article.ArticleAddedAlready;
 
         Article newArticle = new()
         {
@@ -93,10 +98,10 @@ public class ArticleService : IArticleService
 
     public async Task<ErrorOr<bool>> DeleteArticle(Guid id)
     {
-        Article? article = await _articleRepository.GetArticleById(id);
+        Article? article = await _articleRepository.GetById<Article>(id);
 
         if (article is null)
-            return Errors.Errors.ArticleEr.ArticleNotFound;
+            return Errors.Errors.Article.ArticleNotFound;
 
         article.IsDeleted = true;
 
@@ -106,10 +111,10 @@ public class ArticleService : IArticleService
 
     public async Task<ErrorOr<Article?>> UpdateArticle(Guid articleId, string? name, string? description, decimal? newPrice, string? validDate)
     {
-        Article? article = await _articleRepository.GetArticleById(articleId);
+        Article? article = await _articleRepository.GetById<Article>(articleId);
 
         if (article is null)
-            return Errors.Errors.ArticleEr.ArticleNotFound;
+            return Errors.Errors.Article.ArticleNotFound;
 
         if (name is not null) article.Name = name;
 
