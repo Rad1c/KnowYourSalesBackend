@@ -15,6 +15,7 @@ namespace BLL
             services.AddScoped<IShopService, ShopService>();
             services.AddScoped<IArticleService, ArticleService>();
             services.AddScoped<ICommerceService, CommerceService>();
+            services.AddScoped<IImageServices, ImageServices>();
 
             return services;
         }

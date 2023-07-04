@@ -7,5 +7,9 @@ public class AddArticleImageModelValidator : AbstractValidator<AddArticleImageMo
     public AddArticleImageModelValidator()
     {
         RuleFor(x => x.ArticleId).NotEmpty().NotNull();
+
+        RuleFor(x => x.Image).NotEmpty().NotNull();
+
+        RuleFor(x => x.isThumbnail).NotNull();
     }
 }

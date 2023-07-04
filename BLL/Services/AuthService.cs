@@ -102,7 +102,7 @@ public sealed class AuthService : IAuthService
     {
         Account? account = await _authRepository.GetAccountByEmail(email);
 
-        if (account == null) return Errors.Errors.AuthEr.InvalidCredentials;
+        if (account == null) return Errors.Errors.Auth.InvalidCredentials;
 
         return account;
     }
