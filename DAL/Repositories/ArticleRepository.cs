@@ -40,7 +40,7 @@ public class ArticleRepository : Repository, IArticleRepository
 
     public async Task<List<ArticleQueryModel>> GetArticlesPaginatedQuery(int pageSize, int page, string? name, string? cityName = null, string? categoryName = null, Guid? commerceId = null)
     {
-        var queryBuilder = new StringBuilder("SELECT a.name, a.old_price AS \"oldPrice\", a.new_price AS \"newPrice\", a.sale, a.created, a.valid_date AS \"validDate\", p.pic AS \"picture\", c.logo FROM article a ")
+        var queryBuilder = new StringBuilder("SELECT a.id, s.com_id as \"commerceId\", cat.name as \"categoryName\", city.name as \"cityName\", a.name, a.old_price AS \"oldPrice\", a.new_price AS \"newPrice\", a.sale, a.created, a.valid_date AS \"validDate\", p.pic AS \"picture\", c.logo FROM article a ")
             .Append("JOIN article_in_shop ais ON a.id = ais.art_id JOIN shop s ON ais.id = s.id JOIN commerce c ON c.id = s.com_id ")
             .Append("JOIN city ON city.id = s.cit_id JOIN picture p ON a.id = p.art_id JOIN article_in_category aic ON aic.art_id = a.id ")
             .Append("JOIN category cat ON cat.id = aic.id ")
