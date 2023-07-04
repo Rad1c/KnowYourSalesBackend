@@ -82,9 +82,9 @@ public class ArticleController : BaseController
     }
 
     [HttpGet("articles")]
-    public async Task<IActionResult> GetArticles(int pageSize, int page)
+    public async Task<IActionResult> GetArticles(int pageSize, int page, string? name = null, string? cityName = null, string? categoryName = null, Guid? commerceId = null)
     {
-        return Ok(await _articleRepository.GetArticlesPaginatedQuery(pageSize, page));
+        return Ok(await _articleRepository.GetArticlesPaginatedQuery(pageSize, page, name, cityName, categoryName, commerceId));
     }
 
     [HttpPut("article/{id}")]
