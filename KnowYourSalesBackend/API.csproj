@@ -4,11 +4,14 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>dedf2287-22cf-4c28-88e2-f41d38ef622e</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="FluentValidation" Version="11.4.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.16" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.2" />
 		<PackageReference Include="RestSharp" Version="109.0.0" />
 		<PackageReference Include="supabase-csharp" Version="0.12.1" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
