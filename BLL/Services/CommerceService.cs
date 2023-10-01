@@ -48,7 +48,7 @@ public class CommerceService : ICommerceService
 
         if (city is null) return Errors.Errors.Commerce.CityNotFound;
 
-        Role? role = await _commerceRepository.GetRoleByCode(RoleEnum.Shop.Code);
+        Role? role = await _commerceRepository.GetRoleByCode(RoleEnum.Commerce.Code);
 
         Account acc = new()
         {

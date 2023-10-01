@@ -85,7 +85,7 @@ public sealed class AuthService : IAuthService
                 IssuerSigningKey = new SymmetricSecurityKey(key),
                 ValidateIssuer = false,
                 ValidateAudience = false,
-                ClockSkew = TimeSpan.Zero
+                ClockSkew = TimeSpan.FromSeconds(15)
             }, out SecurityToken validatedToken);
 
             var jwtToken = (JwtSecurityToken)validatedToken;
