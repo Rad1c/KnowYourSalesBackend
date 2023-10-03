@@ -26,7 +26,7 @@ public class CommerceService : ICommerceService
         commerce.Account.IsDeleted = true;
         commerce.IsDeleted = true;
 
-        _commerceRepository.UpdateEntity<MODEL.Entities.Commerce>(commerce!);
+        _commerceRepository.UpdateEntity(commerce!);
         return true;
     }
 
@@ -88,7 +88,7 @@ public class CommerceService : ICommerceService
 
         if (logo is not null) commerce.Logo = logo;
 
-        _commerceRepository.UpdateEntity<MODEL.Entities.Commerce>(commerce!);
+        _commerceRepository.UpdateEntity(commerce!);
         return true;
     }
 }
