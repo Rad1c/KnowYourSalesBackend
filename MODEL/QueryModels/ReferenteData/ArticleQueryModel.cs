@@ -10,7 +10,8 @@ public record ArticleQueryModel
     public string Logo { get; init; } = null!;
     public decimal OldPrice { get; init; }
     public decimal NewPrice { get; init; }
-    public string IsCreated { get; init; } = null!;  
+    public decimal Sale {  get; init; }
+    public string Created { get; init; } = null!;  
     public string ValidDate { get; init; } = null!;
     public string Picture { get; init; } = null!;
 }
