@@ -3,6 +3,9 @@
 /* Created on:   21/04/2023 11:11:40 pm         */
 /*==============================================================*/
 
+DROP EXTENSION IF EXISTS "uuid-ossp" CASCADE;
+CREATE EXTENSION "uuid-ossp";
+
 
 DROP INDEX IF EXISTS ACC_HAS_R_FK;
 
@@ -110,7 +113,7 @@ DROP INDEX IF EXISTS U_HAS_ACC_FK;
 
 DROP INDEX IF EXISTS USER_PK;
 
-DROP TABLE "user" CASCADE;
+DROP TABLE IF exists "user" CASCADE;
 
 
 
@@ -579,14 +582,14 @@ GEO_ID
 /*==============================================================*/
 CREATE TABLE "user" (
  ID       UUID DEFAULT uuid_generate_v4(),
- ACC_ID     UUID       NOT NULL,
- CREATED      TIMESTAMP(0)     NOT NULL,
- MODIFIED     TIMESTAMP(0)     NULL,
- IS_DELETED     BOOLEAN       NOT NULL,
- NAME       VARCHAR(25)    NOT NULL,
- SURNAME      VARCHAR(25)    NOT NULL,
- SEX      CHAR(1)      NOT NULL,
- BIRTHDATE    TIMESTAMP(0)       NOT NULL,
+ ACC_ID     	UUID       		NOT NULL,
+ CREATED      	TIMESTAMP(0)     	NOT NULL,
+ MODIFIED     	TIMESTAMP(0)     	NULL,
+ IS_DELETED     BOOLEAN       		NOT NULL,
+ NAME       	VARCHAR(25)    		NOT NULL,
+ SURNAME      	VARCHAR(25)    		NOT NULL,
+ SEX      	CHAR(1)      		NOT NULL,
+ BIRTHDATE    	DATE       		NOT NULL,
  CONSTRAINT PK_USER PRIMARY KEY (ID)
 );
 
@@ -698,36 +701,31 @@ ALTER TABLE "user"
  ADD CONSTRAINT FK_USER_U_HAS_ACC_ACCOUNT FOREIGN KEY (ACC_ID)
   REFERENCES ACCOUNT (ID)
   ON DELETE RESTRICT ON UPDATE RESTRICT;
+
 --- INSERTS---
 
-INSERT INTO COUNTRY (CREATED, IS_DELETED, NAME)
-VALUES
-    (CURRENT_TIMESTAMP, FALSE, 'hrvatska'),
-    (CURRENT_TIMESTAMP, FALSE, 'bosna i hercegovina'),
-    (CURRENT_TIMESTAMP, FALSE, 'srbija'),
-    (CURRENT_TIMESTAMP, FALSE, 'crna montenegro');
+INSERT INTO COUNTRY (created, modified, is_deleted, name, code)
+VALUES 
+	(CURRENT_TIMESTAMP, null, false, 'Bosna i Hercegovina', 'BIH'),
+	(CURRENT_TIMESTAMP, null, false, 'Srbija', 'SRB'),
+    	(CURRENT_TIMESTAMP, null, false, 'Hrvatska', 'HRV'),
+    	(CURRENT_TIMESTAMP, null, false, 'Crna Gora', 'CNG');
 
-(SELECT ID FROM COUNTRY WHERE NAME = 'bosna i hercegovina');
-
-INSERT INTO CITY (COU_ID, CREATED, IS_DELETED, NAME)
-VALUES
-  ((SELECT ID FROM COUNTRY WHERE NAME = 'bosna i hercegovina'), CURRENT_TIMESTAMP, FALSE, 'Grbavica'),
-  ((SELECT ID FROM COUNTRY WHERE NAME = 'bosna i hercegovina'), CURRENT_TIMESTAMP, FALSE, 'Alipasino Polje'),
-  ((SELECT ID FROM COUNTRY WHERE NAME = 'bosna i hercegovina'), CURRENT_TIMESTAMP, FALSE, 'Stari Grad'),
-  ((SELECT ID FROM COUNTRY WHERE NAME = 'bosna i hercegovina'), CURRENT_TIMESTAMP, FALSE, 'Centar Sarajevo'),
-  ((SELECT ID FROM COUNTRY WHERE NAME = 'bosna i hercegovina'), CURRENT_TIMESTAMP, FALSE, 'Novi Grad Sarajevo'),
-  ((SELECT ID FROM COUNTRY WHERE NAME = 'bosna i hercegovina'), CURRENT_TIMESTAMP, FALSE, 'Ilidza'),
-  ((SELECT ID FROM COUNTRY WHERE NAME = 'bosna i hercegovina'), CURRENT_TIMESTAMP, FALSE, 'Lukavica'),
-  ((SELECT ID FROM COUNTRY WHERE NAME = 'bosna i hercegovina'), CURRENT_TIMESTAMP, FALSE, 'Dobrinja'),
-  ((SELECT ID FROM COUNTRY WHERE NAME = 'bosna i hercegovina'), CURRENT_TIMESTAMP, FALSE, 'Hrasno'),
-  ((SELECT ID FROM COUNTRY WHERE NAME = 'bosna i hercegovina'), CURRENT_TIMESTAMP, FALSE, 'Bijeljina'),
-  ((SELECT ID FROM COUNTRY WHERE NAME = 'bosna i hercegovina'), CURRENT_TIMESTAMP, FALSE, 'Prijedor'),
-  ((SELECT ID FROM COUNTRY WHERE NAME = 'bosna i hercegovina'), CURRENT_TIMESTAMP, FALSE, 'Brcko'),
-  ((SELECT ID FROM COUNTRY WHERE NAME = 'bosna i hercegovina'), CURRENT_TIMESTAMP, FALSE, 'Mostar'),
-  ((SELECT ID FROM COUNTRY WHERE NAME = 'bosna i hercegovina'), CURRENT_TIMESTAMP, FALSE, 'Sarajevo'),
-  ((SELECT ID FROM COUNTRY WHERE NAME = 'bosna i hercegovina'), CURRENT_TIMESTAMP, FALSE, 'Banja Luka'),
-  ((SELECT ID FROM COUNTRY WHERE NAME = 'bosna i hercegovina'), CURRENT_TIMESTAMP, FALSE, 'Tuzla'),
-  ((SELECT ID FROM COUNTRY WHERE NAME = 'bosna i hercegovina'), CURRENT_TIMESTAMP, FALSE, 'Zenica');
+INSERT into city (cou_id, created, modified, is_deleted, "name")
+VALUES 
+((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Sarajevo'),
+((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Banja Luka'),
+((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Tuzla'),
+((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Istočno Sarajevo'),
+((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Mostar'),
+((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Bijeljina'),
+((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Brčko'),
+((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Zenica'),
+((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Trebinje'),
+((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Doboj'),
+((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Zvornik'),
+((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Foča'),
+((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Prijedor');
 
 INSERT INTO category (is_deleted, created, name, display_seq)
 VALUES
@@ -749,15 +747,20 @@ VALUES
 (false, CURRENT_TIMESTAMP, 'EUR', '€'),
 (false, CURRENT_TIMESTAMP, 'BAM', 'KM');
 
-  -- MATERIALIZED VIEWS
-  --COUNTRY
-DROP MATERIALIZED VIEW mv_countries;
+  							-- MATERIALIZED VIEWS
+
+-- COUNTRY
+-- Create the materialized view
+DROP MATERIALIZED VIEW IF EXISTS mv_countries;
 CREATE MATERIALIZED VIEW mv_countries AS
-SELECT cou.id as "CountryId", cou.name as "CountryName", c.id as "CityId", c.name as "CityName" FROM city c RIGHT JOIN country cou ON cou.id = c.cou_id
+SELECT cou.id as "CountryId", cou.name as "CountryName", cou.code as "Code", c.id as "CityId", c.name as "CityName" FROM city c 
+RIGHT JOIN country cou ON cou.id = c.cou_id
 WITH DATA;
 
+-- Create the index
 CREATE UNIQUE INDEX idx_mv_countries_id ON mv_countries ("CityName");
 
+-- Create the refresh function
 CREATE OR REPLACE FUNCTION refresh_mv_countries()
 RETURNS TRIGGER AS
 $$
@@ -774,11 +777,15 @@ AFTER INSERT OR UPDATE ON COUNTRY
 FOR EACH ROW
 EXECUTE FUNCTION refresh_mv_countries();
 
--- categories
+
+-- CATEGORIES
+-- Create the materialized view
+DROP MATERIALIZED VIEW IF EXISTS mv_categories;
 CREATE MATERIALIZED VIEW IF NOT EXISTS mv_categories AS
 SELECT id, name, display_seq as "displaySeq" FROM category WHERE is_deleted = false
 WITH DATA;
 
+-- Create the refresh function
 CREATE OR REPLACE FUNCTION refresh_mv_categories()
 RETURNS TRIGGER AS
 $$
@@ -789,14 +796,14 @@ END;
 $$
 LANGUAGE plpgsql;
 
+-- Create the trigger
 CREATE OR REPLACE TRIGGER mv_categories_refresh_trigger
 AFTER INSERT OR UPDATE ON category
 FOR EACH ROW
 EXECUTE FUNCTION refresh_mv_categories();
 
---ARTICLE
-
---Create the materialized view
+-- ARTICLE
+-- Create the materialized view
 DROP MATERIALIZED VIEW IF EXISTS mv_articles;
 CREATE MATERIALIZED VIEW IF NOT EXISTS mv_articles 
 AS
@@ -807,6 +814,7 @@ JOIN article_in_shop ais ON ais.art_id = a.id
 JOIN shop s ON s.id = ais.id
 WITH DATA;
 
+-- Create the refresh function
 CREATE OR REPLACE FUNCTION refresh_mv_articles()
 RETURNS TRIGGER AS
 $$
@@ -817,8 +825,13 @@ END;
 $$
 LANGUAGE plpgsql;
 
---Create the trigger
+-- Create the trigger
 CREATE OR REPLACE TRIGGER mv_articles_refresh_trigger
 AFTER INSERT OR UPDATE ON article
 FOR EACH ROW
 EXECUTE FUNCTION refresh_mv_articles();
+
+CREATE OR REPLACE TRIGGER mv_countries_cities_refresh_trigger
+AFTER INSERT OR UPDATE ON CITY
+FOR EACH ROW
+EXECUTE FUNCTION refresh_mv_countries();
