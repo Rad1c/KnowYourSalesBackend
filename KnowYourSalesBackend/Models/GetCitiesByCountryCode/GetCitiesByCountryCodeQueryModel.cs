@@ -1,4 +1,4 @@
-﻿namespace API.Models.GetCitiesByCountryCode;
+﻿namespace API.Models;
 
 public record GetCitiesByCountryCodeQueryModel
 {

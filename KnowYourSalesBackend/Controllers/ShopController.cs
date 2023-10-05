@@ -1,6 +1,6 @@
 ﻿using API.Dtos;
-using API.Models.CreateShop;
-using API.Models.UpdateShop;
+using API.Models;
+using API.Models.Validators;
 using BLL.IServices;
 using ErrorOr;
 using FluentValidation.Results;
@@ -12,10 +12,12 @@ namespace API.Controllers;
 public class ShopController : BaseController
 {
     private readonly IShopService _shopService;
+    private readonly ISessionService _sessionService;
 
-    public ShopController(IShopService shopService)
+    public ShopController(IShopService shopService, ISessionService sessionService)
     {
         _shopService = shopService;
+        _sessionService = sessionService;
     }
 
     [HttpPost("shop")]
@@ -27,7 +29,7 @@ public class ShopController : BaseController
 
         ErrorOr<Shop?> result = await _shopService.CreateShop(
             req.Name.Trim(),
-            req.CommerceId,
+            _sessionService.Id,
             req.CityId,
             req.GeoPoint.Longitude,
             req.GeoPoint.Latitude,
@@ -48,7 +50,7 @@ public class ShopController : BaseController
 
         //TODO: check if shop not belongs to commerce (token check)
         ErrorOr<Shop?> result = await _shopService.UpdateShop(
-            req.CommerceId,
+            _sessionService.Id,
             req.Id,
             req?.Name?.Trim(),
             req?.CityId,

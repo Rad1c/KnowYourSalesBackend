@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace API.Models.RegisterCommerce
+namespace API.Models.Validators
 {
     public class RegisterCommerceModelValidator : AbstractValidator<RegisterCommerceModel>
     {

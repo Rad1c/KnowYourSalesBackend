@@ -1,7 +1,6 @@
 ﻿using API.Dtos;
-using API.Models.AddArticleImage;
-using API.Models.CreateArticle;
-using API.Models.UpdateArticle;
+using API.Models;
+using API.Models.Validators;
 using BLL.IServices;
 using DAL.IRepositories;
 using ErrorOr;
@@ -15,22 +14,22 @@ namespace API.Controllers;
 public class ArticleController : BaseController
 {
     private readonly IArticleService _articleService;
-    private readonly Supabase.Client _supabaseClient;
-    private readonly IConfiguration _configuration;
     private readonly IArticleRepository _articleRepository;
     private readonly IImageServices _imageService;
+    private readonly ISessionService _sessionService;
 
-    public ArticleController(IArticleService article, Supabase.Client supabaseClient, IConfiguration configuration, IArticleRepository articleRepository, IImageServices imageService)
+    public ArticleController(IArticleService article,
+        IArticleRepository articleRepository,
+        IImageServices imageService,
+        ISessionService sessionService)
     {
         _articleService = article;
-        _supabaseClient = supabaseClient;
-        _configuration = configuration;
         _articleRepository = articleRepository;
         _imageService = imageService;
+        _sessionService = sessionService;
     }
 
-    [HttpPost("article"), AllowAnonymous]
-    //[HttpPost("article")]
+    [HttpPost("article")]
     public async Task<IActionResult> AddArticle(CreateArticleModel req)
     {
         ValidationResult results = new CreateArticleModelValidator().Validate(req);
@@ -38,7 +37,7 @@ public class ArticleController : BaseController
         if (!results.IsValid) return ValidationBadRequestResponse(results);
 
         ErrorOr<Article?> result = await _articleService.CreateArticle(
-            req.CommerceId,
+            _sessionService.Id,
             req.CurrencyName,
             req.ShopIds,
             req.CategoryIds,
@@ -81,12 +80,6 @@ public class ArticleController : BaseController
         return Ok(new MessageDto("article deleted."));
     }
 
-    [HttpGet("articles")]
-    public async Task<IActionResult> GetArticles(int pageSize, int page, string? name = null, string? cityName = null, string? categoryName = null, Guid? commerceId = null)
-    {
-        return Ok(await _articleRepository.GetArticlesPaginatedQuery(pageSize, page, name, cityName, categoryName, commerceId));
-    }
-
     [HttpPut("article/{id}")]
     public async Task<IActionResult> UpdateArticle(UpdateArticleModel req)
     {
@@ -104,6 +97,13 @@ public class ArticleController : BaseController
         return result.Match(
         authResult => Ok(new MessageDto("article updated.")),
         errors => Problem(errors));
+    }
+
+    [AllowAnonymous]
+    [HttpGet("articles")]
+    public async Task<IActionResult> GetArticles(int pageSize, int page, string? name = null, string? cityName = null, string? categoryName = null, Guid? commerceId = null)
+    {
+        return Ok(await _articleRepository.GetArticlesPaginatedQuery(pageSize, page, name, cityName, categoryName, commerceId));
     }
 }
 

@@ -1,7 +1,7 @@
 ﻿using API.Dtos;
+using API.Models;
 using BLL.IServices;
 using ErrorOr;
-using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MODEL.QueryModels.Commerce;
@@ -22,10 +22,6 @@ public class CommerceController : BaseController
     [HttpPut("commerce")]
     public async Task<IActionResult> UpdateCommerce(UpdateCommerceModel req)
     {
-        ValidationResult results = new UpdateCommerceModelValidator().Validate(req);
-
-        if (!results.IsValid) return ValidationBadRequestResponse(results);
-
         ErrorOr<bool> updateResult = await _commerceService.UpdateCommerce(
             _sessionService.Id,
             req.Name,

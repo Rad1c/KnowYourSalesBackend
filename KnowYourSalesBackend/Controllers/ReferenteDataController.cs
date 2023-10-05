@@ -1,11 +1,14 @@
-﻿using API.Models.GetCitiesByCountryCode;
+﻿using API.Models;
+using API.Models.Validators;
 using DAL.IRepositories;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MODEL.QueryModels.ReferenteData;
 
 namespace API.Controllers;
 
+[AllowAnonymous]
 public class ReferenteDataController : BaseController
 {
     private readonly IReferenteDataRepository _referenteDataRepository;

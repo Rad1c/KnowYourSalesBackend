@@ -1,17 +1,18 @@
 ﻿using API.Dtos;
-using API.Models.Login;
-using API.Models.RegisterCommerce;
-using API.Models.RegisterUser;
+using API.Models;
+using API.Models.Validators;
 using BLL.Enums;
 using BLL.Errors;
 using BLL.IServices;
 using ErrorOr;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MODEL.Entities;
 
 namespace API.Controllers;
 
+[AllowAnonymous]
 public class AuthController : BaseController
 {
     private readonly IUserService _userService;

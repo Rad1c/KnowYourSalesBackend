@@ -1,7 +1,7 @@
 ﻿using BLL.Helper;
 using FluentValidation;
 
-namespace API.Models.RegisterUser;
+namespace API.Models.Validators;
 
 public class RegisterUserModelValidator : AbstractValidator<RegisterUserModel>
 {

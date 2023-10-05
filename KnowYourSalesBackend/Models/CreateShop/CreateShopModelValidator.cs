@@ -1,15 +1,12 @@
-﻿using API.Models.Common;
-using FluentValidation;
+﻿using FluentValidation;
 
-namespace API.Models.CreateShop;
+namespace API.Models.Validators;
 
 public class CreateShopModelValidator : AbstractValidator<CreateShopModel>
 {
     public CreateShopModelValidator()
     {
         RuleFor(x => x.Name).NotEmpty();
-
-        RuleFor(x => x.CommerceId).NotNull().NotEmpty();
 
         RuleFor(x => x.CityId).NotNull().NotEmpty();
 

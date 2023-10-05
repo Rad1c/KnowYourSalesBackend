@@ -1,4 +1,4 @@
-﻿namespace API.Models.Common;
+﻿namespace API.Models;
 
 public record GeoPointModel
 {

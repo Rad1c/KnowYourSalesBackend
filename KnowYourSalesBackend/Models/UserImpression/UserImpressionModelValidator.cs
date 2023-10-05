@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace API.Models.UserImpression;
+namespace API.Models.Validators;
 
 public class UserImpressionModelValidator : AbstractValidator<UserImpressionModel>
 {

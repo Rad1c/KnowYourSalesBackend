@@ -1,4 +1,4 @@
-﻿namespace API.Models.RegisterUser;
+﻿namespace API.Models;
 
 public record RegisterUserModel
 {

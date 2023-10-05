@@ -1,4 +1,4 @@
-﻿namespace API.Models.UpdateArticle;
+﻿namespace API.Models;
 
 public record UpdateArticleModel
 {

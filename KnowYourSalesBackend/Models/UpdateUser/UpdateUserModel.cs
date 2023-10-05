@@ -1,4 +1,4 @@
-﻿namespace API.Models.UpdateUser;
+﻿namespace API.Models;
 
 public record UpdateUserModel
 {

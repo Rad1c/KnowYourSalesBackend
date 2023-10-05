@@ -36,6 +36,13 @@ public static class ConfigureServices
 
         services.AddSwaggerGen(options =>
         {
+            options.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Version = "v1",
+                Title = "Know Your Sales API",
+                Description = "API definitions for KnowYourSales backend"
+            });
+
             options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
             {
                 Description = "Standard Authorization header using the Bearer Scheme (\"bearer {token} \")",

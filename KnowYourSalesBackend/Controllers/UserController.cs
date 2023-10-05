@@ -1,15 +1,13 @@
 ﻿using API.Dtos;
-using API.Models.AddFavoriteArticle;
-using API.Models.AddFavoriteCommerce;
-using API.Models.RemoveFavoriteCommerce;
-using API.Models.UpdateUser;
-using API.Models.UserImpression;
+using API.Models;
+using API.Models.Validators;
 using BLL.Enums;
 using BLL.Errors;
 using BLL.IServices;
 using DAL.IRepositories;
 using ErrorOr;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MODEL.QueryModels.User;
 
@@ -36,7 +34,7 @@ public class UserController : BaseController
         if (!results.IsValid) return ValidationBadRequestResponse(results);
 
         ErrorOr<bool> updateResult = await _userService.UpdateUser(
-            req.Id,                 //TODO: ID from token
+            _session.Id,
             req.FirstName,
             req.LastName,
             req.DateOfBirth,
@@ -45,20 +43,20 @@ public class UserController : BaseController
         return OkResponse<bool>(updateResult, "user updated.");
     }
 
-    [HttpDelete("user/{id}")]
-    public async Task<IActionResult> DeleteUser(Guid id)
+    [HttpDelete("user")]
+    public async Task<IActionResult> DeleteUser()
     {
-        ErrorOr<bool> result = await _userService.DeleteUser(id);
+        ErrorOr<bool> result = await _userService.DeleteUser(_session.Id);
 
         if (result.IsError) return Problem(result.Errors);
 
         return Ok(new MessageDto("user deleted."));
     }
 
-    [HttpGet("user/{userId}")]
-    public async Task<IActionResult> GetUser(Guid userId)
+    [HttpGet("user")]
+    public async Task<IActionResult> GetUser()
     {
-        UserQueryModel? user = await _userService.GetUserQuery(userId);
+        UserQueryModel? user = await _userService.GetUserQuery(_session.Id);
 
         if (user is null) return Problem(Errors.User.UserNotFound);
 
@@ -72,7 +70,7 @@ public class UserController : BaseController
 
         if (!results.IsValid) return ValidationBadRequestResponse(results);
 
-        ErrorOr<bool> result = await _userService.AddUserImpression(req.UserId, req.Impression);
+        ErrorOr<bool> result = await _userService.AddUserImpression(_session.Id, req.Impression);
 
         return OkResponse<bool>(result, "impression added.");
     }
@@ -84,7 +82,7 @@ public class UserController : BaseController
 
         if (!results.IsValid) return ValidationBadRequestResponse(results);
 
-        ErrorOr<bool> result = await _userService.AddFavoriteCommerce(req.UserId, req.CommerceId);
+        ErrorOr<bool> result = await _userService.AddFavoriteCommerce(_session.Id, req.CommerceId);
 
         return OkResponse<bool>(result, "commerce added in favorites.");
     }
@@ -96,17 +94,18 @@ public class UserController : BaseController
 
         if (!results.IsValid) return ValidationBadRequestResponse(results);
 
-        ErrorOr<bool> result = await _userService.RemoveCommerceFromFavorites(req.Id, req.CommerceId);
+        ErrorOr<bool> result = await _userService.RemoveCommerceFromFavorites(_session.Id, req.CommerceId);
 
         return OkResponse<bool>(result, "commerce removed from favorites.");
     }
 
     [HttpGet("user/favoriteCommerce")]
-    public async Task<IActionResult> GetFavoritesCommerces(Guid userId) //from token
+    public async Task<IActionResult> GetFavoritesCommerces()
     {
-        return Ok(await _userRepository.GetFavoriteCommercesQuery(userId));
+        return Ok(await _userRepository.GetFavoriteCommercesQuery(_session.Id));
     }
 
+    [AllowAnonymous]
     [HttpGet("/user/impressions")]
     public async Task<IActionResult> GetUserImpressions()
     {
@@ -120,7 +119,7 @@ public class UserController : BaseController
 
         if (!results.IsValid) return ValidationBadRequestResponse(results);
 
-        ErrorOr<bool> result = await _userService.AddFavoriteArticle(req.Id, req.ArticleId);
+        ErrorOr<bool> result = await _userService.AddFavoriteArticle(_session.Id, req.ArticleId);
 
         return OkResponse<bool>(result, "article added in favorites.");
     }

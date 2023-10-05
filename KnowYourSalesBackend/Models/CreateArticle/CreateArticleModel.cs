@@ -1,4 +1,4 @@
-﻿namespace API.Models.CreateArticle;
+﻿namespace API.Models;
 
 public record CreateArticleModel
 {

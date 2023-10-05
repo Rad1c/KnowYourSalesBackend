@@ -1,10 +1,12 @@
 ﻿using API.Dtos;
 using ErrorOr;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
+[Authorize]
 [ApiController]
 public abstract class BaseController : ControllerBase
 {

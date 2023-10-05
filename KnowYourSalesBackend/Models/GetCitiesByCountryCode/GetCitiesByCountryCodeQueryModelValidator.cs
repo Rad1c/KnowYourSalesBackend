@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace API.Models.GetCitiesByCountryCode
+namespace API.Models.Validators
 {
     public class GetCitiesByCountryCodeQueryModelValidator : AbstractValidator<GetCitiesByCountryCodeQueryModel>
     {

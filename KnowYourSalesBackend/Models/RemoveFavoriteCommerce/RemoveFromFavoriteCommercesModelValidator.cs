@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace API.Models.RemoveFavoriteCommerce;
+namespace API.Models.Validators;
 
 public class RemoveFromFavoriteCommercesModelValidator : AbstractValidator<RemoveFromFavoriteCommercesModel>
 {

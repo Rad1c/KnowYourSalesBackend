@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace API.Models.AddArticleImage;
+namespace API.Models.Validators;
 
 public class AddArticleImageModelValidator : AbstractValidator<AddArticleImageModel>
 {

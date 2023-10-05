@@ -23,7 +23,9 @@ public class JwtMiddleware
             {
                 Guid id = Guid.Parse(claims["nameid"]);
                 RoleEnum role = Enumeration.GetByCode<RoleEnum>(claims["role"])!;
-                session.SetSession(role, id);
+                Guid accountId = Guid.Parse(claims["accountId"]);
+
+                session.SetSession(role, id, accountId);
 
             }
         }

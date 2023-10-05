@@ -1,7 +1,7 @@
 ﻿using BLL.Helper;
 using FluentValidation;
 
-namespace API.Models.CreateArticle;
+namespace API.Models;
 
 public class CreateArticleModelValidator : AbstractValidator<CreateArticleModel>
 {

@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace API.Models.AddFavoriteArticle;
+namespace API.Models.Validators;
 
 public class AddFavoriteArticleModelValidator : AbstractValidator<AddFavoriteArticleModel>
 {

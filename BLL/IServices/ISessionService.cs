@@ -4,10 +4,10 @@ namespace BLL.IServices;
 
 public interface ISessionService
 {
-    Guid? Id { get; }
-    Guid? AccountId { get; }
-    RoleEnum? Role { get; }
+    Guid Id { get; }
+    Guid AccountId { get; }
+    RoleEnum Role { get; }
 
-    void SetSession(RoleEnum role, Guid id);
+    void SetSession(RoleEnum role, Guid id, Guid accountId);
 }
 

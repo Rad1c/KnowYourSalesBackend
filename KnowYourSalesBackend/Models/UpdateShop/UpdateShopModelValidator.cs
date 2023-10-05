@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace API.Models.UpdateShop;
+namespace API.Models.Validators;
 
 public class UpdateShopModelValidator : AbstractValidator<UpdateShopModel>
 {

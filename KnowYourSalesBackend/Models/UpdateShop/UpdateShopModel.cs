@@ -1,10 +1,7 @@
-﻿using API.Models.Common;
-
-namespace API.Models.UpdateShop;
+﻿namespace API.Models;
 
 public record UpdateShopModel
 {
-    public Guid CommerceId { get; init; }
     public Guid Id { get; init; }
     public string? Name { get; init; } = null!;
     public Guid? CityId { get; init; }

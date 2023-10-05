@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace API.Models.Login;
+namespace API.Models.Validators;
 
 public class LoginModelValidator : AbstractValidator<LoginModel>
 {

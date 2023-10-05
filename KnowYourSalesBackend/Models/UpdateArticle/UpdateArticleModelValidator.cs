@@ -1,7 +1,7 @@
 ﻿using BLL.Helper;
 using FluentValidation;
 
-namespace API.Models.UpdateArticle;
+namespace API.Models.Validators;
 
 public class UpdateArticleModelValidator : AbstractValidator<UpdateArticleModel>
 {

@@ -1,4 +1,4 @@
-﻿namespace API.Models.RegisterCommerce
+﻿namespace API.Models
 {
     public record RegisterCommerceModel
     {
