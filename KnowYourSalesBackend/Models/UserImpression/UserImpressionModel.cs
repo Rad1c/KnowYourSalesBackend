@@ -1,8 +1,7 @@
-﻿namespace API.Models.UserImpression
+﻿namespace API.Models
 {
     public class UserImpressionModel
     {
-        public Guid UserId { get; init; }
         public string Impression { get; set; } = null!;
     }
 }

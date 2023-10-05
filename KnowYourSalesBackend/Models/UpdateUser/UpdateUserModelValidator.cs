@@ -1,14 +1,12 @@
 ﻿using BLL.Helper;
 using FluentValidation;
 
-namespace API.Models.UpdateUser;
+namespace API.Models.Validators;
 
 public class UpdateUserModelValidator : AbstractValidator<UpdateUserModel>
 {
     public UpdateUserModelValidator()
     {
-        RuleFor(x => x.Id).NotNull().NotEmpty();
-
         RuleFor(x => x.Sex)
             .NotEmpty()
             .Must(x => x == "M" || x == "F");

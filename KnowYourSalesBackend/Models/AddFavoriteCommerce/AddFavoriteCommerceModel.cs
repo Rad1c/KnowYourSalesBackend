@@ -1,7 +1,6 @@
-﻿namespace API.Models.AddFavoriteCommerce;
+﻿namespace API.Models;
 
 public record AddFavoriteCommerceModel
 {
-    public Guid UserId { get; init; } //TODO: from token
     public Guid CommerceId { get; init; }
 }

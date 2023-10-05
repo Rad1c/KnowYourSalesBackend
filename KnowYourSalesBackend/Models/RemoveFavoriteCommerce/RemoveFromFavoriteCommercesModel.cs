@@ -1,7 +1,6 @@
-﻿namespace API.Models.RemoveFavoriteCommerce;
+﻿namespace API.Models;
 
 public class RemoveFromFavoriteCommercesModel
 {
-    public Guid Id { get; init; } //TODO: from token
     public Guid CommerceId { get; init; }
 }
