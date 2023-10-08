@@ -4,11 +4,11 @@ using MODEL.Entities;
 
 namespace DAL.Repositories
 {
-    public class AuthRepository : IAuthRepository
+    public class AuthRepository : Repository, IAuthRepository
     {
         private readonly Context _context;
 
-        public AuthRepository(Context context)
+        public AuthRepository(Context context) : base(context)
         {
             _context = context;
         }
@@ -19,6 +19,12 @@ namespace DAL.Repositories
                 .Where(a => a.Email.ToLower().Equals(email.ToLower()) && !a.IsDeleted)
                 .Include(a => a.Role)
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<Account?> GetAccountByEmailVerificationCode(string code)
+        {
+            return await _context.Accounts
+                .FirstOrDefaultAsync(a => !a.IsDeleted && !a.IsEmailVerified && a.VerifyEmailCode == code);
         }
     }
 }

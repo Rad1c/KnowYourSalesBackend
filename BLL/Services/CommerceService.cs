@@ -34,7 +34,7 @@ public class CommerceService : ICommerceService
 
     public Task<CommerceQueryModel?> GetCommerceQuery(Guid id) => _commerceRepository.GetCommerceQuery(id);
 
-    public async Task<ErrorOr<MODEL.Entities.Commerce?>> RegisterCommerce(string name, byte[] passwordHash, byte[] salt, Guid cityId, string email)
+    public async Task<ErrorOr<MODEL.Entities.Commerce?>> RegisterCommerce(string name, byte[] passwordHash, byte[] salt, Guid cityId, string email, string emailVericationCode)
     {
         MODEL.Entities.Commerce? comm = await _commerceRepository.GetCommerceByEmail(email);
 
@@ -55,7 +55,9 @@ public class CommerceService : ICommerceService
             Role = role!,
             Password = passwordHash,
             Salt = salt,
-            Email = email
+            Email = email,
+            IsEmailVerified = false,
+            VerifyEmailCode = emailVericationCode
         };
 
         MODEL.Entities.Commerce newCommerce = new()

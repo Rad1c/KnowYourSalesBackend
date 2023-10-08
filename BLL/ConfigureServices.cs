@@ -17,6 +17,8 @@ namespace BLL
             services.AddScoped<ICommerceService, CommerceService>();
             services.AddScoped<IImageServices, ImageServices>();
 
+            services.AddTransient<IEmailService, EmailService>();
+
             return services;
         }
     }

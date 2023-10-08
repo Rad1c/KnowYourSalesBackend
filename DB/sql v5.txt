@@ -129,6 +129,8 @@ CREATE TABLE ACCOUNT (
  EMAIL      VARCHAR(50)    NOT NULL,
  PASSWORD     bytea     NOT NULL,
  SALT       bytea    NULL,
+ IS_EMAIL_VERIFIED BOOLEAN NOT NULL DEFAULT false,
+ VERIFY_EMAIL_CODE VARCHAR(250) NULL,
  CONSTRAINT PK_ACCOUNT PRIMARY KEY (ID)
 );
 
@@ -137,6 +139,13 @@ CREATE TABLE ACCOUNT (
 /*==============================================================*/
 CREATE UNIQUE INDEX ACCOUNT_PK ON ACCOUNT (
 ID
+);
+
+/*==============================================================*/
+/* Index: idx_verify_email_code                                 */
+/*==============================================================*/
+CREATE UNIQUE INDEX idx_verify_email_code ON ACCOUNT (
+VERIFY_EMAIL_CODE
 );
 
 /*==============================================================*/
@@ -522,7 +531,7 @@ CREATE TABLE ROLE (
  ID       UUID DEFAULT uuid_generate_v4(),
  CREATED      TIMESTAMP(0)     NOT NULL,
  MODIFIED     TIMESTAMP(0)     NULL,
- IS_DELETED     BOOLEAN       NOT NULL,
+ IS_DELETED     BOOLEAN       NOT NULL DEFAULT false,
  CODE       VARCHAR(20)    NOT NULL,
  CONSTRAINT PK_ROLE PRIMARY KEY (ID)
 );
@@ -747,6 +756,13 @@ VALUES
 (false, CURRENT_TIMESTAMP, 'EUR', '€'),
 (false, CURRENT_TIMESTAMP, 'BAM', 'KM');
 
+INSERT INTO "role" (code, created) 
+VALUES
+('Admin', CURRENT_TIMESTAMP),
+('Shop', CURRENT_TIMESTAMP),
+('User', CURRENT_TIMESTAMP),
+('Commerce', CURRENT_TIMESTAMP);
+
   							-- MATERIALIZED VIEWS
 
 -- COUNTRY
@@ -819,7 +835,7 @@ CREATE OR REPLACE FUNCTION refresh_mv_articles()
 RETURNS TRIGGER AS
 $$
 BEGIN
-  REFRESH MATERIALIZED VIEW CONCURRENTLY mv_articles;
+  REFRESH MATERIALIZED VIEW mv_articles;
   RETURN NULL;
 END;
 $$

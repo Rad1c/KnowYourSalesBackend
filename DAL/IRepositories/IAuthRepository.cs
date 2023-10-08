@@ -2,7 +2,8 @@
 
 namespace DAL.IRepositories;
 
-public interface IAuthRepository
+public interface IAuthRepository : IRepository<Account>
 {
     public Task<Account?> GetAccountByEmail(string email);
+    public Task<Account?> GetAccountByEmailVerificationCode(string code);
 }

@@ -12,7 +12,8 @@
         public string Email { get; set; } = null!;
         public byte[] Password { get; set; } = null!;
         public byte[]? Salt { get; set; }
-
+        public bool IsEmailVerified { get; set; } = false;
+        public string VerifyEmailCode { get; set; }
         public virtual Role Role { get; set; } = null!;
         public virtual ICollection<Commerce> Commerces { get; set; }
         public virtual ICollection<User> Users { get; set; }
