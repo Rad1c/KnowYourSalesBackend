@@ -32,7 +32,7 @@ public class RegisterUserModelValidator : AbstractValidator<RegisterUserModel>
             .Equal(x => x.Password).WithMessage("passwords do not match.");
 
         RuleFor(x => x.DateOfBirth).NotEmpty()
-            .Matches(@"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$").WithMessage("Timestamp must be in ISO 8601 format.")
+            .Matches(@"^\d{4}-\d{2}-\d{2}").WithMessage("Timestamp must be in ISO 8601 format.")
             .Must(x => !BaseHelper.DateTimeGreaterThanNow(BaseHelper.ConvertStringToDateTime(x)))
             .WithMessage("Bad MessageTimestamp.");
 

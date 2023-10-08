@@ -7,7 +7,7 @@ namespace BLL.IServices;
 
 public interface IUserService
 {
-    public Task<ErrorOr<User?>> RegisterUser(string firstName, string lastName, string dateOfBirth, byte[] passwordHash, byte[] salt, string sex, string email);
+    public Task<ErrorOr<User?>> RegisterUser(string firstName, string lastName, string dateOfBirth, byte[] passwordHash, byte[] salt, string sex, string email, string emailVerificationCode);
     public Task<ErrorOr<User?>> GetUserByEmail(string email);
     public Task<User?> GetUserById(Guid id);
     public Task<ErrorOr<bool>> DeleteUser(Guid userId);

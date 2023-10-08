@@ -56,10 +56,10 @@ public class BaseHelper
     /// <param name="oldPrice">The original price of the item.</param>
     /// <param name="newPrice">The sale price of the item.</param>
     /// <returns>The percentage of sale as a decimal value.</returns>
-    public static Decimal CalculateSale(decimal oldPrice,decimal newPrice)
+    public static Decimal CalculateSale(decimal oldPrice, decimal newPrice)
     {
         decimal pom = (newPrice * (decimal)100) / oldPrice;
-        
+
         return (decimal)100 - pom;
     }
 }

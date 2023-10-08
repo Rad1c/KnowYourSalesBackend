@@ -11,6 +11,7 @@ public interface IAuthService
     string CreateToken(Guid userId, Guid accountId, TokenTypeEnum tokenType, RoleEnum role);
     Dictionary<string, string> ValidateToken(string token);
     public Task<ErrorOr<Account?>> GetAccountByEmail(string email);
-
+    public string GenerateEmailVerificationCode();
+    public Task<bool> VerifyAccount(string code);
 }
 

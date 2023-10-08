@@ -115,7 +115,7 @@ public class UserService : IUserService
 
     public Task<UserQueryModel> GetUserQuery(Guid userId) => _userRepository.GetUserQuery(userId);
 
-    public async Task<ErrorOr<User?>> RegisterUser(string firstName, string lastName, string dateOfBirth, byte[] passwordHash, byte[] salt, string sex, string email)
+    public async Task<ErrorOr<User?>> RegisterUser(string firstName, string lastName, string dateOfBirth, byte[] passwordHash, byte[] salt, string sex, string email, string emailVerificationCode)
     {
         User? user = await _userRepository.GetUserByEmail(email);
 
@@ -128,7 +128,9 @@ public class UserService : IUserService
             Role = role!,
             Password = passwordHash,
             Salt = salt,
-            Email = email
+            Email = email,
+            IsEmailVerified = false,
+            VerifyEmailCode = emailVerificationCode
         };
 
         User newUser = new()

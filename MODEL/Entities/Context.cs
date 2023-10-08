@@ -55,6 +55,10 @@ namespace MODEL.Entities
 
                 entity.Property(e => e.Modified).HasColumnName("modified");
 
+                entity.Property(e => e.IsEmailVerified).HasColumnName("is_email_verified");
+
+                entity.Property(e => e.VerifyEmailCode).HasColumnName("verify_email_code");
+
                 entity.Property(e => e.Email)
                     .HasMaxLength(50)
                     .HasColumnName("email");

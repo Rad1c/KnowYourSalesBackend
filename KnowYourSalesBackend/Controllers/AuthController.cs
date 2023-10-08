@@ -18,12 +18,17 @@ public class AuthController : BaseController
     private readonly IUserService _userService;
     private readonly IAuthService _authService;
     private readonly ICommerceService _commerceService;
+    private readonly IEmailService _mailService;
 
-    public AuthController(IUserService userService, IAuthService authService, ICommerceService commerceService)
+    public AuthController(IUserService userService,
+        IAuthService authService,
+        ICommerceService commerceService,
+        IEmailService mailService)
     {
         _userService = userService;
         _authService = authService;
         _commerceService = commerceService;
+        _mailService = mailService;
     }
 
     [HttpPost("user/register")]
@@ -35,6 +40,8 @@ public class AuthController : BaseController
 
         _authService.CreatePasswordHash(req.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
+        string emailVerificationCode = _authService.GenerateEmailVerificationCode();
+
         ErrorOr<User?> authResult = await _userService.RegisterUser(
             req.FirstName,
             req.LastName,
@@ -42,7 +49,13 @@ public class AuthController : BaseController
             passwordHash,
             passwordSalt,
             req.Sex,
-            req.Email);
+            req.Email,
+            emailVerificationCode);
+
+        if (!authResult.IsError)
+        {
+            await _mailService.SendVerifyUserAccountEmail(req.Email, req.FirstName, req.LastName, emailVerificationCode);
+        }
 
         return authResult.Match(
             authResult => Ok(new MessageDto("user registerd.")),
@@ -57,13 +70,20 @@ public class AuthController : BaseController
         if (!results.IsValid) return ValidationBadRequestResponse(results);
 
         _authService.CreatePasswordHash(req.Password, out byte[] passwordHash, out byte[] passwordSalt);
+        string emailVerificationCode = _authService.GenerateEmailVerificationCode();
 
         ErrorOr<Commerce?> authResult = await _commerceService.RegisterCommerce(
             req.Name,
             passwordHash,
             passwordSalt,
             req.CityId,
-            req.Email);
+            req.Email,
+            emailVerificationCode);
+
+        if (!authResult.IsError)
+        {
+            await _mailService.SendVerifyCommerceAccountEmail(req.Email, req.Name, emailVerificationCode);
+        }
 
         return authResult.Match(
             authResult => Ok(new MessageDto("commerce registered.")),
@@ -80,6 +100,8 @@ public class AuthController : BaseController
         ErrorOr<Account?> userResult = await _authService.GetAccountByEmail(req.Email);
 
         if (userResult.IsError) return Problem(userResult.Errors);
+
+        if (userResult.Value != null && !userResult.Value.IsEmailVerified) return Forbid();
 
         if (!_authService.VerifyPasswordHash(req.Password, userResult.Value!.Password, userResult.Value.Salt!))
         {
@@ -133,6 +155,25 @@ public class AuthController : BaseController
             Enumeration.GetByCode<RoleEnum>(claims["role"])!);
 
         return Ok(newAccessToken);
+    }
+
+    [AllowAnonymous]
+    [HttpPost("verify-account")]
+    public async Task<IActionResult> VerifyAccount(VerifyAccountModel model)
+    {
+        bool isSuccess = await _authService.VerifyAccount(model.Code);
+
+        return isSuccess ? Ok(new MessageDto("account verified."))
+            : Forbid();
+    }
+
+    [AllowAnonymous]
+    [HttpGet("test")]
+    public async Task<IActionResult> Test(string text)
+    {
+        string emailVerificationCode = _authService.GenerateEmailVerificationCode();
+        await _mailService.SendVerifyUserAccountEmail("radicaleksandar4@gmail.com", "Aleksandar", "Radic", emailVerificationCode);
+        return Ok("ok");
     }
 }
 

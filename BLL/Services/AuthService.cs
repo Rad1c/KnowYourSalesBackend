@@ -106,4 +106,22 @@ public sealed class AuthService : IAuthService
 
         return account;
     }
+
+    public string GenerateEmailVerificationCode()
+    {
+        return Guid.NewGuid().ToString();
+    }
+
+    public async Task<bool> VerifyAccount(string code)
+    {
+        Account? account = await _authRepository.GetAccountByEmailVerificationCode(code);
+
+        if (account is null) return false;
+
+        account.IsEmailVerified = true;
+
+        _authRepository.UpdateEntity<Account>(account);
+
+        return true;
+    }
 }
