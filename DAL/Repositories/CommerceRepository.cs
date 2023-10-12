@@ -49,8 +49,11 @@ public class CommerceRepository : Repository, ICommerceRepository
 
     public async Task<CommerceQueryModel?> GetCommerceQuery(Guid id)
     {
-        string query = "SELECT com.id AS \"Id\", com.name AS \"Name\", com.logo AS \"Logo\", c.name AS \"City\", acc.email AS \"Email\" " +
-            "FROM commerce com JOIN city c ON c.id = com.cit_id JOIN account acc ON acc.id = com.acc_id WHERE acc.is_deleted = false";
+        string query = "SELECT com.id AS \"Id\", com.name AS \"Name\", com.logo AS \"Logo\", " +
+            "c.name AS \"City\", acc.email AS \"Email\" FROM commerce com " +
+            "JOIN city c ON c.id = com.cit_id " +
+            "JOIN account acc ON acc.id = com.acc_id " +
+            "WHERE acc.is_deleted = false AND com.id = @id";
         using var connection = _queryContext.CreateConnection();
 
         var commerce = await connection.QueryFirstOrDefaultAsync<CommerceQueryModel>(query, new { id });
