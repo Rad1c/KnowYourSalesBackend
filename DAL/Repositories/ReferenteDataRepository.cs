@@ -15,7 +15,7 @@ namespace DAL.Repositories
 
         public async Task<List<CityQueryModel>> GetCitiesByCountryCode(string code)
         {
-            string query = @"SELECT ""CityId"",  ""CityName"" FROM mv_countries where ""Code"" = '" + code + "'";
+            string query = @"SELECT ""CityId"", ""CityName"", ""Longitude"", ""Latitude"" FROM mv_countries where ""Code"" = '" + code + "'";
 
             using var connection = _queryContext.CreateConnection();
             var result = await connection.QueryAsync<CityQueryModel>(query);

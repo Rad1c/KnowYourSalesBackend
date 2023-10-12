@@ -281,11 +281,13 @@ ID
 /*==============================================================*/
 CREATE TABLE CITY (
  ID       UUID DEFAULT uuid_generate_v4(),
- COU_ID     UUID     NOT NULL,
- CREATED      TIMESTAMP(0)     NOT NULL,
- MODIFIED     TIMESTAMP(0)     NULL,
- IS_DELETED     BOOLEAN       NOT NULL,
- NAME       VARCHAR(50)    NOT NULL,
+ COU_ID     	UUID     	NOT NULL,
+ CREATED      	TIMESTAMP(0)    NOT NULL,
+ MODIFIED     	TIMESTAMP(0)    NULL,
+ IS_DELETED     BOOLEAN       	NOT NULL,
+ NAME       	VARCHAR(50)    	NOT NULL,
+ LONGITUDE    	NUMERIC(9,6)    NULL,
+ LATITUDE     	NUMERIC(9,6)    NULL,
  CONSTRAINT PK_CITY PRIMARY KEY (ID)
 );
 
@@ -720,23 +722,25 @@ VALUES
     	(CURRENT_TIMESTAMP, null, false, 'Hrvatska', 'HRV'),
     	(CURRENT_TIMESTAMP, null, false, 'Crna Gora', 'CNG');
 
-INSERT into city (cou_id, created, modified, is_deleted, "name")
+INSERT into city (cou_id, created, modified, is_deleted, "name", longitude, latitude) 
 VALUES 
-((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Sarajevo'),
-((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Banja Luka'),
-((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Tuzla'),
-((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Istočno Sarajevo'),
-((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Mostar'),
-((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Bijeljina'),
-((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Brčko'),
-((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Zenica'),
-((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Trebinje'),
-((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Doboj'),
-((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Zvornik'),
-((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Foča'),
-((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Prijedor');
+((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Sarajevo', 18.402143, 43.860129),
+((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Banja Luka', 17.193604, 44.767047),
+((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Tuzla', 18.674544, 44.538142),
+((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Istočno Sarajevo', 18.367487, 43.822307),
+((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Mostar', 17.804714, 43.344600),
+((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Bijeljina', 19.213471, 44.758467),
+((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Brčko', 18.806188, 44.869802),
+((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Zenica', 17.911492, 44.203186),
+((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Trebinje', 18.350591, 42.708622),
+((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Doboj', 18.086727, 44.730605),
+((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Zvornik', 19.103218, 44.386051),
+((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Foča', 18.776990, 43.506056),
+((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Prijedor', 16.709802, 44.979174),
+((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Bihać', 15.869515, 44.815518),
+((SELECT id from country where name = 'Bosna i Hercegovina'), CURRENT_TIMESTAMP, null, false, 'Višegrad', 19.292796, 43.782866);
 
-INSERT INTO category (is_deleted, created, name, display_seq)
+INSERT INTO category (is_deleted, created, name, display_seq) 
 VALUES
 (false, CURRENT_TIMESTAMP, 'Audio i video', 1),
 (false, CURRENT_TIMESTAMP, 'Kućna oprema', 2),
@@ -769,7 +773,8 @@ VALUES
 -- Create the materialized view
 DROP MATERIALIZED VIEW IF EXISTS mv_countries;
 CREATE MATERIALIZED VIEW mv_countries AS
-SELECT cou.id as "CountryId", cou.name as "CountryName", cou.code as "Code", c.id as "CityId", c.name as "CityName" FROM city c 
+SELECT cou.id as "CountryId", cou.name as "CountryName", cou.code as "Code", c.id as "CityId", c.name as "CityName", 
+c.longitude as "Longitude", c.latitude as "Latitude" FROM city c 
 RIGHT JOIN country cou ON cou.id = c.cou_id
 WITH DATA;
 
