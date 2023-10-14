@@ -54,10 +54,7 @@ public class ShopRepository : Repository, IShopRepository
 
     public async Task<ShopQueryModel?> GetShopQuery(Guid id)
     {
-        string query = "SELECT s.id AS \"Id\", s.name AS \"Name\", s.cit_id AS \"CityId\", " +
-            "g.latitude AS \"Latitude\", g.longitude AS \"Longitude\", g.address AS \"Address\" FROM shop s " +
-            "JOIN geopoint g ON g.id = s.geo_id " +
-            "WHERE s.id = @id";
+        string query = "SELECT * FROM mv_shops WHERE \"Id\" = @id";
         using var connection = _queryContext.CreateConnection();
 
         var shop = await connection.QueryFirstOrDefaultAsync<ShopQueryModel>(query, new { id });
@@ -67,10 +64,7 @@ public class ShopRepository : Repository, IShopRepository
 
     public async Task<List<ShopQueryModel>> GetShopsQuery(Guid id)
     {
-        string query = "SELECT s.id AS \"Id\", s.name AS \"Name\", s.cit_id AS \"CityId\", " +
-            "g.latitude AS \"Latitude\", g.longitude AS \"Longitude\", g.address AS \"Address\" FROM shop s " +
-            "JOIN geopoint g ON g.id = s.geo_id " +
-            "WHERE s.com_id = @id";
+        string query = "SELECT \"Id\", \"CityName\", \"Address\" FROM mv_shops WHERE \"CommerceId\" = @id";
         using var connection = _queryContext.CreateConnection();
 
         var shops = await connection.QueryAsync<ShopQueryModel>(query, new { id });

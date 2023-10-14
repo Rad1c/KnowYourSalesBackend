@@ -863,13 +863,16 @@ CREATE MATERIALIZED VIEW IF NOT EXISTS mv_shops
 AS
 SELECT s.id AS "Id",
     s.name AS "Name",
-    s.cit_id AS "CityId",
+    com.id AS "CommerceId",
+    c.name AS "CityName",
     g.latitude AS "Latitude",
     g.longitude AS "Longitude",
     g.address AS "Address"
 FROM shop s
 JOIN geopoint g ON g.id = s.geo_id
-WHERE s.is_deleted = false; 
+JOIN city c ON c.id = s.cit_id
+JOIN commerce com ON com.id = s.com_id
+WHERE s.is_deleted = false;
 WITH DATA;
 
 -- Create the refresh function
