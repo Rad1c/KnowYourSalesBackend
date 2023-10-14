@@ -1,16 +1,22 @@
 ﻿using DAL.IRepositories;
+using Dapper;
 using Microsoft.EntityFrameworkCore;
+using MODEL;
 using MODEL.Entities;
+using MODEL.QueryModels.Shop;
+using System.Security.Cryptography;
 
 namespace DAL.Repositories;
 
 public class ShopRepository : Repository, IShopRepository
 {
     private readonly Context _context;
+    private readonly QueryContext _queryContext;
 
-    public ShopRepository(Context context) : base(context)
+    public ShopRepository(Context context, QueryContext queryContext) : base(context)
     {
         _context = context;
+        _queryContext = queryContext;
     }
 
     public async Task<Commerce?> GetCommerceById(Guid id)
@@ -45,5 +51,31 @@ public class ShopRepository : Repository, IShopRepository
         => await _context.Currencies.
         Where(x => x.Name == name)
         .FirstOrDefaultAsync();
+
+    public async Task<ShopQueryModel?> GetShopQuery(Guid id)
+    {
+        string query = "SELECT s.id AS \"Id\", s.name AS \"Name\", s.cit_id AS \"CityId\", " +
+            "g.latitude AS \"Latitude\", g.longitude AS \"Longitude\", g.address AS \"Address\" FROM shop s " +
+            "JOIN geopoint g ON g.id = s.geo_id " +
+            "WHERE s.id = @id";
+        using var connection = _queryContext.CreateConnection();
+
+        var shop = await connection.QueryFirstOrDefaultAsync<ShopQueryModel>(query, new { id });
+
+        return shop;
+    }
+
+    public async Task<List<ShopQueryModel>> GetShopsQuery(Guid id)
+    {
+        string query = "SELECT s.id AS \"Id\", s.name AS \"Name\", s.cit_id AS \"CityId\", " +
+            "g.latitude AS \"Latitude\", g.longitude AS \"Longitude\", g.address AS \"Address\" FROM shop s " +
+            "JOIN geopoint g ON g.id = s.geo_id " +
+            "WHERE s.com_id = @id";
+        using var connection = _queryContext.CreateConnection();
+
+        var shops = await connection.QueryAsync<ShopQueryModel>(query, new { id });
+        
+        return shops.ToList();
+    }
 }
 
