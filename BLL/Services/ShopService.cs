@@ -2,6 +2,7 @@
 using DAL.IRepositories;
 using ErrorOr;
 using MODEL.Entities;
+using MODEL.QueryModels.Shop;
 
 namespace BLL.Services;
 
@@ -14,7 +15,7 @@ public class ShopService : IShopService
         _shopRepository = shopRepository;
     }
 
-    public async Task<ErrorOr<Shop?>> CreateShop(string name, Guid commerceId, Guid cityId, decimal Longitude, decimal latitude, string? geoName, string? address)
+    public async Task<ErrorOr<Shop?>> CreateShop(string name, Guid commerceId, Guid cityId, decimal Longitude, decimal latitude, string? address)
     {
         Commerce? commerce = await _shopRepository.GetCommerceWithShops(commerceId);
 
@@ -31,7 +32,6 @@ public class ShopService : IShopService
         {
             Latitude = latitude,
             Longitude = Longitude,
-            Name = geoName,
             Address = address
         };
 
@@ -50,7 +50,22 @@ public class ShopService : IShopService
 
     public Task<Commerce?> GetCommerceById(Guid id) => _shopRepository.GetCommerceById(id);
 
-    public async Task<ErrorOr<Shop?>> UpdateShop(Guid commerceId, Guid id, string? name, Guid? cityId, decimal? Longitude, decimal? latitude, string? geoName, string? address)
+    public Task<ShopQueryModel?> GetShopQuery(Guid id) => _shopRepository.GetShopQuery(id);
+
+    public async Task<ErrorOr<bool>> DeleteShop(Guid id)
+    {
+        Shop? shop = await _shopRepository.GetShop(id);
+
+        if (shop is null)
+            return Errors.Errors.Shop.ShopNotFound;
+
+        shop.IsDeleted = true;
+
+        _shopRepository.UpdateEntity(shop);
+        return true;
+    }
+
+    public async Task<ErrorOr<Shop?>> UpdateShop(Guid commerceId, Guid id, string? name, Guid? cityId, decimal? Longitude, decimal? latitude, string? address)
     {
         Commerce? commerce = await _shopRepository.GetCommerceWithShops(commerceId);
 
@@ -74,8 +89,6 @@ public class ShopService : IShopService
         if (latitude is not null) shop!.GeoPoint.Latitude = latitude.Value;
 
         if (Longitude is not null) shop!.GeoPoint.Longitude = Longitude.Value;
-
-        if (name is not null) shop!.GeoPoint.Name = geoName;
 
         if (address is not null) shop!.GeoPoint.Address = address;
 
