@@ -436,9 +436,6 @@ namespace MODEL.Entities
                 entity.Property(e => e.Longitude)
                     .HasColumnName("longitude");
 
-                entity.Property(e => e.Name)
-                    .HasColumnName("name");
-
                 entity.Property(e => e.Address)
                     .HasColumnName("address");
 

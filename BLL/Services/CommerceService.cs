@@ -18,7 +18,7 @@ public class CommerceService : ICommerceService
 
     public async Task<ErrorOr<bool>> DeleteCommerce(Guid id)
     {
-        MODEL.Entities.Commerce? commerce = await _commerceRepository.GetCommerceById(id);
+        Commerce? commerce = await _commerceRepository.GetCommerceById(id);
 
         if (commerce is null)
             return Errors.Errors.Commerce.CommerceNotFound;
@@ -34,13 +34,13 @@ public class CommerceService : ICommerceService
 
     public Task<CommerceQueryModel?> GetCommerceQuery(Guid id) => _commerceRepository.GetCommerceQuery(id);
 
-    public async Task<ErrorOr<MODEL.Entities.Commerce?>> RegisterCommerce(string name, byte[] passwordHash, byte[] salt, Guid cityId, string email, string emailVericationCode)
+    public async Task<ErrorOr<Commerce?>> RegisterCommerce(string name, byte[] passwordHash, byte[] salt, Guid cityId, string email, string emailVericationCode)
     {
-        MODEL.Entities.Commerce? comm = await _commerceRepository.GetCommerceByEmail(email);
+        Commerce? comm = await _commerceRepository.GetCommerceByEmail(email);
 
         if (comm is not null) return Errors.Errors.Auth.InvalidCredentials;
 
-        MODEL.Entities.Commerce? commByName = await _commerceRepository.GetCommerceByName(name);
+        Commerce? commByName = await _commerceRepository.GetCommerceByName(name);
 
         if (commByName is not null) return Errors.Errors.Commerce.CommerceAlreadyExist;
 
@@ -74,7 +74,7 @@ public class CommerceService : ICommerceService
 
     public async Task<ErrorOr<bool>> UpdateCommerce(Guid commerceId, string? name, string? logo, Guid? cityId)
     {
-        MODEL.Entities.Commerce? commerce = await _commerceRepository.GetCommerceById(commerceId);
+        Commerce? commerce = await _commerceRepository.GetCommerceById(commerceId);
 
         if (commerce is null) return Errors.Errors.Commerce.CommerceNotFound;
 

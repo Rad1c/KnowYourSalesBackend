@@ -121,16 +121,16 @@ DROP TABLE IF exists "user" CASCADE;
 /* Table: ACCOUNT                 */
 /*==============================================================*/
 CREATE TABLE ACCOUNT (
- ID       UUID DEFAULT uuid_generate_v4(),
- ROL_ID     UUID       NOT NULL,
- CREATED      TIMESTAMP(0)     NOT NULL,
- MODIFIED     TIMESTAMP(0)     NULL,
- IS_DELETED     BOOLEAN       NOT NULL DEFAULT false,
- EMAIL      VARCHAR(50)    NOT NULL,
- PASSWORD     bytea     NOT NULL,
- SALT       bytea    NULL,
- IS_EMAIL_VERIFIED BOOLEAN NOT NULL DEFAULT false,
- VERIFY_EMAIL_CODE VARCHAR(250) NULL,
+ ID       		UUID DEFAULT uuid_generate_v4(),
+ ROL_ID     		UUID       	NOT NULL,
+ CREATED      		TIMESTAMP(0)    NOT NULL,
+ MODIFIED     		TIMESTAMP(0)    NULL,
+ IS_DELETED     	BOOLEAN       	NOT NULL DEFAULT false,
+ EMAIL      		VARCHAR(50)    	NOT NULL,
+ PASSWORD     		bytea     	NOT NULL,
+ SALT       		bytea    	NULL,
+ IS_EMAIL_VERIFIED 	BOOLEAN 	NOT NULL DEFAULT false,
+ VERIFY_EMAIL_CODE 	VARCHAR(250) 	NULL,
  CONSTRAINT PK_ACCOUNT PRIMARY KEY (ID)
 );
 
@@ -159,17 +159,17 @@ ROL_ID
 /* Table: ARTICLE                 */
 /*==============================================================*/
 CREATE TABLE ARTICLE (
- ID       UUID DEFAULT uuid_generate_v4(),
- CUR_ID UUID NULL,
- CREATED      TIMESTAMP(0)     NOT NULL,
- MODIFIED     TIMESTAMP(0)     NULL,
- IS_DELETED     BOOLEAN       NOT NULL,
- NAME       VARCHAR(512)    NOT NULL,
- DESCRIPTION    VARCHAR(1024)    NOT NULL,
- OLD_PRICE    DECIMAL NOT NULL,
- NEW_PRICE    DECIMAL  NOT NULL,
- SALE       DECIMAL  NOT NULL,
- VALID_DATE     TIMESTAMP(0)       NOT NULL,
+ ID       	UUID DEFAULT uuid_generate_v4(),
+ CUR_ID 	UUID 		NULL,
+ CREATED      	TIMESTAMP(0)    NOT NULL,
+ MODIFIED     	TIMESTAMP(0)    NULL,
+ IS_DELETED     BOOLEAN       	NOT NULL,
+ NAME       	VARCHAR(512)    NOT NULL,
+ DESCRIPTION    VARCHAR(1024)   NOT NULL,
+ OLD_PRICE    	DECIMAL 	NOT NULL,
+ NEW_PRICE    	DECIMAL  	NOT NULL,
+ SALE       	DECIMAL  	NOT NULL,
+ VALID_DATE     TIMESTAMP(0)    NOT NULL,
  CONSTRAINT PK_ARTICLE PRIMARY KEY (ID)
 );
 
@@ -198,7 +198,7 @@ NAME
 /* Table: ARTICLE_IN_CATEGORY             */
 /*==============================================================*/
 CREATE TABLE ARTICLE_IN_CATEGORY (
- ART_ID     UUID       NOT NULL,
+ ART_ID   UUID       NOT NULL,
  ID       UUID       NOT NULL,
  CONSTRAINT PK_ARTICLE_IN_CATEGORY PRIMARY KEY (ART_ID, ID)
 );
@@ -229,7 +229,7 @@ ART_ID
 /* Table: ARTICLE_IN_SHOP             */
 /*==============================================================*/
 CREATE TABLE ARTICLE_IN_SHOP (
- ART_ID     UUID       NOT NULL,
+ ART_ID   UUID       NOT NULL,
  ID       UUID       NOT NULL,
  CONSTRAINT PK_ARTICLE_IN_SHOP PRIMARY KEY (ART_ID, ID)
 );
@@ -260,12 +260,12 @@ ART_ID
 /* Table: CATEGORY                */
 /*==============================================================*/
 CREATE TABLE CATEGORY (
- ID       UUID DEFAULT uuid_generate_v4(),
- CREATED      TIMESTAMP(0)     NOT NULL,
- MODIFIED     TIMESTAMP(0)     NULL,
- IS_DELETED     BOOLEAN       NOT NULL,
- NAME       VARCHAR(40)    NOT NULL,
- DISPLAY_SEQ    INT2       NOT NULL,
+ ID       	UUID DEFAULT uuid_generate_v4(),
+ CREATED      	TIMESTAMP(0)    NOT NULL,
+ MODIFIED     	TIMESTAMP(0)    NULL,
+ IS_DELETED     BOOLEAN       	NOT NULL,
+ NAME       	VARCHAR(40)    	NOT NULL,
+ DISPLAY_SEQ    INT2       	NOT NULL,
  CONSTRAINT PK_CATEGORY PRIMARY KEY (ID)
 );
 
@@ -280,7 +280,7 @@ ID
 /* Table: CITY                  */
 /*==============================================================*/
 CREATE TABLE CITY (
- ID       UUID DEFAULT uuid_generate_v4(),
+ ID       	UUID DEFAULT uuid_generate_v4(),
  COU_ID     	UUID     	NOT NULL,
  CREATED      	TIMESTAMP(0)    NOT NULL,
  MODIFIED     	TIMESTAMP(0)    NULL,
@@ -309,14 +309,14 @@ COU_ID
 /* Table: COMMERCE                */
 /*==============================================================*/
 CREATE TABLE COMMERCE (
- ID       UUID DEFAULT uuid_generate_v4(),
- CIT_ID     UUID       NOT NULL,
- ACC_ID     UUID       NOT NULL,
- CREATED      TIMESTAMP(0)     NOT NULL,
- MODIFIED     TIMESTAMP(0)     NULL,
- IS_DELETED     BOOLEAN       NOT NULL,
- NAME       VARCHAR(50)    NOT NULL,
- LOGO       VARCHAR(100) NULL,
+ ID       	UUID DEFAULT uuid_generate_v4(),
+ CIT_ID     	UUID       	NOT NULL,
+ ACC_ID     	UUID       	NOT NULL,
+ CREATED      	TIMESTAMP(0)    NOT NULL,
+ MODIFIED     	TIMESTAMP(0)    NULL,
+ IS_DELETED     BOOLEAN       	NOT NULL,
+ NAME       	VARCHAR(50)    	NOT NULL,
+ LOGO       	VARCHAR(100) 	NULL,
  CONSTRAINT PK_COMMERCE PRIMARY KEY (ID)
 );
 
@@ -345,12 +345,12 @@ ACC_ID
 /* Table: COUNTRY                 */
 /*==============================================================*/
 CREATE TABLE COUNTRY (
- ID       UUID DEFAULT uuid_generate_v4(),
- CREATED      TIMESTAMP(0)     NOT NULL,
- MODIFIED     TIMESTAMP(0)     NULL,
- IS_DELETED     BOOLEAN       NOT NULL,
- NAME       VARCHAR(50)    NOT NULL,
- CODE  VARCHAR(50) NOT NULL,
+ ID       	UUID DEFAULT uuid_generate_v4(),
+ CREATED      	TIMESTAMP(0)    NOT NULL,
+ MODIFIED     	TIMESTAMP(0)    NULL,
+ IS_DELETED     BOOLEAN      	NOT NULL,
+ NAME       	VARCHAR(50)    	NOT NULL,
+ CODE  		VARCHAR(50) 	NOT NULL,
  CONSTRAINT PK_COUNTRY PRIMARY KEY (ID)
 );
 
@@ -365,12 +365,12 @@ ID
 /* Table: CURRENCY                */
 /*==============================================================*/
 CREATE TABLE CURRENCY (
- ID       UUID DEFAULT uuid_generate_v4(),
- CREATED      TIMESTAMP(0)     NOT NULL,
- MODIFIED     TIMESTAMP(0)     NULL,
- IS_DELETED     BOOLEAN       NOT NULL,
- NAME       VARCHAR(120)   NOT NULL,
- CODE       VARCHAR(5)     NOT NULL,
+ ID       	UUID DEFAULT uuid_generate_v4(),
+ CREATED      	TIMESTAMP(0)    NOT NULL,
+ MODIFIED     	TIMESTAMP(0)    NULL,
+ IS_DELETED     BOOLEAN       	NOT NULL,
+ NAME       	VARCHAR(120)   	NOT NULL,
+ CODE       	VARCHAR(5)     	NOT NULL,
  CONSTRAINT PK_CURRENCY PRIMARY KEY (ID)
 );
 
@@ -386,11 +386,11 @@ ID
 /*==============================================================*/
 CREATE TABLE FAVORITE_ARTICLE (
  ID       UUID DEFAULT uuid_generate_v4(),
- ART_ID     UUID       NULL,
- USE_ID     UUID       NULL,
- CREATED      TIMESTAMP(0)     NOT NULL,
- MODIFIED     TIMESTAMP(0)     NULL,
- IS_DELETED     BOOLEAN       NOT NULL,
+ ART_ID     	UUID       	NULL,
+ USE_ID     	UUID       	NULL,
+ CREATED      	TIMESTAMP(0)    NOT NULL,
+ MODIFIED     	TIMESTAMP(0)    NULL,
+ IS_DELETED     BOOLEAN       	NOT NULL,
  CONSTRAINT PK_FAVORITE_ARTICLE PRIMARY KEY (ID)
 );
 
@@ -419,12 +419,12 @@ USE_ID
 /* Table: FAVORITE_COMMERCE             */
 /*==============================================================*/
 CREATE TABLE FAVORITE_COMMERCE (
- ID       UUID DEFAULT uuid_generate_v4(),
- COM_ID     UUID       NULL,
- USE_ID     UUID       NULL,
- CREATED      TIMESTAMP(0)     NOT NULL,
- MODIFIED     TIMESTAMP(0)     NULL,
- IS_DELETED     BOOLEAN       NOT NULL,
+ ID       	UUID DEFAULT uuid_generate_v4(),
+ COM_ID     	UUID       	NULL,
+ USE_ID     	UUID       	NULL,
+ CREATED      	TIMESTAMP(0)    NOT NULL,
+ MODIFIED     	TIMESTAMP(0)    NULL,
+ IS_DELETED     BOOLEAN       	NOT NULL,
  CONSTRAINT PK_FAVORITE_COMMERCE PRIMARY KEY (ID)
 );
 
@@ -453,14 +453,13 @@ USE_ID
 /* Table: GEOPOINT                 */
 /*==============================================================*/
 CREATE TABLE GEOPOINT (
- ID       UUID DEFAULT uuid_generate_v4(),
- CREATED      TIMESTAMP(0)     NOT NULL,
- MODIFIED     TIMESTAMP(0)     NULL,
- IS_DELETED     BOOLEAN       NOT NULL,
- LONGITUDE    NUMERIC(9,6)    NOT NULL,
- LATITUDE     NUMERIC(9,6)    NOT NULL,
- NAME TEXT NULL,
- ADDRESS TEXT NULL,
+ ID       	UUID DEFAULT uuid_generate_v4(),
+ CREATED      	TIMESTAMP(0)    NOT NULL,
+ MODIFIED     	TIMESTAMP(0)    NULL,
+ IS_DELETED     BOOLEAN       	NOT NULL,
+ LONGITUDE    	NUMERIC(9,6)    NOT NULL,
+ LATITUDE     	NUMERIC(9,6)    NOT NULL,
+ ADDRESS 	TEXT 		NULL,
  CONSTRAINT PK_GEOPOINT PRIMARY KEY (ID)
 );
 
@@ -475,12 +474,12 @@ ID
 /* Table: IMPRESSION                */
 /*==============================================================*/
 CREATE TABLE IMPRESSION (
- ID       UUID DEFAULT uuid_generate_v4(),
- USE_ID     UUID       NOT NULL,
- CREATED      TIMESTAMP(0)     NOT NULL,
- MODIFIED     TIMESTAMP(0)     NULL,
- IS_DELETED     BOOLEAN       NOT NULL,
- CONTENT      VARCHAR(1024)    NOT NULL,
+ ID       	UUID DEFAULT uuid_generate_v4(),
+ USE_ID     	UUID       	NOT NULL,
+ CREATED      	TIMESTAMP(0)    NOT NULL,
+ MODIFIED     	TIMESTAMP(0)    NULL,
+ IS_DELETED     BOOLEAN       	NOT NULL,
+ CONTENT      	VARCHAR(1024)   NOT NULL,
  CONSTRAINT PK_IMPRESSION PRIMARY KEY (ID)
 );
 
@@ -502,13 +501,13 @@ USE_ID
 /* Table: PICTURE                 */
 /*==============================================================*/
 CREATE TABLE PICTURE (
- ID       UUID DEFAULT uuid_generate_v4(),
- ART_ID     UUID       NOT NULL,
- CREATED      TIMESTAMP(0)     NOT NULL,
- MODIFIED     TIMESTAMP(0)     NULL,
- IS_DELETED     BOOLEAN       NOT NULL,
- PIC      CHAR(512)    NOT NULL,
- IS_THUMBNAIL  BOOLEAN NOT NULL DEFAULT false,
+ ID       	UUID DEFAULT uuid_generate_v4(),
+ ART_ID     	UUID       	NOT NULL,
+ CREATED      	TIMESTAMP(0)    NOT NULL,
+ MODIFIED     	TIMESTAMP(0)    NULL,
+ IS_DELETED     BOOLEAN       	NOT NULL,
+ PIC      	CHAR(512)    	NOT NULL,
+ IS_THUMBNAIL  	BOOLEAN 	NOT NULL DEFAULT false,
  CONSTRAINT PK_PICTURE PRIMARY KEY (ID)
 );
 
@@ -530,11 +529,11 @@ ART_ID
 /* Table: ROLE                  */
 /*==============================================================*/
 CREATE TABLE ROLE (
- ID       UUID DEFAULT uuid_generate_v4(),
- CREATED      TIMESTAMP(0)     NOT NULL,
- MODIFIED     TIMESTAMP(0)     NULL,
- IS_DELETED     BOOLEAN       NOT NULL DEFAULT false,
- CODE       VARCHAR(20)    NOT NULL,
+ ID       	UUID DEFAULT uuid_generate_v4(),
+ CREATED      	TIMESTAMP(0)    NOT NULL,
+ MODIFIED     	TIMESTAMP(0)    NULL,
+ IS_DELETED     BOOLEAN       	NOT NULL DEFAULT false,
+ CODE       	VARCHAR(20)    	NOT NULL,
  CONSTRAINT PK_ROLE PRIMARY KEY (ID)
 );
 
@@ -549,14 +548,14 @@ ID
 /* Table: SHOP                  */
 /*==============================================================*/
 CREATE TABLE SHOP (
- ID       UUID DEFAULT uuid_generate_v4(),
- COM_ID     UUID       NOT NULL,
- CIT_ID     UUID       NOT NULL,
- GEO_ID     UUID       NOT NULL,
- CREATED     TIMESTAMP(0)     NOT NULL,
- MODIFIED     TIMESTAMP(0)     NULL,
- IS_DELETED     BOOLEAN       NOT NULL,
- NAME       VARCHAR(50)    NOT NULL,
+ ID       	UUID DEFAULT uuid_generate_v4(),
+ COM_ID     	UUID       	NOT NULL,
+ CIT_ID     	UUID       	NOT NULL,
+ GEO_ID     	UUID       	NOT NULL,
+ CREATED     	TIMESTAMP(0)    NOT NULL,
+ MODIFIED     	TIMESTAMP(0)    NULL,
+ IS_DELETED     BOOLEAN       	NOT NULL,
+ NAME       	VARCHAR(50)    	NOT NULL,
  CONSTRAINT PK_SHOP PRIMARY KEY (ID)
 );
 
@@ -856,3 +855,44 @@ CREATE OR REPLACE TRIGGER mv_countries_cities_refresh_trigger
 AFTER INSERT OR UPDATE ON CITY
 FOR EACH ROW
 EXECUTE FUNCTION refresh_mv_countries();
+
+-- SHOP
+-- Create the materialized view
+DROP MATERIALIZED VIEW IF EXISTS mv_shops;
+CREATE MATERIALIZED VIEW IF NOT EXISTS mv_shops 
+AS
+SELECT s.id AS "Id",
+    s.name AS "Name",
+    com.id AS "CommerceId",
+    c.name AS "CityName",
+    g.latitude AS "Latitude",
+    g.longitude AS "Longitude",
+    g.address AS "Address"
+FROM shop s
+JOIN geopoint g ON g.id = s.geo_id
+JOIN city c ON c.id = s.cit_id
+JOIN commerce com ON com.id = s.com_id
+WHERE s.is_deleted = false;
+WITH DATA;
+
+-- Create the refresh function
+CREATE OR REPLACE FUNCTION refresh_mv_shops()
+RETURNS TRIGGER AS
+$$
+BEGIN
+  REFRESH MATERIALIZED VIEW mv_shops;
+  RETURN NULL;
+END;
+$$
+LANGUAGE plpgsql;
+
+-- Create the trigger
+CREATE OR REPLACE TRIGGER mv_shops_shop_refresh_trigger
+AFTER INSERT OR UPDATE ON shop
+FOR EACH ROW
+EXECUTE FUNCTION refresh_mv_shops();
+
+CREATE OR REPLACE TRIGGER mv_shops_geopoint_refresh_trigger
+AFTER INSERT OR UPDATE ON geopoint
+FOR EACH ROW
+EXECUTE FUNCTION refresh_mv_shops();
