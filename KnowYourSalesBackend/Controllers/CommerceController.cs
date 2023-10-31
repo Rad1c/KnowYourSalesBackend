@@ -12,20 +12,31 @@ public class CommerceController : BaseController
 {
     private readonly ICommerceService _commerceService;
     private readonly ISessionService _sessionService;
+    private readonly IImageServices _imageServices;
 
-    public CommerceController(ICommerceService commerceService, ISessionService sessionService)
+    public CommerceController(ICommerceService commerceService, ISessionService sessionService, IImageServices imageServices)
     {
         _commerceService = commerceService;
         _sessionService = sessionService;
+        _imageServices = imageServices;
     }
 
     [HttpPut("commerce")]
     public async Task<IActionResult> UpdateCommerce(UpdateCommerceModel req)
     {
+        string logoPath = String.Empty;
+
+        if (!string.IsNullOrEmpty(req.Logo))
+        {
+            var logoPathResult = await _imageServices.AddCommerceImage(_sessionService.Id, req.Logo);
+
+            if (!logoPathResult.IsError) logoPath = logoPathResult.Value;
+        }
+
         ErrorOr<bool> updateResult = await _commerceService.UpdateCommerce(
             _sessionService.Id,
             req.Name,
-            req.Logo,
+            logoPath,
             req.CityId
             );
 
