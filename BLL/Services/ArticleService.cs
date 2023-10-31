@@ -4,7 +4,7 @@ using DAL.IRepositories;
 using ErrorOr;
 using Microsoft.Extensions.Configuration;
 using MODEL.Entities;
-using static BLL.Errors.Errors;
+using Article = MODEL.Entities.Article;
 using Commerce = MODEL.Entities.Commerce;
 
 namespace BLL.Services;
