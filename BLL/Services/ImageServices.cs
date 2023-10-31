@@ -4,7 +4,6 @@ using DAL.IRepositories;
 using ErrorOr;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using MODEL.Entities;
 
 namespace BLL.Services;
 
@@ -23,7 +22,7 @@ public class ImageServices : IImageServices
 
     public async Task<ErrorOr<string>> AddArticleImage(Guid articleId, IFormFile img)
     {
-        Article? article = await _articleRepository.GetById<Article>(articleId);
+        MODEL.Entities.Article? article = await _articleRepository.GetById<MODEL.Entities.Article>(articleId);
 
         if (article is null) return Errors.Errors.Article.ArticleNotFound;
 
@@ -60,6 +59,24 @@ public class ImageServices : IImageServices
 
         return _supabaseClient.Storage.From(bucketName).GetPublicUrl(path);
     }
+    public async Task<ErrorOr<string>> AddCommerceImage(Guid commerceId, string base64Img)
+    {
+        string exstension = GetImageExtension(base64Img).Code;
+
+        byte[] imageBytes = Convert.FromBase64String(base64Img);
+
+        if (!ImageExstensionEnum.ContainsCode<ImageExstensionEnum>(exstension)) return Errors.Errors.Images.ImgExstensionNotSuported;
+
+        Guid imgId = Guid.NewGuid();
+        string path = $"commerce-{commerceId}-img-{imgId}.{exstension}";
+
+        string bucketName = _configuration["supabase:productBucket"];
+
+        await _supabaseClient.Storage.From(bucketName).Upload(imageBytes, path);
+
+        return _supabaseClient.Storage.From(bucketName).GetPublicUrl(path);
+    }
+
 
     private static ImageExstensionEnum GetImageExtension(string base64Image)
     {
