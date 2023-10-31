@@ -64,7 +64,7 @@ public class ShopRepository : Repository, IShopRepository
 
     public async Task<List<ShopQueryModel>> GetShopsQuery(Guid id)
     {
-        string query = "SELECT \"Id\", \"CityName\", \"Address\" FROM mv_shops WHERE \"CommerceId\" = @id";
+        string query = "SELECT * FROM mv_shops WHERE \"CommerceId\" = @id";
         using var connection = _queryContext.CreateConnection();
 
         var shops = await connection.QueryAsync<ShopQueryModel>(query, new { id });

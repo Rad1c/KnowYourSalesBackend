@@ -864,6 +864,7 @@ AS
 SELECT s.id AS "Id",
     s.name AS "Name",
     com.id AS "CommerceId",
+    c.id AS "CityId",
     c.name AS "CityName",
     g.latitude AS "Latitude",
     g.longitude AS "Longitude",
