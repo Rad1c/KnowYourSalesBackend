@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MODEL.Entities;
+using MODEL.Extensions;
 
 namespace MODEL;
 
@@ -11,7 +12,7 @@ public static class ConfigureServices
     {
         services.AddDbContext<Context>(options =>
             options.UseNpgsql(
-                configuration.GetConnectionString("DefaultConnection")!
+                configuration.GetPostgresConnectionString()
         ), ServiceLifetime.Scoped);
 
         services.AddScoped<QueryContext>();
