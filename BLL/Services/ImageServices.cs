@@ -99,7 +99,6 @@ public class ImageServices : IImageServices
             return ImageExstensionEnum.Jpg; //JPG format
         }
 
-
         return ImageExstensionEnum.Unsupported; // Unknown format or unable to determine the extension
 
     }
