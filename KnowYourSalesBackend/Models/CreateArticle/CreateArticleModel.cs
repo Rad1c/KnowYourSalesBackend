@@ -7,8 +7,9 @@ public record CreateArticleModel
     public List<Guid> ShopIds { get; init; } = null!;
     public string CurrencyName { get; init; } = null!;
     public string Name { get; init; } = null!;
-    public string Description { get; set; } = null!;
-    public decimal OldPrice { get; set; }
-    public decimal NewPrice { get; set; }
-    public string ValidDate { get; set; } = null!;
+    public string Description { get; init; } = null!;
+    public decimal OldPrice { get; init; }
+    public decimal NewPrice { get; init; }
+    public string ValidDate { get; init; } = null!;
+    public List<ImageModel> Images { get; init; } = new();
 }

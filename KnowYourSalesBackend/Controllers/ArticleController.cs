@@ -47,9 +47,23 @@ public class ArticleController : BaseController
             req.NewPrice,
             req.ValidDate);
 
-        return result.Match(
-            authResult => Ok(new MessageDto(result.Value!.Id.ToString())),
-            errors => Problem(errors));
+        if (result.IsError || result.Value is null)
+        {
+            return Problem(result.Errors);
+        }
+
+        Article newArticle = result.Value;
+
+        foreach (ImageModel imageModel in req.Images)
+        {
+            ErrorOr<string> saveImageResult = await _imageService.AddArticleImage(newArticle.Id, imageModel.Image);
+
+            if (saveImageResult.IsError) continue;
+
+            _articleService.AddArticleImage(newArticle, saveImageResult.Value, imageModel.IsThumbnail);
+        }
+
+        return Accepted();
     }
 
     [HttpPost("article/add-image")]

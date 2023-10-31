@@ -8,5 +8,7 @@ public class ImageExstensionEnum : Enumeration
     public static readonly ImageExstensionEnum Gif = new(4, "gif");
     public static readonly ImageExstensionEnum Svg = new(5, "svg");
 
+    public static readonly ImageExstensionEnum Unsupported = new(6, "Unsupported");
+
     public ImageExstensionEnum(int id, string code) : base(id, code) { }
 }

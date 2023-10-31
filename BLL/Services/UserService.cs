@@ -3,6 +3,7 @@ using BLL.Helper;
 using BLL.IServices;
 using DAL.IRepositories;
 using ErrorOr;
+using Microsoft.Extensions.Configuration;
 using MODEL.Entities;
 using MODEL.QueryModels.User;
 
@@ -11,10 +12,12 @@ namespace BLL.Services;
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
+    private readonly IConfiguration _configuration;
 
-    public UserService(IUserRepository userRepository)
+    public UserService(IUserRepository userRepository, IConfiguration configuration)
     {
         _userRepository = userRepository;
+        _configuration = configuration;
     }
 
     public async Task<ErrorOr<bool>> AddFavoriteArticle(Guid userId, Guid articleId)
@@ -123,13 +126,20 @@ public class UserService : IUserService
 
         Role? role = await _userRepository.GetRoleByCode(RoleEnum.User.Code);
 
+        bool isEmailVerified = false;
+
+        if (bool.Parse(_configuration["Email:EnableEmailVerification"]))
+        {
+            isEmailVerified = true;
+        }
+
         Account acc = new()
         {
             Role = role!,
             Password = passwordHash,
             Salt = salt,
             Email = email,
-            IsEmailVerified = false,
+            IsEmailVerified = isEmailVerified,
             VerifyEmailCode = emailVerificationCode
         };
 

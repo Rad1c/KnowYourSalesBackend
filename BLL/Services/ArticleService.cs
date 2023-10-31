@@ -4,6 +4,8 @@ using DAL.IRepositories;
 using ErrorOr;
 using Microsoft.Extensions.Configuration;
 using MODEL.Entities;
+using static BLL.Errors.Errors;
+using Commerce = MODEL.Entities.Commerce;
 
 namespace BLL.Services;
 
@@ -22,7 +24,7 @@ public class ArticleService : IArticleService
 
     public async Task<ErrorOr<bool>> AddArticleImage(Guid articleId, string path, bool isThumbnail)
     {
-        Article? article = await _articleRepository.GetArticleWithImages(articleId);
+        MODEL.Entities.Article? article = await _articleRepository.GetArticleWithImages(articleId);
 
         if (article is null) return Errors.Errors.Article.ArticleNotFound;
 
@@ -36,10 +38,28 @@ public class ArticleService : IArticleService
         };
 
         _articleRepository.Save<Picture>(newPicture);
+
+        return true;
+    }
+    public ErrorOr<bool> AddArticleImage(MODEL.Entities.Article article, string path, bool isThumbnail)
+    {
+        if (article is null) return Errors.Errors.Article.ArticleNotFound;
+
+        if (article.Pictures.Count > int.Parse(_configuration["maxImagesPerArticle"])) return Errors.Errors.Article.ToMuchImagesPerProduct;
+
+        Picture newPicture = new()
+        {
+            ArticleId = article.Id,
+            PicUrl = path,
+            IsThumbnail = isThumbnail
+        };
+
+        _articleRepository.Save<Picture>(newPicture);
+
         return true;
     }
 
-    public async Task<ErrorOr<Article?>> CreateArticle(Guid commerceId, string currencyName, List<Guid> shopIds, List<Guid> categoryIds, string name, string description, decimal oldPrice, decimal newPrice, string validDate)
+    public async Task<ErrorOr<MODEL.Entities.Article?>> CreateArticle(Guid commerceId, string currencyName, List<Guid> shopIds, List<Guid> categoryIds, string name, string description, decimal oldPrice, decimal newPrice, string validDate)
     {
         Commerce? commerce = await _shopRepository.GetCommerceWithShops(commerceId);
 
@@ -67,18 +87,18 @@ public class ArticleService : IArticleService
             }
         }
 
-        List<Shop> shops = new();
+        List<MODEL.Entities.Shop> shops = new();
 
         foreach (var shopId in shopIds)
         {
             shops.Add(await _shopRepository.GetShop(shopId));
         }
 
-        Article? article = await _articleRepository.GetArticleByName(commerceId, name);
+        MODEL.Entities.Article? article = await _articleRepository.GetArticleByName(commerceId, name);
 
         if (article is not null) return Errors.Errors.Article.ArticleAddedAlready;
 
-        Article newArticle = new()
+        MODEL.Entities.Article newArticle = new()
         {
             Name = name,
             Cur = currency,
@@ -91,27 +111,27 @@ public class ArticleService : IArticleService
             Categories = categories
         };
 
-        _articleRepository.Save<Article>(newArticle);
+        _articleRepository.Save<MODEL.Entities.Article>(newArticle);
         return newArticle;
         //TODO: sending the mail to user on article creation
     }
 
     public async Task<ErrorOr<bool>> DeleteArticle(Guid id)
     {
-        Article? article = await _articleRepository.GetById<Article>(id);
+        MODEL.Entities.Article? article = await _articleRepository.GetById<Article>(id);
 
         if (article is null)
             return Errors.Errors.Article.ArticleNotFound;
 
         article.IsDeleted = true;
 
-        _articleRepository.UpdateEntity<Article>(article!);
+        _articleRepository.UpdateEntity<MODEL.Entities.Article>(article!);
         return true;
     }
 
-    public async Task<ErrorOr<Article?>> UpdateArticle(Guid articleId, string? name, string? description, decimal? newPrice, string? validDate)
+    public async Task<ErrorOr<MODEL.Entities.Article?>> UpdateArticle(Guid articleId, string? name, string? description, decimal? newPrice, string? validDate)
     {
-        Article? article = await _articleRepository.GetById<Article>(articleId);
+        MODEL.Entities.Article? article = await _articleRepository.GetById<MODEL.Entities.Article>(articleId);
 
         if (article is null)
             return Errors.Errors.Article.ArticleNotFound;
@@ -132,7 +152,7 @@ public class ArticleService : IArticleService
             article.ValidDate = date;
         }
 
-        _articleRepository.UpdateEntity<Article>(article!);
+        _articleRepository.UpdateEntity<MODEL.Entities.Article>(article!);
 
         return article;
     }

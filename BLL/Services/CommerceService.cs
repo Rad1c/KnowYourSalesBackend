@@ -2,6 +2,7 @@
 using BLL.IServices;
 using DAL.IRepositories;
 using ErrorOr;
+using Microsoft.Extensions.Configuration;
 using MODEL.Entities;
 using MODEL.QueryModels.Commerce;
 
@@ -10,10 +11,12 @@ namespace BLL.Services;
 public class CommerceService : ICommerceService
 {
     private readonly ICommerceRepository _commerceRepository;
+    private readonly IConfiguration _configuration;
 
-    public CommerceService(ICommerceRepository commerceRepository)
+    public CommerceService(ICommerceRepository commerceRepository, IConfiguration configuration)
     {
         _commerceRepository = commerceRepository;
+        _configuration = configuration;
     }
 
     public async Task<ErrorOr<bool>> DeleteCommerce(Guid id)
@@ -50,13 +53,20 @@ public class CommerceService : ICommerceService
 
         Role? role = await _commerceRepository.GetRoleByCode(RoleEnum.Commerce.Code);
 
+        bool isEmailVerified = false;
+
+        if (bool.Parse(_configuration["Email:EnableEmailVerification"]))
+        {
+            isEmailVerified = true;
+        }
+
         Account acc = new()
         {
             Role = role!,
             Password = passwordHash,
             Salt = salt,
             Email = email,
-            IsEmailVerified = false,
+            IsEmailVerified = isEmailVerified,
             VerifyEmailCode = emailVericationCode
         };
 

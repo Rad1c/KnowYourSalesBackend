@@ -19,16 +19,19 @@ public class AuthController : BaseController
     private readonly IAuthService _authService;
     private readonly ICommerceService _commerceService;
     private readonly IEmailService _mailService;
+    private readonly IConfiguration _configuration;
 
     public AuthController(IUserService userService,
         IAuthService authService,
         ICommerceService commerceService,
-        IEmailService mailService)
+        IEmailService mailService,
+        IConfiguration configuration)
     {
         _userService = userService;
         _authService = authService;
         _commerceService = commerceService;
         _mailService = mailService;
+        _configuration = configuration;
     }
 
     [HttpPost("user/register")]
@@ -52,7 +55,7 @@ public class AuthController : BaseController
             req.Email,
             emailVerificationCode);
 
-        if (!authResult.IsError)
+        if (!authResult.IsError && bool.Parse(_configuration["Email:EnableEmailVerification"]))
         {
             await _mailService.SendVerifyUserAccountEmail(req.Email, req.FirstName, req.LastName, emailVerificationCode);
         }
@@ -80,7 +83,7 @@ public class AuthController : BaseController
             req.Email,
             emailVerificationCode);
 
-        if (!authResult.IsError)
+        if (!authResult.IsError && bool.Parse(_configuration["Email:EnableEmailVerification"]))
         {
             await _mailService.SendVerifyCommerceAccountEmail(req.Email, req.Name, emailVerificationCode);
         }
