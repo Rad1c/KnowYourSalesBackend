@@ -1,4 +1,5 @@
-﻿using DAL.IRepositories;
+﻿using BLL.Helper;
+using DAL.IRepositories;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using MODEL;
@@ -38,41 +39,39 @@ public class ArticleRepository : Repository, IArticleRepository
             .FirstOrDefaultAsync();
     }
 
-    public async Task<List<ArticleQueryModel>> GetArticlesPaginatedQuery(int pageSize, int page, string? name, string? cityName = null, string? categoryName = null, Guid? commerceId = null)
+    public async Task<PaginatedList<ArticleQueryModel>> GetArticlesPaginatedQuery(int pageSize, int page, string? name, Guid? cityId = null, Guid? categoryId = null, Guid? commerceId = null)
     {
-        var queryBuilder = new StringBuilder("SELECT a.id, s.com_id as \"commerceId\", cat.name as \"categoryName\", city.name as \"cityName\", a.name, a.old_price AS \"oldPrice\", a.new_price AS \"newPrice\", a.sale, a.created, a.valid_date AS \"validDate\", p.pic AS \"picture\", c.logo FROM article a ")
-            .Append("JOIN article_in_shop ais ON a.id = ais.art_id JOIN shop s ON ais.id = s.id JOIN commerce c ON c.id = s.com_id ")
-            .Append("JOIN city ON city.id = s.cit_id JOIN picture p ON a.id = p.art_id JOIN article_in_category aic ON aic.art_id = a.id ")
-            .Append("JOIN category cat ON cat.id = aic.id ")
-            .Append("WHERE p.is_thumbnail = true");
+        var queryBuilder = new StringBuilder($"SELECT DISTINCT \"articleId\" as \"id\", \"commerceId\", \"categoryId\", \"cityId\", \"articleName\" as \"name\", \"oldPrice\", \"newPrice\", sale, created,  \"validDate\", pic as \"picture\", logo FROM mv_articles where true");
 
-        if (cityName != null)
+        if (cityId != null)
         {
-            queryBuilder.Append(" AND city.name = @cityName");
+            queryBuilder.Append(" AND \"cityId\" = @cityId");
         }
-        if (categoryName != null)
+        if (categoryId != null)
         {
-            queryBuilder.Append(" AND cat.name = @categoryName");
+            queryBuilder.Append(" AND \"categoryId\" = @categoryId");
         }
         if (name is not null)
         {
-            queryBuilder.Append(" AND a.name = @name");
+            queryBuilder.Append(" AND name = @name");
         }
         if (commerceId != null)
         {
-            queryBuilder.Append(" AND c.id = @commerceId");
+            queryBuilder.Append(" AND \"commerceId\" = @commerceId");
         }
-
-        queryBuilder.Append(" ORDER BY a.created DESC")
-            .Append(" OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY");
 
         using var connection = _queryContext.CreateConnection();
 
+        int total = await connection.QuerySingleAsync<int>($"SELECT count(*) from({queryBuilder}) as \"result\"", new { cityId, categoryId, name, commerceId });
+
+        queryBuilder.Append(" ORDER BY created DESC")
+            .Append(" OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY");
+
         var offset = (page - 1) * pageSize;
 
-        var article = await connection.QueryAsync<ArticleQueryModel>(queryBuilder.ToString(), new { cityName, categoryName, name, offset, pageSize, commerceId });
+        var articles = await connection.QueryAsync<ArticleQueryModel>(queryBuilder.ToString(), new { cityId, categoryId, name, offset, pageSize, commerceId });
 
-        return article.ToList();
+        return new PaginatedList<ArticleQueryModel>(articles, page, pageSize, total);
     }
 
     public async Task<Article?> GetArticleWithImages(Guid id)

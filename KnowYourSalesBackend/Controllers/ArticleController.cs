@@ -115,9 +115,9 @@ public class ArticleController : BaseController
 
     [AllowAnonymous]
     [HttpGet("articles")]
-    public async Task<IActionResult> GetArticles(int pageSize, int page, string? name = null, string? cityName = null, string? categoryName = null, Guid? commerceId = null)
+    public async Task<IActionResult> GetArticles(int pageSize, int page, string? name = null, Guid? cityId = null, Guid? categoryId = null, Guid? commerceId = null)
     {
-        return Ok(await _articleRepository.GetArticlesPaginatedQuery(pageSize, page, name, cityName, categoryName, commerceId));
+        return Ok(await _articleRepository.GetArticlesPaginatedQuery(pageSize, page, name, cityId, categoryId, commerceId));
     }
 }
 
