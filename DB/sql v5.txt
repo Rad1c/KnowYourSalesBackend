@@ -316,7 +316,7 @@ CREATE TABLE COMMERCE (
  MODIFIED     	TIMESTAMP(0)    NULL,
  IS_DELETED     BOOLEAN       	NOT NULL,
  NAME       	VARCHAR(50)    	NOT NULL,
- LOGO       	VARCHAR(100) 	NULL,
+ LOGO       	CHAR(512) 	NULL,
  CONSTRAINT PK_COMMERCE PRIMARY KEY (ID)
 );
 
@@ -864,6 +864,7 @@ AS
 SELECT s.id AS "Id",
     s.name AS "Name",
     com.id AS "CommerceId",
+    c.id AS "CityId",
     c.name AS "CityName",
     g.latitude AS "Latitude",
     g.longitude AS "Longitude",
