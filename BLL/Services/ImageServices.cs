@@ -44,6 +44,8 @@ public class ImageServices : IImageServices
 
     public async Task<ErrorOr<string>> AddArticleImage(Guid articleId, string base64Image)
     {
+        base64Image = SanitazeBase64String(base64Image);
+
         string exstension = GetImageExtension(base64Image).Code;
 
         byte[] imageBytes = Convert.FromBase64String(base64Image);
@@ -61,6 +63,8 @@ public class ImageServices : IImageServices
     }
     public async Task<ErrorOr<string>> AddCommerceImage(Guid commerceId, string base64Img)
     {
+        base64Img = SanitazeBase64String(base64Img);
+
         string exstension = GetImageExtension(base64Img).Code;
 
         byte[] imageBytes = Convert.FromBase64String(base64Img);
@@ -77,14 +81,9 @@ public class ImageServices : IImageServices
         return _supabaseClient.Storage.From(bucketName).GetPublicUrl(path);
     }
 
-
     private static ImageExstensionEnum GetImageExtension(string base64Image)
     {
-        // Remove the data URI prefix if it exists (e.g., "data:image/jpeg;base64,")
-        if (base64Image.Contains(","))
-        {
-            base64Image = base64Image.Split(',')[1];
-        }
+        base64Image = SanitazeBase64String(base64Image);
 
         // Decode the base64 string to bytes
         byte[] imageBytes = Convert.FromBase64String(base64Image);
@@ -117,6 +116,16 @@ public class ImageServices : IImageServices
         }
 
         return ImageExstensionEnum.Unsupported; // Unknown format or unable to determine the extension
+    }
 
+    private static string SanitazeBase64String(string base64Image)
+    {
+        // Remove the data URI prefix if it exists (e.g., "data:image/jpeg;base64,")
+        if (base64Image.Contains(","))
+        {
+            return base64Image.Split(',')[1];
+        }
+
+        return base64Image;
     }
 }
