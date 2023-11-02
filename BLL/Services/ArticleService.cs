@@ -76,16 +76,19 @@ public class ArticleService : IArticleService
         }
 
         List<Category> categories = await _shopRepository.GetCategories();
-
         if (categories is null) return Errors.Errors.Shop.CategoryNotFound;
 
         foreach (var item in categoryIds)
         {
+
             if (!categories.Any(x => x.Id == item))
             {
                 return Errors.Errors.Shop.ShopNotFound;
             }
         }
+
+        List<Category> articleCategories = categories.Where(x => categoryIds.Contains(x.Id)).ToList();
+       
 
         List<MODEL.Entities.Shop> shops = new();
 
@@ -108,7 +111,7 @@ public class ArticleService : IArticleService
             ValidDate = (DateTime)BaseHelper.ConvertStringToDateTime(validDate),
             Sale = BaseHelper.CalculateSale(oldPrice, newPrice),
             Shops = shops,
-            Categories = categories
+            Categories = articleCategories
         };
 
         _articleRepository.Save<MODEL.Entities.Article>(newArticle);
