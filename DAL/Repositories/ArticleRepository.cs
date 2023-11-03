@@ -4,7 +4,8 @@ using Dapper;
 using Microsoft.EntityFrameworkCore;
 using MODEL;
 using MODEL.Entities;
-using MODEL.QueryModels.ReferenteData;
+using MODEL.QueryModels.Article;
+using MODEL.QueryModels.Common;
 using System.Text;
 
 namespace DAL.Repositories;
@@ -53,7 +54,10 @@ public class ArticleRepository : Repository, IArticleRepository
         }
         if (name is not null)
         {
-            queryBuilder.Append(" AND name = @name");
+            name = name.Trim();
+            name = $"%{name}%";
+
+            queryBuilder.Append(" AND  LOWER(\"articleName\") LIKE LOWER(@Name)");
         }
         if (commerceId != null)
         {
@@ -62,14 +66,16 @@ public class ArticleRepository : Repository, IArticleRepository
 
         using var connection = _queryContext.CreateConnection();
 
-        int total = await connection.QuerySingleAsync<int>($"SELECT count(*) from({queryBuilder}) as \"result\"", new { cityId, categoryId, name, commerceId });
+        int total = await connection.QuerySingleAsync<int>($"SELECT count(*) from({queryBuilder}) as \"result\"", new { cityId, categoryId, Name = name, commerceId });
 
         queryBuilder.Append(" ORDER BY created DESC")
             .Append(" OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY");
 
         var offset = (page - 1) * pageSize;
 
-        var articles = await connection.QueryAsync<ArticleQueryModel>(queryBuilder.ToString(), new { cityId, categoryId, name, offset, pageSize, commerceId });
+        var articles = await connection.QueryAsync<ArticleQueryModel>(queryBuilder.ToString(), new { cityId, categoryId, Name = name, offset, pageSize, commerceId });
+
+        articles = articles.GroupBy(x => x.Id).Select(x => x.First());
 
         return new PaginatedList<ArticleQueryModel>(articles, page, pageSize, total);
     }
@@ -77,5 +83,34 @@ public class ArticleRepository : Repository, IArticleRepository
     public async Task<Article?> GetArticleWithImages(Guid id)
     {
         return await _context.Articles.Include(p => p.Pictures).FirstOrDefaultAsync(p => p.Id == id);
+    }
+
+    public async Task<ArticleDetailsQueryModel> GetArticleDetails(Guid id)
+    {
+        string query = "select distinct \"articleId\", \"articleName\" as \"name\", description, \"oldPrice\", \"newPrice\" , sale, \"validDate\" , logo as \"commerceLogo\", \"categoryId\" , \"commerceId\"  from mv_articles where \"articleId\" = @id";
+        using var connection = _queryContext.CreateConnection();
+
+        var article = await connection.QuerySingleOrDefaultAsync<ArticleDetailsQueryModel>(query, new { id });
+
+        query = "select pic from picture p where p.art_id  = @id";
+        var articleImages = await connection.QueryAsync<string>(query, new { id });
+
+        query = "select g.longitude, g.latitude, g.address from  article a join article_in_shop ais on ais.art_id  = a.id join shop s on s.id  =  ais.id join geopoint g on g.id = s.geo_id where a.id = @id and a.is_deleted = false and s.is_deleted  = false";
+        var geoLocations = await connection.QueryAsync<GeoQueryModel>(query, new { id });
+
+        if (article is not null)
+        {
+            if (geoLocations is not null)
+            {
+                article.GeoLocations = geoLocations;
+            }
+
+            if (articleImages is not null)
+            {
+                article.Images = articleImages;
+            }
+        }
+
+        return article!;
     }
 }
