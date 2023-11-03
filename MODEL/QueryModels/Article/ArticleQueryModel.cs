@@ -1,4 +1,4 @@
-﻿namespace MODEL.QueryModels.ReferenteData;
+﻿namespace MODEL.QueryModels.Article;
 
 public record ArticleQueryModel
 {

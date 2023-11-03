@@ -119,5 +119,16 @@ public class ArticleController : BaseController
     {
         return Ok(await _articleRepository.GetArticlesPaginatedQuery(pageSize, page, name, cityId, categoryId, commerceId));
     }
+
+    [AllowAnonymous]
+    [HttpGet("article/{id}")]
+    public async Task<IActionResult> GetArticle(Guid id)
+    {
+        var article = await _articleRepository.GetArticleDetails(id);
+
+        if (article is null) return NotFound();
+
+        return Ok(article);
+    }
 }
 
